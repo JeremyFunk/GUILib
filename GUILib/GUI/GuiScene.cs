@@ -30,6 +30,7 @@ namespace GuiLib.GUI
             }
 
             bool leftMousePressed = GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Left);
+
             bool rightMousePressed = GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Right);
 
             KeyEvent e = new KeyEvent(GameInput.GetKeysDown(), GameInput.GetKeysPressed());

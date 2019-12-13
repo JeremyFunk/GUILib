@@ -8,12 +8,14 @@ using GuiLib.GUI.Render.Shader;
 using GuiLib.Events;
 using GuiLib.GUI.Constraints;
 using GuiLib.Util;
+using GuiLib.GUI.Animations;
 
 namespace GuiLib.GUI.GuiElements
 {
-
     abstract class GuiElement
     {
+        public Animation animation;
+
         public List<Constraint> xConstraints = new List<Constraint>();
         public List<Constraint> yConstraints = new List<Constraint>();
         public List<Constraint> widthConstraints = new List<Constraint>();
@@ -26,8 +28,17 @@ namespace GuiLib.GUI.GuiElements
         
         public bool visible;
 
-        public int animationOffsetX, animationOffsetY;
+        public int animationOffsetX, animationOffsetY, animationOffsetWidth, animationOffsetHeight;
         public float animationOffsetOpacity;
+
+        private Action<MouseEvent, GuiElement> clickEvent;
+        private Action<MouseEvent, GuiElement> notClickedEvent;
+
+        public bool hovered = false;
+
+        public Action<MouseEvent, GuiElement> startHoverEvent;
+        public Action<MouseEvent, GuiElement> hoverEvent;
+        public Action<MouseEvent, GuiElement> endHoverEvent;
 
         public GuiElement(float width, float height, float x, float y, bool visible)
         {
@@ -41,14 +52,46 @@ namespace GuiLib.GUI.GuiElements
         }
         public void Render(GuiShader shader, Vector2 offset)
         {
-            RenderElement(shader, new Vector2(offset.X + curX + animationOffsetX, offset.Y + curY + animationOffsetY), new Vector2(curWidth, curHeight));
+            RenderElement(shader, new Vector2(offset.X + curX + animationOffsetX, offset.Y + curY + animationOffsetY), new Vector2(curWidth + animationOffsetWidth, curHeight + animationOffsetHeight));
         }
 
         protected abstract void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale);
 
         public abstract void UpdateElement(float delta);
 
-        public virtual void MouseEvent(MouseEvent events) { }
+        public void MouseEvent(MouseEvent e)
+        {
+            bool hoverResult = false;
+
+            if (e.hit)
+            {
+                hoverResult = true;
+                if (e.type == MouseEventType.Hover)
+                {
+                    if (!hovered)
+                    {
+                        startHoverEvent?.Invoke(e, this);
+                    }
+                    else
+                    {
+                        hoverEvent?.Invoke(e, this);
+                    }
+                }
+            }
+
+            if(hovered && !hoverResult)
+            {
+                endHoverEvent?.Invoke(e, this);
+            }
+
+            hovered = hoverResult;
+
+            MouseEventElement(e);
+        }
+
+        public virtual void MouseEventElement(MouseEvent events) 
+        {
+        }
 
         public virtual void KeyEvent(KeyEvent events) { }
 
@@ -61,6 +104,8 @@ namespace GuiLib.GUI.GuiElements
             curY = HandleConstraintsY(yConstraints, y.GetPixelValue(height), width, height);
 
             curOpacity = animationOffsetOpacity + opacity;
+
+            animation?.Update(delta, this);
 
             UpdateElement(delta);
         }
@@ -141,6 +186,14 @@ namespace GuiLib.GUI.GuiElements
 
             return pixelValue;
         }
+
+        public void StartAnimation(string animation)
+        {
+            this.animation.RunAnimation(this, animation);
+        }
+
+
+
 
         private static APixelConstraint GetPixelConstraintForThisElement(float value)
         {

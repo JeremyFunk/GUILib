@@ -26,5 +26,11 @@ namespace GuiLib.Logger
                 Console.WriteLine("Info:    " + message);
             }
         }
+
+        protected override void Terminate()
+        {
+            Console.ReadKey();
+            Environment.Exit(-1);
+        }
     }
 }

@@ -8,3 +8,13 @@ C:\Users\Jerem\source\repos\GUILib\GUILib\bin\Debug\OpenTK.xml
 C:\Users\Jerem\source\repos\GUILib\GUILib\obj\Debug\GUILib.csproj.CopyComplete
 C:\Users\Jerem\source\repos\GUILib\GUILib\obj\Debug\GUILib.exe
 C:\Users\Jerem\source\repos\GUILib\GUILib\obj\Debug\GUILib.pdb
+C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.csprojAssemblyReference.cache
+C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.exe
+C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.pdb
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\GUILib.exe.config
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\GUILib.exe
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\GUILib.pdb
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\OpenTK.dll
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\OpenTK.pdb
+C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\OpenTK.xml
+C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.csproj.CopyComplete

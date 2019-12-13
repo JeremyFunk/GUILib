@@ -8,7 +8,7 @@ namespace GuiLib.Logger
 {
     public enum LogLevel
     {
-        Info, Warning, Error
+        Info, Warning, Error, FatalError
     }
 
     abstract class ALogger
@@ -24,14 +24,22 @@ namespace GuiLib.Logger
 
         public void Log(string message, LogLevel logLevel)
         {
-            if((loggerLevel == LogLevel.Error && logLevel == LogLevel.Error) ||
-                (loggerLevel == LogLevel.Warning && (logLevel == LogLevel.Error || logLevel == LogLevel.Warning)) ||
+            if((loggerLevel == LogLevel.FatalError && (logLevel == LogLevel.FatalError)) ||
+                (loggerLevel == LogLevel.Error && (logLevel == LogLevel.Error || logLevel == LogLevel.FatalError)) ||
+                (loggerLevel == LogLevel.Warning && (logLevel == LogLevel.Error || logLevel == LogLevel.Warning || logLevel == LogLevel.FatalError)) ||
                 loggerLevel == LogLevel.Info)
             {
                 LogMessage(message, logLevel);
+
+                if(logLevel == LogLevel.FatalError)
+                {
+                    LogMessage("The program has ran into a fatal error and will exit now!", LogLevel.FatalError);
+                    Terminate();
+                }
             }
         }
 
         protected abstract void LogMessage(string message, LogLevel logLevel);
+        protected abstract void Terminate();
     }
 }

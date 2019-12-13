@@ -51,6 +51,10 @@
     <Compile Include="Events\KeyEvent.cs" />
     <Compile Include="Events\MouseEvent.cs" />
     <Compile Include="GUI\Animations\Animation.cs" />
+    <Compile Include="GUI\Animations\Transitions\LinearTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\SmootherstepTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\Transition.cs" />
     <Compile Include="GUI\Constraints\APixelConstraint.cs" />
     <Compile Include="GUI\Constraints\CenterConstraint.cs" />
     <Compile Include="GUI\Constraints\Constraint.cs" />
