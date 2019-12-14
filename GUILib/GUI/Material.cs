@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using GuiLib.GUI.Render.Shader;
-using GuiLib.GUI.GuiElements;
+using GUILib.GUI.Render.Shader;
+using GUILib.GUI.GuiElements;
 
-namespace GuiLib.GUI
+namespace GUILib.GUI
 {
     enum RenderMode
     {

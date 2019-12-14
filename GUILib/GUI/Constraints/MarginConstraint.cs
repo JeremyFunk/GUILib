@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class FixConstraint : Constraint
+    class MarginConstraint : Constraint
     {
         private int pixels;
 
-        public FixConstraint(int pixels)
+        public MarginConstraint(int pixels)
         {
             this.pixels = pixels;
         }
 
-        public int ExecuteConstraint(int pixelValue)
+        public int ExecuteConstraint(int parentSize, int selfSize)
         {
-            return pixels;
+            return parentSize - pixels - selfSize;
         }
     }
 }

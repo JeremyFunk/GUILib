@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 
-namespace GuiLib.Events
+namespace GUILib.Events
 {
     enum MouseEventType
     {

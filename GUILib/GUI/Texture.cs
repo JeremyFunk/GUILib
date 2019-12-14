@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.Util;
+using GUILib.Util;
 
-namespace GuiLib.GUI
+namespace GUILib.GUI
 {
     class Texture
     {

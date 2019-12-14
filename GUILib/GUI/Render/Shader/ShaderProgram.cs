@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
-using GuiLib.Logger;
-using GuiLib.Util;
+using GUILib.Logger;
+using GUILib.Util;
 
-namespace GuiLib.GUI.Render.Shader
+namespace GUILib.GUI.Render.Shader
 {
     abstract class ShaderProgram
     {
@@ -43,7 +43,7 @@ namespace GuiLib.GUI.Render.Shader
 
             programLog = GL.GetProgramInfoLog(programID);
 
-            if (programLog != "Validation successful.\n")
+            if (programLog != "")
                 ALogger.defaultLogger.Log("Could not validate shader program. Info log: " + programLog, LogLevel.Error);
 
             ALogger.defaultLogger.Log("Successfully loaded shaders: " + vertexShaderPath + " and " + fragmentShaderPath, LogLevel.Info);
@@ -78,7 +78,7 @@ namespace GuiLib.GUI.Render.Shader
             int uniformLocation = GL.GetUniformLocation(programID, uniformName);
 
             if (uniformLocation < 0)
-                Console.WriteLine("WARNING: Could not load uniform: " + uniformName);
+                ALogger.defaultLogger.Log("Could not load uniform: " + uniformName, LogLevel.Error);
 
 
             uniforms.Add(uniformName, uniformLocation);

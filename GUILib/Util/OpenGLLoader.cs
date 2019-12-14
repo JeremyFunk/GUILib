@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Drawing.Imaging;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
+using GUILib.Logger;
 
-namespace GuiLib.Util
+namespace GUILib.Util
 {
     class OpenGLLoader
     {
@@ -65,10 +66,15 @@ namespace GuiLib.Util
 
         public static int LoadTexture(string path, bool scale, bool clampToEdge)
         {
+            ALogger.defaultLogger.Log("Loading texture: " + path, LogLevel.Info);
+
             Bitmap bitmap = new Bitmap(absoluteDir + path);
 
             if (bitmap == null)
+            {
+                ALogger.defaultLogger.Log("Could not load texture \"" + path + "\". Make sure the texture exists at the specified directory!", LogLevel.Info);
                 return -1;
+            }
 
             int tex;
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);

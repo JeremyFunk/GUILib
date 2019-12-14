@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GuiLib.GUI.Render.Fonts.Data
+namespace GUILib.GUI.Render.Fonts.Data
 {
     class TextData
     {

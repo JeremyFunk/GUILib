@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
 
-namespace GuiLib.Util
+namespace GUILib.Util
 {
     static class GameSettings
     {

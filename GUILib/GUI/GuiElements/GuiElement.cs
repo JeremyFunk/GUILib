@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
-using GuiLib.GUI.Render.Shader;
-using GuiLib.Events;
-using GuiLib.GUI.Constraints;
-using GuiLib.Util;
-using GuiLib.GUI.Animations;
+using GUILib.GUI.Render.Shader;
+using GUILib.Events;
+using GUILib.GUI.Constraints;
+using GUILib.Util;
+using GUILib.GUI.Animations;
 
-namespace GuiLib.GUI.GuiElements
+namespace GUILib.GUI.GuiElements
 {
     abstract class GuiElement
     {
@@ -31,8 +31,10 @@ namespace GuiLib.GUI.GuiElements
         public int animationOffsetX, animationOffsetY, animationOffsetWidth, animationOffsetHeight;
         public float animationOffsetOpacity;
 
-        private Action<MouseEvent, GuiElement> clickEvent;
-        private Action<MouseEvent, GuiElement> notClickedEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonDownEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonPressedEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonReleasedEvent;
+        public Action<MouseEvent, GuiElement> clickMissedEvent;
 
         public bool hovered = false;
 
@@ -66,20 +68,35 @@ namespace GuiLib.GUI.GuiElements
             if (e.hit)
             {
                 hoverResult = true;
-                if (e.type == MouseEventType.Hover || true) //Not sure if this makes sense yet
+                if (!hovered)
                 {
-                    if (!hovered)
-                    {
-                        startHoverEvent?.Invoke(e, this);
-                    }
-                    else
-                    {
-                        hoverEvent?.Invoke(e, this);
-                    }
+                    startHoverEvent?.Invoke(e, this);
+                }
+                else
+                {
+                    hoverEvent?.Invoke(e, this);
+                }
+
+                if (e.mouseButtonType == MouseButtonType.Down)
+                {
+                    mouseButtonDownEvent?.Invoke(e, this);
+                } else if (e.mouseButtonType == MouseButtonType.Pressed)
+                {
+                    mouseButtonPressedEvent?.Invoke(e, this);
+                } else if (e.mouseButtonType == MouseButtonType.Released)
+                {
+                    mouseButtonReleasedEvent?.Invoke(e, this);
+                }
+            }
+            else
+            { 
+                if (e.mouseButtonType == MouseButtonType.Released)
+                {
+                    clickMissedEvent?.Invoke(e, this);
                 }
             }
 
-            if(hovered && !hoverResult)
+                if (hovered && !hoverResult)
             {
                 endHoverEvent?.Invoke(e, this);
             }
@@ -139,6 +156,10 @@ namespace GuiLib.GUI.GuiElements
                 {
                     pixelValue = ((CenterConstraint)c).ExecuteConstraint(curHeight, height);
                 }
+                else if (cType == typeof(MarginConstraint))
+                {
+                    pixelValue = ((MarginConstraint)c).ExecuteConstraint(height, curHeight);
+                }
             }
 
             return pixelValue;
@@ -189,12 +210,32 @@ namespace GuiLib.GUI.GuiElements
 
         public void StartAnimation(string animation)
         {
-            this.animation.RunAnimation(this, animation);
+            this.animation?.RunAnimation(this, animation);
         }
 
         public bool IsAnimationRunning()
         {
-            return animation.IsAnimationRunning(this);
+            return animation != null ? animation.IsAnimationRunning(this) : false;
+        }
+
+        public void SetWidth(float width)
+        {
+            this.width = GetPixelConstraintForThisElement(width);
+        }
+
+        public void SetHeight(float height)
+        {
+            this.height = GetPixelConstraintForThisElement(height);
+        }
+
+        public void SetX(float x)
+        {
+            this.x = GetPixelConstraintForThisElement(x);
+        }
+
+        public void SetY(float y)
+        {
+            this.y = GetPixelConstraintForThisElement(y);
         }
 
 

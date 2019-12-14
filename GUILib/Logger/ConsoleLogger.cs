@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GuiLib.Logger
+namespace GUILib.Logger
 {
     class ConsoleLogger : ALogger
     {
@@ -15,22 +15,35 @@ namespace GuiLib.Logger
 
         protected override void LogMessage(string message, LogLevel logLevel)
         {
-            if(logLevel == LogLevel.Error)
+            string print = GetTimestamp() + " ";
+
+            if (logLevel == LogLevel.Error)
             {
-                Console.WriteLine("ERROR:   " + message);
+                print += "Error:   ";
             }else if (logLevel == LogLevel.Warning)
             {
-                Console.WriteLine("Warning: " + message);
-            }else if (logLevel == LogLevel.Info)
-            {
-                Console.WriteLine("Info:    " + message);
+                print += "Warning: ";
             }
+            else if (logLevel == LogLevel.Info)
+            {
+                print += "Info:    ";
+            }
+
+            print += message;
+
+            Console.WriteLine(print);
         }
 
         protected override void Terminate()
         {
             Console.ReadKey();
             Environment.Exit(-1);
+        }
+
+
+        private string GetTimestamp()
+        {
+            return DateTime.Now.ToString("[HH:mm:ss]");
         }
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shader;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using GuiLib.Util;
-using GuiLib.GUI.GuiElements;
+using GUILib.Util;
+using GUILib.GUI.GuiElements;
+using GUILib.Logger;
 
-namespace GuiLib.GUI.Render
+namespace GUILib.GUI.Render
 {
     class GuiRenderer
     {
@@ -33,6 +34,7 @@ namespace GuiLib.GUI.Render
                 0, 1
             };
 
+            ALogger.defaultLogger.Log("Loading quad vertices.", LogLevel.Info);
             vaoID = OpenGLLoader.LoadObject(vertices, textureCoords);
 
             shader = new GuiShader(vaoID);

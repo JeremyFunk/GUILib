@@ -8,15 +8,28 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
+using GUILib.GUI.Render.Fonts.Data;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Quad : GuiElement
+    class Text : GuiElement
     {
-        private Material material;
-        public Quad(float x, float y, float width, float height, Material material, bool visible = true) : base(width, height, x, y, visible)
+        public string text;
+        public Font font;
+        private Vector4 color;
+        public float fontSize;
+        public TextData data;
+
+        public Text(float x, float y, string text, float fontSize, Font font = null, bool visible = true) : base(0, 0, x, y, visible)
         {
-            this.material = material;
+            if (font == null)
+                font = Font.defaultFont;
+
+            this.text = text;
+            this.font = font;
+            this.fontSize = fontSize;
+            this.color = new Vector4(1);
+            font.Reconstruct(text, this);
         }
 
         public override void MouseEventElement(MouseEvent events)
@@ -32,10 +45,8 @@ namespace GUILib.GUI.GuiElements
         {
             shader.ResetVAO();
 
-            material.PrepareRender(shader, curOpacity);
-            shader.SetTransform(trans, scale);
-
-            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+            shader.SetTransform(trans, new Vector2(fontSize));
+            font.Render(text, shader, color, this);
         }
 
         public override void UpdateElement(float delta)

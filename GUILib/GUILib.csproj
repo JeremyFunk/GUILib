@@ -63,12 +63,14 @@
     <Compile Include="GUI\Constraints\CenterConstraint.cs" />
     <Compile Include="GUI\Constraints\Constraint.cs" />
     <Compile Include="GUI\Constraints\FixConstraint.cs" />
+    <Compile Include="GUI\Constraints\MarginConstraint.cs" />
     <Compile Include="GUI\Constraints\MaxConstraint.cs" />
     <Compile Include="GUI\Constraints\MinConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelSizeConstraint.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
     <Compile Include="GUI\GuiElements\Quad.cs" />
+    <Compile Include="GUI\GuiElements\Text.cs" />
     <Compile Include="GUI\GuiScene.cs" />
     <Compile Include="GUI\Material.cs" />
     <Compile Include="GUI\Render\Fonts\Data\Character.cs" />
@@ -95,8 +97,14 @@
     <None Include="App.config" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
+    <None Include="Resource\Fonts\Candara.fnt" />
+    <None Include="Resource\Fonts\TimesNewRoman.fnt" />
     <None Include="Resource\Shaders\gui.fs" />
     <None Include="Resource\Shaders\gui.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resource\Textures\Fonts\Candara.png" />
+    <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.Util;
+using GUILib.Logger;
+using GUILib.Util;
 
-namespace GuiLib.GUI.Render.Fonts.Data
+namespace GUILib.GUI.Render.Fonts.Data
 {
     class FontFileParser
     {
         public static Font LoadFont(string fontName)
         {
+            ALogger.defaultLogger.Log("Loading font: " + fontName, LogLevel.Info);
+
             string[] fileContent = Loader.ReadFileLines(@"Fonts\" + fontName + ".fnt");
 
             Dictionary<int, Character> characters = new Dictionary<int, Character>();
@@ -35,7 +38,7 @@ namespace GuiLib.GUI.Render.Fonts.Data
                 }
             }
 
-            return new Font(characters, new Texture(fontName + ".png"));
+            return new Font(characters, new Texture(@"Fonts\" + fontName + ".png"));
         }
     }
 }

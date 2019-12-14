@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GuiLib.GUI
+namespace GUILib.GUI
 {
     class DarkTheme : Theme
     {

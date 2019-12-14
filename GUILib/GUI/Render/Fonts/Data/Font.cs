@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.GUI.Render.Shader;
+using GUILib.GUI.GuiElements;
+using GUILib.GUI.Render.Shader;
+
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace GuiLib.GUI.Render.Fonts.Data
+namespace GUILib.GUI.Render.Fonts.Data
 {
     class Font
     {
+        public static readonly Font defaultFont = FontFileParser.LoadFont("Candara");
+
         Dictionary<int, Character> characters = new Dictionary<int, Character>();
         Texture texture;
 
@@ -27,7 +31,7 @@ namespace GuiLib.GUI.Render.Fonts.Data
             return null;
         }
 
-        /*public void Render(string text, GuiShader shader, Vector4 color, Text textElement)
+        public void Render(string text, GuiShader shader, Vector4 color, Text textElement)
         {
             shader.SetRenderMode(RenderMode.DistanceFieldFonts);
             shader.SetColor(color);
@@ -44,8 +48,8 @@ namespace GuiLib.GUI.Render.Fonts.Data
             float height;
             TextData data = FontMeshCreator.CreateMesh(this, text, out width, out height);
 
-            textElement.width = (int)Math.Round(width * textElement.fontSize);
-            textElement.height = (int)Math.Round(height * textElement.fontSize);
+            textElement.SetWidth((float)Math.Round(width * textElement.fontSize));
+            textElement.SetHeight((float)Math.Round(height * textElement.fontSize));
 
             return data;
         }
@@ -57,6 +61,6 @@ namespace GuiLib.GUI.Render.Fonts.Data
 
             TextData data = CreateText(text, textElement);
             textElement.data = data;
-        }*/
+        }
     }
 }

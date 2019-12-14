@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OpenTK;
-using GuiLib.GUI.GuiElements;
-using GuiLib.Util;
-using GuiLib.Events;
+using GUILib.GUI.GuiElements;
+using GUILib.Util;
+using GUILib.Events;
 
-namespace GuiLib.GUI
+namespace GUILib.GUI
 {
     class GuiScene
     {

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
-using GuiLib.Util;
+using GUILib.Util;
 using OpenTK;
 
-namespace GuiLib.GUI.Render.Shader
+namespace GUILib.GUI.Render.Shader
 {
     class GuiShader : ShaderProgram
     {

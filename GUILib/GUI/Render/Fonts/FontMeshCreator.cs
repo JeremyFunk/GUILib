@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.GUI.Render.Fonts.Data;
-using GuiLib.Util;
+using GUILib.GUI.Render.Fonts.Data;
+using GUILib.Util;
 
-namespace GuiLib.GUI.Render.Fonts
+namespace GUILib.GUI.Render.Fonts
 {
     class FontMeshCreator
     {
@@ -76,10 +76,10 @@ namespace GuiLib.GUI.Render.Fonts
             for (int i = 0; i < vertices.Count; i += 3)
             {
                 vertices[i + 1] += 70f;
-                if (vertices[i + 1] > height)
-                    height = vertices[i + 1];
+                if (vertices[i + 1] / 2 > height)
+                    height = vertices[i + 1] / 2;
             };
-            width = vertices[vertices.Count - 6];
+            width = vertices[vertices.Count - 6] / 2;
 
             int vaoID = OpenGLLoader.LoadObject(vertices.ToArray(), texCoords.ToArray());
 

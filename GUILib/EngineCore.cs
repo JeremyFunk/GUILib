@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GuiLib.Util;
-using GuiLib.GUI.Render;
-using GuiLib.GUI.GuiElements;
-using GuiLib.GUI;
-using GuiLib.GUI.Constraints;
-using GuiLib.GUI.Animations;
-using GuiLib.Events;
+using GUILib.Util;
+using GUILib.GUI.Render;
+using GUILib.GUI.GuiElements;
+using GUILib.GUI;
+using GUILib.GUI.Constraints;
+using GUILib.GUI.Animations;
+using GUILib.Events;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using GUILib.GUI.Animations.Transitions;
 
-namespace GuiLib
+namespace GUILib
 {
     class EngineCore : GameWindow
     {
@@ -43,7 +43,6 @@ namespace GuiLib
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Enable(EnableCap.Blend);
         }
-
         private void LoadGameMenuExample()
         {
             GuiElement quad = new Quad(50, 1080 / 2 + 200, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
@@ -52,6 +51,10 @@ namespace GuiLib
             GuiElement quad4 = new Quad(50, 1080 / 2 + -10, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
             GuiElement quad5 = new Quad(50, 1080 / 2 + -80, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
 
+            Text text = new Text(0.5f, 0.5f, "Hello World", 2f);
+
+            text.xConstraints.Add(new CenterConstraint());
+            text.yConstraints.Add(new MarginConstraint(0));
 
             quad.opacity = 0.4f;
             quad2.opacity = 0.4f;
@@ -65,6 +68,8 @@ namespace GuiLib
             scene.parents.Add(quad4);
             scene.parents.Add(quad5);
 
+            scene.parents.Add(text);
+
             AnimationKeyframe k1 = new AnimationKeyframe(0);
             AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
 
@@ -74,16 +79,31 @@ namespace GuiLib
             k2.height = 5;
             k2.opacity = 0.5f;
 
+            AnimationKeyframe c1 = new AnimationKeyframe(0);
+            AnimationKeyframe c2 = new AnimationKeyframe(0.07f);
+;
+            c2.width = 8;
+            c2.height = 4;
+            c2.x = -4;
+            c2.y = -2;
+
             List<AnimationKeyframe> keyframes = new List<AnimationKeyframe>();
             keyframes.Add(k1);
             keyframes.Add(k2);
 
-            AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes);
+            List<AnimationKeyframe> cKeyframes = new List<AnimationKeyframe>();
+            cKeyframes.Add(c1);
+            cKeyframes.Add(c2);
+
+            AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes, "Fade");
             animationStruct.transition = new CatmullRomSplineTransition(-15, 1);
 
+            AnimationClass cAnimationStruct = new AnimationClass(AnimationType.SwingBack, cKeyframes, "Click");
+            cAnimationStruct.transition = new SmoothstepTransition(1);
 
             Animation a = new Animation();
-            a.AddAnimation(animationStruct, "Fade");
+            a.AddAnimation(animationStruct);
+            a.AddAnimation(cAnimationStruct);
 
             quad.animation = a;
             quad2.animation = a;
@@ -105,8 +125,13 @@ namespace GuiLib
             quad3.endHoverEvent = EndHover;
             quad4.endHoverEvent = EndHover;
             quad5.endHoverEvent = EndHover;
-        }
 
+            quad.mouseButtonReleasedEvent = ClickReleased;
+            quad2.mouseButtonReleasedEvent = ClickReleased;
+            quad3.mouseButtonReleasedEvent = ClickReleased;
+            quad4.mouseButtonReleasedEvent = ClickReleased;
+            quad5.mouseButtonReleasedEvent = ClickReleased;
+        }
 
         protected override void OnResize(EventArgs e)
         {
@@ -118,6 +143,10 @@ namespace GuiLib
             base.OnResize(e);
         }
 
+        private void ClickReleased(MouseEvent e, GuiElement el)
+        {
+            el.StartAnimation("Click");
+        }
 
         private void StartHover(MouseEvent e, GuiElement el)
         {
@@ -129,7 +158,7 @@ namespace GuiLib
         }
         private void EndHover(MouseEvent e, GuiElement el)
         {
-            el.animation.SwingAnimation(el);
+            el.animation.SwingAnimation(el, "Fade");
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
