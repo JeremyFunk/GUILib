@@ -194,6 +194,17 @@ namespace GuiLib.GUI.Animations
             }
         }
 
+        internal bool IsAnimationRunning(GuiElement element)
+        {
+            if (animationStates.ContainsKey(element))
+            {
+                if (animationStates[element].state != AnimationStateEnum.Pause)
+                    return true;
+            }
+
+            return false;
+        }
+
         public void RunAnimation(GuiElement element, string animationName)
         {
             AnimationClass animation = animations[animationName];

@@ -66,7 +66,7 @@ namespace GuiLib.GUI.GuiElements
             if (e.hit)
             {
                 hoverResult = true;
-                if (e.type == MouseEventType.Hover)
+                if (e.type == MouseEventType.Hover || true) //Not sure if this makes sense yet
                 {
                     if (!hovered)
                     {
@@ -192,6 +192,10 @@ namespace GuiLib.GUI.GuiElements
             this.animation.RunAnimation(this, animation);
         }
 
+        public bool IsAnimationRunning()
+        {
+            return animation.IsAnimationRunning(this);
+        }
 
 
 

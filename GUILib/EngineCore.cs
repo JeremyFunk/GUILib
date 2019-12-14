@@ -69,7 +69,6 @@ namespace GuiLib
             AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
 
             k1.x = 0;
-
             k2.x = 30;
             k2.width = 10;
             k2.height = 5;
@@ -80,8 +79,7 @@ namespace GuiLib
             keyframes.Add(k2);
 
             AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes);
-            animationStruct.transition = new SmootherstepTransition();
-
+            animationStruct.transition = new CatmullRomSplineTransition(-15, 1);
 
 
             Animation a = new Animation();

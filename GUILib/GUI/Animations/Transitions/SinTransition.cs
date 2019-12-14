@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Animations.Transitions
 {
-    class SmootherstepTransition : Transition
+    class SinTransition : Transition
     {
-        public override float GetCalculatedResult(float t)
+        public override float GetCalculatedResult(float factor)
         {
-            return t * t * t * (t * (t * 6 - 15) + 10);
+            return (float)(Math.Sin(factor * Math.PI / 2));
         }
     }
 }

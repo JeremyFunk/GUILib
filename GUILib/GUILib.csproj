@@ -51,8 +51,12 @@
     <Compile Include="Events\KeyEvent.cs" />
     <Compile Include="Events\MouseEvent.cs" />
     <Compile Include="GUI\Animations\Animation.cs" />
+    <Compile Include="GUI\Animations\Transitions\CatmullRomSplineTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\InvertPowersTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\InvSinTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\PowersTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\LinearTransition.cs" />
-    <Compile Include="GUI\Animations\Transitions\SmootherstepTransition.cs" />
+    <Compile Include="GUI\Animations\Transitions\SinTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
     <Compile Include="GUI\Constraints\APixelConstraint.cs" />
@@ -67,6 +71,11 @@
     <Compile Include="GUI\GuiElements\Quad.cs" />
     <Compile Include="GUI\GuiScene.cs" />
     <Compile Include="GUI\Material.cs" />
+    <Compile Include="GUI\Render\Fonts\Data\Character.cs" />
+    <Compile Include="GUI\Render\Fonts\Data\Font.cs" />
+    <Compile Include="GUI\Render\Fonts\Data\FontFileParser.cs" />
+    <Compile Include="GUI\Render\Fonts\Data\TextData.cs" />
+    <Compile Include="GUI\Render\Fonts\FontMeshCreator.cs" />
     <Compile Include="GUI\Render\GuiRenderer.cs" />
     <Compile Include="GUI\Render\Shader\GuiShader.cs" />
     <Compile Include="GUI\Render\Shader\ShaderProgram.cs" />
