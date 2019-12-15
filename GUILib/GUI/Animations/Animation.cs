@@ -256,7 +256,8 @@ namespace GUILib.GUI.Animations
                 if (animationStates.ContainsKey(element))
                 {
                     foreach(AnimationState state in animationStates[element])
-                        return true;
+                        if(state.state != AnimationStateEnum.Pause)
+                            return true;
                 }    
             }
             return false;

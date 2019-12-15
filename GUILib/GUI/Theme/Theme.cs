@@ -21,6 +21,15 @@ namespace GUILib.GUI
         public abstract Material GetPanelFillMaterial();
         public abstract Material GetPanelSeperatorMaterial();
 
-        public abstract Material GetBRightHighlightMaterial();
+        public abstract Material GetBrightHighlightMaterial();
+
+        public abstract Material GetWindowBackgroundMaterial();
+        public abstract Material GetWindowEdgeMaterial();
+        public abstract Material GetWindowTopBarMaterial();
+        public abstract int GetWindowEdgeSize();
+        public abstract int GetWindowTopBarSize();
+
+
+        public abstract int GetButtonEdgeSize();
     }
 }

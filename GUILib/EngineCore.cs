@@ -45,30 +45,48 @@ namespace GUILib
         }
         private void LoadGameMenuExample()
         {
-            GuiElement quad = new Quad(50, 1080 / 2 + 200, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
-            GuiElement quad2 = new Quad(50, 1080 / 2 + 130, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
-            GuiElement quad3 = new Quad(50, 1080 / 2 + 60, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
-            GuiElement quad4 = new Quad(50, 1080 / 2 + -10, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
-            GuiElement quad5 = new Quad(50, 1080 / 2 + -80, 200, 60, new Material(new Vector4(1, 1, 1, 1)));
+            VerticalList vList = new VerticalList(50, 0.5f, 100, 320, 5, 1);
+            vList.yConstraints.Add(new CenterConstraint());
 
-            Text text = new Text(0.5f, 0.5f, "Hello World", 2f);
+            GuiElement quad = new BordererdButton(0, 0, 250, 60, "New Game");
+            GuiElement quad2 = new BordererdButton(0, 0, 250, 60, "Load Game");
+            GuiElement quad3 = new BordererdButton(0, 0, 250, 60, "Options");
+            GuiElement quad4 = new BordererdButton(0, 0, 250, 60, "Credits");
+            GuiElement quad5 = new BordererdButton(0, 0, 250, 60, "Quit Game");
+
+            GuiElement background = new Quad(new Material(new Texture("Background.jpg")));
+            background.zIndex = -2;
+            background.generalConstraint = new FillConstraintGeneral();
+
+            Text text = new Text(0.5f, 0.5f, "Great Game", 2f);
+            Text text2 = new Text(0.5f, 5, "Copyright Stuff", 0.7f);
+
+            Window window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", -1);
+
+
 
             text.xConstraints.Add(new CenterConstraint());
-            text.yConstraints.Add(new MarginConstraint(0));
+            text.yConstraints.Add(new MarginConstraint(10));
 
-            quad.opacity = 0.4f;
-            quad2.opacity = 0.4f;
-            quad3.opacity = 0.4f;
-            quad4.opacity = 0.4f;
-            quad5.opacity = 0.4f;
+            text2.xConstraints.Add(new MarginConstraint(10));
 
-            scene.parents.Add(quad);
-            scene.parents.Add(quad2);
-            scene.parents.Add(quad3);
-            scene.parents.Add(quad4);
-            scene.parents.Add(quad5);
+            quad.opacity = 0.6f;
+            quad2.opacity = 0.6f;
+            quad3.opacity = 0.6f;
+            quad4.opacity = 0.6f;
+            quad5.opacity = 0.6f;
 
-            scene.parents.Add(text);
+            vList.AddElement(quad);
+            vList.AddElement(quad2);
+            vList.AddElement(quad3);
+            vList.AddElement(quad4);
+            vList.AddElement(quad5);
+
+            scene.AddParent(background);
+            scene.AddParent(text);
+            scene.AddParent(vList);
+            scene.AddParent(text2);
+            scene.AddParent(window);
 
             AnimationKeyframe k1 = new AnimationKeyframe(0);
             AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
@@ -77,7 +95,7 @@ namespace GUILib
             k2.x = 30;
             k2.width = 10;
             k2.height = 5;
-            k2.opacity = 0.5f;
+            k2.opacity = 0.3f;
 
             AnimationKeyframe c1 = new AnimationKeyframe(0);
             AnimationKeyframe c2 = new AnimationKeyframe(0.07f);
@@ -111,26 +129,23 @@ namespace GUILib
             quad4.animation = a;
             quad5.animation = a;
 
+            quad.SetStartHoverAnimation("Fade", AnimationRunType.Run);
+            quad2.SetStartHoverAnimation("Fade", AnimationRunType.Run);
+            quad3.SetStartHoverAnimation("Fade", AnimationRunType.Run);
+            quad4.SetStartHoverAnimation("Fade", AnimationRunType.Run);
+            quad5.SetStartHoverAnimation("Fade", AnimationRunType.Run);
 
-            quad.hoverEvent = Hover;
+            quad.SetEndHoverAnimation("Fade", AnimationRunType.Swing);
+            quad2.SetEndHoverAnimation("Fade", AnimationRunType.Swing);
+            quad3.SetEndHoverAnimation("Fade", AnimationRunType.Swing);
+            quad4.SetEndHoverAnimation("Fade", AnimationRunType.Swing);
+            quad5.SetEndHoverAnimation("Fade", AnimationRunType.Swing);
 
-            quad.startHoverEvent = StartHover;
-            quad2.startHoverEvent = StartHover;
-            quad3.startHoverEvent = StartHover;
-            quad4.startHoverEvent = StartHover;
-            quad5.startHoverEvent = StartHover;
-
-            quad.endHoverEvent = EndHover;
-            quad2.endHoverEvent = EndHover;
-            quad3.endHoverEvent = EndHover;
-            quad4.endHoverEvent = EndHover;
-            quad5.endHoverEvent = EndHover;
-
-            quad.mouseButtonReleasedEvent = ClickReleased;
-            quad2.mouseButtonReleasedEvent = ClickReleased;
-            quad3.mouseButtonReleasedEvent = ClickReleased;
-            quad4.mouseButtonReleasedEvent = ClickReleased;
-            quad5.mouseButtonReleasedEvent = ClickReleased;
+            quad.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
+            quad2.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
+            quad3.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
+            quad4.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
+            quad5.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
         }
 
         protected override void OnResize(EventArgs e)
@@ -143,35 +158,15 @@ namespace GUILib
             base.OnResize(e);
         }
 
-        private void ClickReleased(MouseEvent e, GuiElement el)
-        {
-            el.StartAnimation("Click");
-        }
-
-        private void StartHover(MouseEvent e, GuiElement el)
-        {
-            el.StartAnimation("Fade");
-        }
-        private void Hover(MouseEvent e, GuiElement el)
-        {
-            
-        }
-        private void EndHover(MouseEvent e, GuiElement el)
-        {
-            el.animation.SwingAnimation(el, "Fade");
-        }
-
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             scene.Update((float)e.Time);
             
             GameInput.Update();
         }
-
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
-
             guiRenderer.PrepareRender();
             guiRenderer.Render(scene);
 

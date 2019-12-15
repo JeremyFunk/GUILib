@@ -14,7 +14,7 @@ namespace GUILib.GUI.GuiElements
     class Quad : GuiElement
     {
         private Material material;
-        public Quad(float x, float y, float width, float height, Material material, bool visible = true) : base(width, height, x, y, visible)
+        public Quad(Material material, float x = 0, float y = 0, float width = 0, float height = 0, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             this.material = material;
         }
@@ -28,11 +28,11 @@ namespace GUILib.GUI.GuiElements
         {
         }
 
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale)
+        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
         {
             shader.ResetVAO();
 
-            material.PrepareRender(shader, curOpacity);
+            material.PrepareRender(shader, opacity);
             shader.SetTransform(trans, scale);
 
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
@@ -42,8 +42,9 @@ namespace GUILib.GUI.GuiElements
         {
         }
 
-        public void RunAnimation(string animationName)
+        internal void SetMaterial(Material material)
         {
+            this.material = material;
         }
     }
 }

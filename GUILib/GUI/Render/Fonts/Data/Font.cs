@@ -48,8 +48,8 @@ namespace GUILib.GUI.Render.Fonts.Data
             float height;
             TextData data = FontMeshCreator.CreateMesh(this, text, out width, out height);
 
-            textElement.SetWidth((float)Math.Round(width * textElement.fontSize));
-            textElement.SetHeight((float)Math.Round(height * textElement.fontSize));
+            textElement.SetWidth((int)Math.Round(width * textElement.fontSize));
+            textElement.SetHeight((int)Math.Round(height * textElement.fontSize));
 
             return data;
         }

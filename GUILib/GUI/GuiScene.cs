@@ -13,7 +13,18 @@ namespace GUILib.GUI
 {
     class GuiScene
     {
-        public List<GuiElement> parents;
+        private List<GuiElement> parents;
+
+        public List<GuiElement> GetParents()
+        {
+            return parents;
+        }
+
+        public void AddParent(GuiElement element)
+        {
+            parents.Add(element);
+            parents = Utility.GetZIndexSorted(parents);
+        }
 
         public GuiScene()
         {
@@ -40,7 +51,7 @@ namespace GUILib.GUI
                 parent.KeyEvent(e);
 
                 Vector2 mousePos = new Vector2(GameInput.mouseX, GameSettings.Height - GameInput.mouseY);
-                Vector2 localPos = new Vector2(GameInput.mouseX - parent.x.GetPixelValue(GameSettings.Width), GameSettings.Height - GameInput.mouseY - parent.y.GetPixelValue(GameSettings.Height));
+                Vector2 localPos = new Vector2(GameInput.mouseX - parent.curX, GameSettings.Height - GameInput.mouseY - parent.curY);
 
                 if (MathsGeometry.IsInsideQuad(mousePos, parent))
                 {

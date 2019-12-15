@@ -12,14 +12,22 @@ using GUILib.GUI.Animations;
 
 namespace GUILib.GUI.GuiElements
 {
+    public enum AnimationRunType
+    {
+        Run, Swing
+    }
+
     abstract class GuiElement
     {
         public Animation animation;
+
+        private List<GuiElement> childElements = new List<GuiElement>();
 
         public List<Constraint> xConstraints = new List<Constraint>();
         public List<Constraint> yConstraints = new List<Constraint>();
         public List<Constraint> widthConstraints = new List<Constraint>();
         public List<Constraint> heightConstraints = new List<Constraint>();
+        public GeneralConstraint generalConstraint = null;
 
         public APixelConstraint width, height, x, y;
         public int curX, curY, curWidth, curHeight;
@@ -42,22 +50,48 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> hoverEvent;
         public Action<MouseEvent, GuiElement> endHoverEvent;
 
-        public GuiElement(float width, float height, float x, float y, bool visible)
+        private string startHoverAnimationName;
+        private string endHoverAnimationName;
+        private string leftMouseButtonReleasedAnimationName;
+        private string leftMouseButtonDownAnimationName;
+
+        private AnimationRunType startHoverAnimationType;
+        private AnimationRunType endHoverAnimationType;
+        private AnimationRunType leftMouseButtonReleasedAnimationType;
+        private AnimationRunType leftMouseButtonDownAnimationType;
+
+        //The bigger the zIndex, the later gets this element rendered.
+        public float zIndex;
+
+        public GuiElement(float width, float height, float x, float y, bool visible, float zIndex)
         {
             this.width = GetPixelConstraintForThisElement(width);
+            curWidth = (int)width;
             this.height = GetPixelConstraintForThisElement(height);
+            curHeight = (int)height;
             this.visible = visible;
             this.x = GetPixelConstraintForThisElement(x);
+            curX = (int)x;
             this.y = GetPixelConstraintForThisElement(y);
+            curY = (int)y;
             opacity = 1;
             curOpacity = opacity;
+            this.zIndex = zIndex;
         }
-        public void Render(GuiShader shader, Vector2 offset)
+        public void Render(GuiShader shader, Vector2 offset, float opacity)
         {
-            RenderElement(shader, new Vector2(offset.X + curX + animationOffsetX, offset.Y + curY + animationOffsetY), new Vector2(curWidth + animationOffsetWidth, curHeight + animationOffsetHeight));
+            Vector2 actualOffset = GetScreenOffset();
+            actualOffset = new Vector2(actualOffset.X + offset.X, actualOffset.Y + offset.Y);
+
+            RenderElement(shader, actualOffset, GetScreenScale(), opacity * curOpacity);
+
+            foreach(GuiElement element in childElements)
+            {
+                element.Render(shader, actualOffset, opacity * curOpacity);
+            }
         }
 
-        protected abstract void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale);
+        protected abstract void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale, float opacity);
 
         public abstract void UpdateElement(float delta);
 
@@ -70,6 +104,13 @@ namespace GUILib.GUI.GuiElements
                 hoverResult = true;
                 if (!hovered)
                 {
+                    if (startHoverAnimationName != null)
+                    {
+                        if (startHoverAnimationType == AnimationRunType.Run)
+                            animation.RunAnimation(this, startHoverAnimationName);
+                        else if (startHoverAnimationType == AnimationRunType.Swing)
+                            animation.SwingAnimation(this, startHoverAnimationName);
+                    }
                     startHoverEvent?.Invoke(e, this);
                 }
                 else
@@ -79,12 +120,26 @@ namespace GUILib.GUI.GuiElements
 
                 if (e.mouseButtonType == MouseButtonType.Down)
                 {
+                    if (leftMouseButtonDownAnimationName != null && e.leftButtonDown) 
+                    { 
+                        if(leftMouseButtonDownAnimationType == AnimationRunType.Run)
+                            animation.RunAnimation(this, leftMouseButtonDownAnimationName);
+                        else if (leftMouseButtonDownAnimationType == AnimationRunType.Swing)
+                            animation.SwingAnimation(this, leftMouseButtonDownAnimationName);
+                    }
                     mouseButtonDownEvent?.Invoke(e, this);
                 } else if (e.mouseButtonType == MouseButtonType.Pressed)
                 {
                     mouseButtonPressedEvent?.Invoke(e, this);
                 } else if (e.mouseButtonType == MouseButtonType.Released)
                 {
+                    if (leftMouseButtonReleasedAnimationName != null && e.leftButtonDown)
+                    {
+                        if (leftMouseButtonReleasedAnimationType == AnimationRunType.Run)
+                            animation.RunAnimation(this, leftMouseButtonReleasedAnimationName);
+                        else if (leftMouseButtonReleasedAnimationType == AnimationRunType.Swing)
+                            animation.SwingAnimation(this, leftMouseButtonReleasedAnimationName);
+                    }
                     mouseButtonReleasedEvent?.Invoke(e, this);
                 }
             }
@@ -96,14 +151,36 @@ namespace GUILib.GUI.GuiElements
                 }
             }
 
-                if (hovered && !hoverResult)
+            if (hovered && !hoverResult)
             {
+                if (endHoverAnimationName != null)
+                {
+                    if (endHoverAnimationType == AnimationRunType.Run)
+                        animation.RunAnimation(this, endHoverAnimationName);
+                    else if (endHoverAnimationType == AnimationRunType.Swing)
+                        animation.SwingAnimation(this, endHoverAnimationName);
+                }
                 endHoverEvent?.Invoke(e, this);
             }
 
             hovered = hoverResult;
 
             MouseEventElement(e);
+
+            foreach(GuiElement element in childElements)
+            {
+                if(MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
+                {
+                    e.hit = true;
+                    //e.mousePositionLocal = 
+                }
+                else
+                {
+                    e.hit = false;
+                }
+
+                element.MouseEvent(e);
+            }
         }
 
         public virtual void MouseEventElement(MouseEvent events) 
@@ -114,17 +191,45 @@ namespace GUILib.GUI.GuiElements
 
         public void Update(int width, int height, float delta)
         {
-            curWidth = HandleConstraintsW(widthConstraints, this.width.GetPixelValue(width), width, height);
-            curHeight = HandleConstraintsH(heightConstraints, this.height.GetPixelValue(height), width, height);
+            if(HandleGeneralConstraints(width, height))
+            {
 
-            curX = HandleConstraintsX(xConstraints, x.GetPixelValue(width), width, height);
-            curY = HandleConstraintsY(yConstraints, y.GetPixelValue(height), width, height);
+            }
+            else
+            {
+                curWidth = HandleConstraintsW(widthConstraints, this.width.GetPixelValue(width), width, height);
+                curHeight = HandleConstraintsH(heightConstraints, this.height.GetPixelValue(height), width, height);
+
+                curX = HandleConstraintsX(xConstraints, x.GetPixelValue(width), width, height);
+                curY = HandleConstraintsY(yConstraints, y.GetPixelValue(height), width, height);
+            }
 
             curOpacity = animationOffsetOpacity + opacity;
 
             animation?.Update(delta, this);
 
             UpdateElement(delta);
+
+            Vector2 realSize = GetScreenScale();
+
+            foreach (GuiElement element in childElements)
+                element.Update((int)realSize.X, (int)realSize.Y, delta);
+        }
+
+        public bool HandleGeneralConstraints(int width, int height)
+        {
+            if (generalConstraint == null)
+                return false;
+            int oX, oY, oW, oH;
+
+            generalConstraint.ExecuteConstraint(this.x.GetPixelValue(width), this.y.GetPixelValue(height), this.width.GetPixelValue(width), this.height.GetPixelValue(height), width, height, out oX, out oY, out oW, out oH);
+
+            curX = oX;
+            curY = oY;
+            curWidth = oW;
+            curHeight = oH;
+
+            return true;
         }
 
         public int HandleConstraintsX(List<Constraint> constraints, int pixelValue, int width, int height)
@@ -138,6 +243,10 @@ namespace GUILib.GUI.GuiElements
                 if (cType == typeof(CenterConstraint))
                 {
                     pixelValue = ((CenterConstraint)c).ExecuteConstraint(curWidth, width);
+                }
+                else if (cType == typeof(MarginConstraint))
+                {
+                    pixelValue = ((MarginConstraint)c).ExecuteConstraint(width, curWidth);
                 }
             }
 
@@ -204,6 +313,15 @@ namespace GUILib.GUI.GuiElements
             {
                 pixelValue = ((FixConstraint)c).ExecuteConstraint(pixelValue);
             }
+            else if (cType == typeof(AddConstraint))
+            {
+                pixelValue = ((AddConstraint)c).ExecuteConstraint(pixelValue);
+            }
+            else if (cType == typeof(SubtractConstraint))
+            {
+                pixelValue = ((SubtractConstraint)c).ExecuteConstraint(pixelValue);
+            }
+
 
             return pixelValue;
         }
@@ -218,28 +336,74 @@ namespace GUILib.GUI.GuiElements
             return animation != null ? animation.IsAnimationRunning(this) : false;
         }
 
-        public void SetWidth(float width)
+        public void SetWidth(int width)
         {
-            this.width = GetPixelConstraintForThisElement(width);
+            this.width = new PixelConstraint(width);
+            curWidth = width;
+
         }
 
-        public void SetHeight(float height)
+        public void SetHeight(int height)
         {
-            this.height = GetPixelConstraintForThisElement(height);
+            this.height = new PixelConstraint(height);
+            curHeight = height;
         }
 
-        public void SetX(float x)
+        public void SetX(int x)
         {
-            this.x = GetPixelConstraintForThisElement(x);
+            this.x = new PixelConstraint(x);
+            curX = x;
         }
 
-        public void SetY(float y)
+        public void SetY(int y)
         {
-            this.y = GetPixelConstraintForThisElement(y);
+            this.y = new PixelConstraint(y);
+            curY = y;
+        }
+
+
+        //The real visible position
+        private Vector2 GetScreenOffset()
+        {
+            return new Vector2(curX + animationOffsetX, curY + animationOffsetY);
+        }
+        //The real visible scale
+        private Vector2 GetScreenScale()
+        {
+            return new Vector2(curWidth + animationOffsetWidth, curHeight + animationOffsetHeight);
         }
 
 
 
+        public void SetStartHoverAnimation(string animationName, AnimationRunType type)
+        {
+            startHoverAnimationType = type;
+            startHoverAnimationName = animationName;
+        }
+
+        public void SetEndHoverAnimation(string animationName, AnimationRunType type)
+        {
+            endHoverAnimationType = type;
+            endHoverAnimationName = animationName;
+        }
+
+        public void SetLeftMouseButtonReleasedAnimation(string animationName, AnimationRunType type)
+        {
+            leftMouseButtonReleasedAnimationType = type;
+            leftMouseButtonReleasedAnimationName = animationName;
+        }
+
+        public void SetLeftMouseButtonDownAnimation(string animationName, AnimationRunType type)
+        {
+            leftMouseButtonDownAnimationType = type;
+            leftMouseButtonDownAnimationName = animationName;
+        }
+
+        public void AddChild(GuiElement child) 
+        {
+            childElements.Add(child);
+            //childElements = Utility.GetZIndexSorted(childElements);
+        }
         private static APixelConstraint GetPixelConstraintForThisElement(float value)
         {
             if (value > 1)

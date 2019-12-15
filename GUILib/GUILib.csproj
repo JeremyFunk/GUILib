@@ -60,17 +60,28 @@
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
     <Compile Include="GUI\Constraints\APixelConstraint.cs" />
+    <Compile Include="GUI\GuiElements\Border.cs" />
     <Compile Include="GUI\Constraints\CenterConstraint.cs" />
+    <Compile Include="GUI\Constraints\AddConstraint.cs" />
+    <Compile Include="GUI\Constraints\SubtractConstraint.cs" />
+    <Compile Include="GUI\Constraints\MarginConstraintGeneral.cs" />
+    <Compile Include="GUI\Constraints\FillConstraintGeneral.cs" />
+    <Compile Include="GUI\Constraints\GeneralConstraint.cs" />
     <Compile Include="GUI\Constraints\Constraint.cs" />
+    <Compile Include="GUI\Constraints\FillConstraint.cs" />
     <Compile Include="GUI\Constraints\FixConstraint.cs" />
     <Compile Include="GUI\Constraints\MarginConstraint.cs" />
     <Compile Include="GUI\Constraints\MaxConstraint.cs" />
     <Compile Include="GUI\Constraints\MinConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelSizeConstraint.cs" />
+    <Compile Include="GUI\GuiElements\Button.cs" />
+    <Compile Include="GUI\GuiElements\BordererdButton.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
+    <Compile Include="GUI\GuiElements\VerticalList.cs" />
     <Compile Include="GUI\GuiElements\Quad.cs" />
     <Compile Include="GUI\GuiElements\Text.cs" />
+    <Compile Include="GUI\GuiElements\Window.cs" />
     <Compile Include="GUI\GuiScene.cs" />
     <Compile Include="GUI\Material.cs" />
     <Compile Include="GUI\Render\Fonts\Data\Character.cs" />
@@ -103,6 +114,10 @@
     <None Include="Resource\Shaders\gui.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resource\Icons\Close.png" />
+    <Content Include="Resource\Icons\CloseClick.png" />
+    <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\Background.jpg" />
     <Content Include="Resource\Textures\Fonts\Candara.png" />
     <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />
   </ItemGroup>

@@ -48,9 +48,9 @@ namespace GUILib.GUI.Render
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
 
-            foreach (GuiElement parent in scene.parents)
+            foreach (GuiElement parent in scene.GetParents())
             {
-                parent.Render(shader, new Vector2());
+                parent.Render(shader, new Vector2(), 1f);
             }
 
             GL.DisableVertexAttribArray(1);
