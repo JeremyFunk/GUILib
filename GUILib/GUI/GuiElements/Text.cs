@@ -20,7 +20,7 @@ namespace GUILib.GUI.GuiElements
         public float fontSize;
         public TextData data;
 
-        public Text(float x, float y, string text, float fontSize, Font font = null, float zIndex = 0, bool visible = true) : base(0, 0, x, y, visible, zIndex)
+        public Text(float x, float y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
         {
             if (font == null)
                 font = Font.defaultFont;
@@ -29,32 +29,19 @@ namespace GUILib.GUI.GuiElements
             this.font = font;
             this.fontSize = fontSize;
             this.color = new Vector4(1);
-            font.Reconstruct(text, this);
-        }
 
-        public override void MouseEventElement(MouseEvent events)
-        {
-
-        }
-
-        public override void KeyEvent(KeyEvent events)
-        {
+            if(maxSize != float.MaxValue)
+                font.Reconstruct(text, this, maxSize * 2, fontSize);
+            else
+                font.Reconstruct(text, this, maxSize, fontSize);
         }
 
         protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
         {
             shader.ResetVAO();
 
-            shader.SetTransform(trans, new Vector2(fontSize));
+            shader.SetTransform(trans, new Vector2(1f));
             font.Render(text, shader, color, this);
-        }
-
-        public override void UpdateElement(float delta)
-        {
-        }
-
-        public void RunAnimation(string animationName)
-        {
         }
     }
 }

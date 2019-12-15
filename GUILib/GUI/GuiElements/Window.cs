@@ -15,31 +15,35 @@ namespace GUILib.GUI.GuiElements
 {
     class Window : GuiElement
     {
-        Material close, closeHovered, closeClicked;
+        float mouseDragX, mouseDragY;
+        bool drag = false;
 
         public Window(float x, float y, float width, float height, string title = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             Quad background = new Quad(Theme.defaultTheme.GetWindowBackgroundMaterial());
             background.generalConstraint = new MarginConstraintGeneral(Theme.defaultTheme.GetWindowEdgeSize());
-
+            
             Quad topBar = new Quad(Theme.defaultTheme.GetWindowTopBarMaterial(), 0, 0, 1f, Theme.defaultTheme.GetWindowTopBarSize());
             topBar.yConstraints.Add(new MarginConstraint(0));
+            topBar.mouseButtonPressedEvent = TopBarDragEvent;
+            topBar.mouseButtonPressedMissedEvent = TopBarDragEvent;
+            topBar.mouseButtonDownEvent = TopBarDownEvent;
+            topBar.mouseButtonReleasedEvent = TopBarReleasedEvent;
 
             Border border = new Border(Theme.defaultTheme.GetWindowEdgeMaterial(), width, height, Theme.defaultTheme.GetWindowEdgeSize());
             border.generalConstraint = new FillConstraintGeneral();
 
-            close = new Material(new Texture("Icons/Close.png"));
-            closeHovered = new Material(new Texture("Icons/CloseHover.png"));
-            closeClicked = new Material(new Texture("Icons/CloseClick.png"));
+            Material close = new Material(new Texture("Icons/Close.png"));
+            Material closeHovered = new Material(new Texture("Icons/CloseHover.png"));
+            Material closeClicked = new Material(new Texture("Icons/CloseClick.png"));
 
             Button button = new Button(0, 0, 28, 28, close);
             button.xConstraints.Add(new MarginConstraint(9));
             button.yConstraints.Add(new MarginConstraint(5));
 
-            button.mouseButtonPressedEvent = ButtonPressed;
-            button.mouseButtonReleasedEvent = ButtonReleased;
-            button.startHoverEvent = ButtonHovered;
-            button.endHoverEvent = ButtonEndHovered;
+            button.defaultMaterial = close;
+            button.hoverMaterial = closeHovered;
+            button.clickMaterial = closeClicked;
 
             AddChild(background);
             AddChild(topBar);
@@ -58,31 +62,44 @@ namespace GUILib.GUI.GuiElements
             AddChild(border);
         }
 
-        private void ButtonHovered(MouseEvent e, GuiElement el)
-        {
-            ((Button)el).SetMaterial(closeHovered);
-        }
-        private void ButtonEndHovered(MouseEvent e, GuiElement el)
-        {
-            ((Button)el).SetMaterial(close);
-        }
-
-        private void ButtonPressed(MouseEvent e, GuiElement el)
+        private void TopBarDownEvent(MouseEvent e, GuiElement el)
         {
             if (e.leftButtonDown)
             {
-                ((Button)el).SetMaterial(closeClicked);
+                mouseDragX = e.mousePositionWorld.X;
+                mouseDragY = e.mousePositionWorld.Y;
+                drag = true;
             }
         }
 
-        private void ButtonReleased(MouseEvent e, GuiElement el)
+        private void TopBarReleasedEvent(MouseEvent e, GuiElement el)
         {
-            ((Button)el).SetMaterial(closeHovered);
+            if (drag)
+            {
+                SetX((int)(curX + (e.mousePositionWorld.X - mouseDragX)));
+                SetY((int)(curY + (e.mousePositionWorld.Y - mouseDragY)));
+                drag = false;
+            }
+        }
+
+        private void TopBarDragEvent(MouseEvent e, GuiElement el)
+        {
+            if (e.leftButtonDown)
+            {
+                if (drag)
+                {
+                    SetX((int)(curX + (e.mousePositionWorld.X - mouseDragX)));
+                    SetY((int)(curY + (e.mousePositionWorld.Y - mouseDragY)));
+
+                    mouseDragX = e.mousePositionWorld.X;
+                    mouseDragY = e.mousePositionWorld.Y;
+                }
+            }
         }
 
         public override void MouseEventElement(MouseEvent events)
         {
-
+            
         }
 
         public override void KeyEvent(KeyEvent events)
@@ -95,5 +112,10 @@ namespace GUILib.GUI.GuiElements
 
         public override void UpdateElement(float delta)
         { }
+
+        public int GetTopBarSize()
+        {
+            return Theme.defaultTheme.GetWindowTopBarSize();
+        }
     }
 }

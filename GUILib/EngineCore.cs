@@ -45,7 +45,7 @@ namespace GUILib
         }
         private void LoadGameMenuExample()
         {
-            VerticalList vList = new VerticalList(50, 0.5f, 100, 320, 5, 1);
+            VerticalList vList = new VerticalList(50, 0.5f, 100, 320, 5, 0);
             vList.yConstraints.Add(new CenterConstraint());
 
             GuiElement quad = new BordererdButton(0, 0, 250, 60, "New Game");
@@ -61,9 +61,26 @@ namespace GUILib
             Text text = new Text(0.5f, 0.5f, "Great Game", 2f);
             Text text2 = new Text(0.5f, 5, "Copyright Stuff", 0.7f);
 
-            Window window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", -1);
+            Window window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
+            window.heightConstraints.Add(new MinConstraint(540));
 
 
+            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
+            mapIcon.yConstraints.Add(new MarginConstraint(40));
+
+            TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
+            mapInfo.heightConstraints.Add(new SubtractConstraint(300));
+
+            TabPane tabPane = new TabPane(255, 10, 1f, 1f);
+            tabPane.yConstraints.Add(new MarginConstraint(40));
+            tabPane.widthConstraints.Add(new SubtractConstraint(260));
+            tabPane.heightConstraints.Add(new SubtractConstraint(window.GetTopBarSize() + 15));
+
+            tabPane.AddTab(new Tab(0, 0, 0, 0));
+
+            window.AddChild(mapIcon);
+            window.AddChild(mapInfo);
+            window.AddChild(tabPane);
 
             text.xConstraints.Add(new CenterConstraint());
             text.yConstraints.Add(new MarginConstraint(10));
@@ -82,9 +99,9 @@ namespace GUILib
             vList.AddElement(quad4);
             vList.AddElement(quad5);
 
+            scene.AddParent(vList);
             scene.AddParent(background);
             scene.AddParent(text);
-            scene.AddParent(vList);
             scene.AddParent(text2);
             scene.AddParent(window);
 

@@ -10,8 +10,10 @@ namespace GUILib.GUI.Render.Fonts
 {
     class FontMeshCreator
     {
-        public static TextData CreateMesh(Font font, string text, out float width, out float height)
+        public static TextData CreateMesh(Font font, string text, float maxSize, float fontSize, out float width, out float height)
         {
+            maxSize = maxSize * (1 / fontSize);
+
             if(text == "")
             {
                 width = 0;
@@ -29,27 +31,89 @@ namespace GUILib.GUI.Render.Fonts
 
             float cursorPos = 0;
             float smallestY = float.PositiveInfinity;
+            float yLineOffset = 0;
 
+            List<int> lineBreaks = new List<int>();
+            int charCounter = 0;
+
+            string[] words = text.Split(' ');
+
+            float spaceBarAdvance = font.GetCharacter(' ').xAdvance;
+
+            
+            foreach (string word in words)
+            {
+                float thisWordSize = 0;
+                int charCounterAtBeginningOfWord = charCounter;
+
+                foreach (char c in word)
+                {
+                    if(c == '\n')
+                    {
+                        lineBreaks.Add(charCounter);
+                        thisWordSize = 0;
+                        cursorPos = 0;
+                        continue;
+                    }
+
+                    Character character = font.GetCharacter(c);
+                    if(character != null)
+                    {
+                        thisWordSize += character.xAdvance * 0.8f;
+                        charCounter++;
+                    }
+                }
+
+                cursorPos += thisWordSize;
+
+                if (cursorPos > maxSize)
+                {
+                    lineBreaks.Add(charCounterAtBeginningOfWord);
+                    cursorPos = thisWordSize;
+                }
+
+
+                charCounter++;
+                cursorPos += spaceBarAdvance * 0.8f;
+            }
+
+            text = text.Replace("\n", "");
+
+            cursorPos = 0;
+            charCounter = 0;
             foreach (char c in text)
             {
                 Character character = font.GetCharacter(c);
 
+                while (lineBreaks.Contains(charCounter))
+                {
+                    lineBreaks.Remove(charCounter);
+                    yLineOffset += 77;
+                    cursorPos = 0;
+                }
+
+                /*if(cursorPos + character.width + character.xOffset > maxSize)
+                {
+                    yLineOffset += 77;
+                    cursorPos = 0;
+                }*/
+
                 if (character != null)
                 {
-                    vertices.Add(cursorPos + character.xOffset);
-                    vertices.Add(-character.yOffset);
+                    vertices.Add((cursorPos + character.xOffset) * fontSize);
+                    vertices.Add((-character.yOffset - yLineOffset) * fontSize);
                     vertices.Add(0);
 
-                    vertices.Add(cursorPos + character.width + character.xOffset);
-                    vertices.Add(-character.yOffset);
+                    vertices.Add((cursorPos + character.width + character.xOffset) * fontSize);
+                    vertices.Add((-character.yOffset - yLineOffset) * fontSize);
                     vertices.Add(0);
 
-                    vertices.Add(cursorPos + character.width + character.xOffset);
-                    vertices.Add(-(character.height + character.yOffset));
+                    vertices.Add((cursorPos + character.width + character.xOffset) * fontSize);
+                    vertices.Add((-(character.height + character.yOffset) - yLineOffset) * fontSize);
                     vertices.Add(0);
 
-                    vertices.Add(cursorPos + character.xOffsetScreen);
-                    vertices.Add(-(character.height + character.yOffset));
+                    vertices.Add((cursorPos + character.xOffsetScreen) * fontSize);
+                    vertices.Add((-(character.height + character.yOffset) - yLineOffset) * fontSize);
                     vertices.Add(0);
 
                     if (-(character.height + character.yOffset) < smallestY)
@@ -68,6 +132,8 @@ namespace GUILib.GUI.Render.Fonts
                     texCoords.Add(character.yHighScreen);
 
                     cursorPos += character.xAdvance * 0.8f;
+
+                    charCounter++;
                 }
             }
 
@@ -75,7 +141,7 @@ namespace GUILib.GUI.Render.Fonts
 
             for (int i = 0; i < vertices.Count; i += 3)
             {
-                vertices[i + 1] += 70f;
+                vertices[i + 1] += 70f * fontSize;
                 if (vertices[i + 1] / 2 > height)
                     height = vertices[i + 1] / 2;
             };

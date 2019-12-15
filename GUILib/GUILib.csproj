@@ -75,9 +75,13 @@
     <Compile Include="GUI\Constraints\MinConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelSizeConstraint.cs" />
+    <Compile Include="GUI\GuiElements\BorderedQuad.cs" />
+    <Compile Include="GUI\GuiElements\Tab.cs" />
+    <Compile Include="GUI\GuiElements\TabPane.cs" />
     <Compile Include="GUI\GuiElements\Button.cs" />
     <Compile Include="GUI\GuiElements\BordererdButton.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
+    <Compile Include="GUI\GuiElements\TextArea.cs" />
     <Compile Include="GUI\GuiElements\VerticalList.cs" />
     <Compile Include="GUI\GuiElements\Quad.cs" />
     <Compile Include="GUI\GuiElements\Text.cs" />
@@ -117,6 +121,7 @@
     <Content Include="Resource\Icons\Close.png" />
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\Map.png" />
     <Content Include="Resource\Textures\Background.jpg" />
     <Content Include="Resource\Textures\Fonts\Candara.png" />
     <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />

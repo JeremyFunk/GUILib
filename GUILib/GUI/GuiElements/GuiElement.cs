@@ -42,7 +42,8 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> mouseButtonDownEvent;
         public Action<MouseEvent, GuiElement> mouseButtonPressedEvent;
         public Action<MouseEvent, GuiElement> mouseButtonReleasedEvent;
-        public Action<MouseEvent, GuiElement> clickMissedEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonMissedEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonPressedMissedEvent;
 
         public bool hovered = false;
 
@@ -59,6 +60,13 @@ namespace GUILib.GUI.GuiElements
         private AnimationRunType endHoverAnimationType;
         private AnimationRunType leftMouseButtonReleasedAnimationType;
         private AnimationRunType leftMouseButtonDownAnimationType;
+
+        public Material defaultMaterial;
+        public Material hoverMaterial;
+        public Material clickMaterial;
+
+        protected Material curMaterial;
+
 
         //The bigger the zIndex, the later gets this element rendered.
         public float zIndex;
@@ -91,9 +99,9 @@ namespace GUILib.GUI.GuiElements
             }
         }
 
-        protected abstract void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale, float opacity);
+        protected virtual void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale, float opacity) { }
 
-        public abstract void UpdateElement(float delta);
+        public virtual void UpdateElement(float delta) { }
 
         public void MouseEvent(MouseEvent e)
         {
@@ -112,6 +120,8 @@ namespace GUILib.GUI.GuiElements
                             animation.SwingAnimation(this, startHoverAnimationName);
                     }
                     startHoverEvent?.Invoke(e, this);
+                    if (hoverMaterial != null)
+                        curMaterial = hoverMaterial;
                 }
                 else
                 {
@@ -131,6 +141,9 @@ namespace GUILib.GUI.GuiElements
                 } else if (e.mouseButtonType == MouseButtonType.Pressed)
                 {
                     mouseButtonPressedEvent?.Invoke(e, this);
+                    if (clickMaterial != null)
+                        curMaterial = clickMaterial;
+
                 } else if (e.mouseButtonType == MouseButtonType.Released)
                 {
                     if (leftMouseButtonReleasedAnimationName != null && e.leftButtonDown)
@@ -141,13 +154,19 @@ namespace GUILib.GUI.GuiElements
                             animation.SwingAnimation(this, leftMouseButtonReleasedAnimationName);
                     }
                     mouseButtonReleasedEvent?.Invoke(e, this);
+
+                    if (hoverMaterial != null)
+                        curMaterial = hoverMaterial;
                 }
             }
             else
             { 
                 if (e.mouseButtonType == MouseButtonType.Released)
                 {
-                    clickMissedEvent?.Invoke(e, this);
+                    mouseButtonMissedEvent?.Invoke(e, this);
+                }else if(e.mouseButtonType == MouseButtonType.Pressed)
+                {
+                    mouseButtonPressedMissedEvent?.Invoke(e, this);
                 }
             }
 
@@ -161,33 +180,47 @@ namespace GUILib.GUI.GuiElements
                         animation.SwingAnimation(this, endHoverAnimationName);
                 }
                 endHoverEvent?.Invoke(e, this);
+
+                if (defaultMaterial != null)
+                    curMaterial = defaultMaterial;
             }
 
             hovered = hoverResult;
 
             MouseEventElement(e);
 
-            foreach(GuiElement element in childElements)
+            if (!e.covered)
             {
-                if(MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
+                foreach (GuiElement element in childElements)
                 {
-                    e.hit = true;
-                    //e.mousePositionLocal = 
+                    if (MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
+                    {
+                        e.hit = true;
+                    }
+                    else
+                    {
+                        e.hit = false;
+                    }
+
+                    element.MouseEvent(e);
                 }
-                else
+            }
+            else
+            {
+                foreach (GuiElement element in childElements)
                 {
                     e.hit = false;
+                    element.MouseEvent(e);
                 }
-
-                element.MouseEvent(e);
             }
         }
 
-        public virtual void MouseEventElement(MouseEvent events) 
+        public virtual void MouseEventElement(MouseEvent e) 
         {
+
         }
 
-        public virtual void KeyEvent(KeyEvent events) { }
+        public virtual void KeyEvent(KeyEvent e) { }
 
         public void Update(int width, int height, float delta)
         {
@@ -399,7 +432,7 @@ namespace GUILib.GUI.GuiElements
             leftMouseButtonDownAnimationName = animationName;
         }
 
-        public void AddChild(GuiElement child) 
+        public virtual void AddChild(GuiElement child) 
         {
             childElements.Add(child);
             //childElements = Utility.GetZIndexSorted(childElements);

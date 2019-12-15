@@ -18,6 +18,8 @@ namespace GUILib.GUI.GuiElements
         private Text text;
         public Button(float x, float y, float width, float height, Material material, string text = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
+            curMaterial = material;
+
             quad = new Quad(material, 0, 0, width, height);
             quad.generalConstraint = new FillConstraintGeneral();
 
@@ -32,21 +34,9 @@ namespace GUILib.GUI.GuiElements
             }
         }
 
-        public override void MouseEventElement(MouseEvent events)
-        {}
-
-        public override void KeyEvent(KeyEvent events)
-        {}
-
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
-        {}
-
         public override void UpdateElement(float delta)
-        {}
-
-        internal void SetMaterial(Material material)
         {
-            quad.SetMaterial(material);
+            quad.SetMaterial(curMaterial);
         }
     }
 }

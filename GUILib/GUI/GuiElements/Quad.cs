@@ -19,15 +19,6 @@ namespace GUILib.GUI.GuiElements
             this.material = material;
         }
 
-        public override void MouseEventElement(MouseEvent events)
-        {
-
-        }
-
-        public override void KeyEvent(KeyEvent events)
-        {
-        }
-
         protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
         {
             shader.ResetVAO();
@@ -36,10 +27,6 @@ namespace GUILib.GUI.GuiElements
             shader.SetTransform(trans, scale);
 
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
-        }
-
-        public override void UpdateElement(float delta)
-        {
         }
 
         internal void SetMaterial(Material material)

@@ -42,24 +42,24 @@ namespace GUILib.GUI.Render.Fonts.Data
             GL.DrawArrays(PrimitiveType.Quads, 0, textElement.data.vertexCount);
         }
 
-        private TextData CreateText(string text, Text textElement)
+        private TextData CreateText(string text, Text textElement, float maxSize, float fontSize)
         {
             float width;
             float height;
-            TextData data = FontMeshCreator.CreateMesh(this, text, out width, out height);
+            TextData data = FontMeshCreator.CreateMesh(this, text, maxSize, fontSize, out width, out height);
 
-            textElement.SetWidth((int)Math.Round(width * textElement.fontSize));
-            textElement.SetHeight((int)Math.Round(height * textElement.fontSize));
+            textElement.SetWidth((int)Math.Round(width));
+            textElement.SetHeight((int)Math.Round(height));
 
             return data;
         }
 
-        internal void Reconstruct(string text, Text textElement)
+        internal void Reconstruct(string text, Text textElement, float maxSize, float fontSize)
         {
             if (textElement.data != null)
                 GL.DeleteVertexArray(textElement.data.vaoID);
 
-            TextData data = CreateText(text, textElement);
+            TextData data = CreateText(text, textElement, maxSize, fontSize);
             textElement.data = data;
         }
     }

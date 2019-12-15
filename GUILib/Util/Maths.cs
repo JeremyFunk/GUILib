@@ -29,7 +29,7 @@ namespace GUILib.Util
         public static bool IsInsideQuad(Vector2 p, GuiElement element)
         {
             if (!element.IsAnimationRunning()) { 
-                if (p.X < element.curX + element.animationOffsetX || p.X > element.curX + element.curWidth + element.animationOffsetWidth + element.animationOffsetX || p.Y < element.curY + element.animationOffsetY || p.Y > element.curY + element.curHeight + element.animationOffsetHeight + element.animationOffsetY)
+                if (p.X < element.curX + element.animationOffsetX || p.X > element.curX + element.curWidth + element.animationOffsetX || p.Y < element.curY + element.animationOffsetY || p.Y > element.curY + element.curHeight + element.animationOffsetY)
                     return false;
             }else
                 if (p.X < element.curX || p.X > element.curX + element.curWidth || p.Y < element.curY || p.Y > element.curY + element.curHeight)

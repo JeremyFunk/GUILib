@@ -31,17 +31,5 @@ namespace GUILib.GUI.GuiElements
             AddChild(top);
             AddChild(bot);
         }
-
-        public override void MouseEventElement(MouseEvent events)
-        {}
-
-        public override void KeyEvent(KeyEvent events)
-        {}
-
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
-        {}
-
-        public override void UpdateElement(float delta)
-        {}
     }
 }

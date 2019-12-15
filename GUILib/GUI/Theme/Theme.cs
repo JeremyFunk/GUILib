@@ -26,8 +26,13 @@ namespace GUILib.GUI
         public abstract Material GetWindowBackgroundMaterial();
         public abstract Material GetWindowEdgeMaterial();
         public abstract Material GetWindowTopBarMaterial();
+        public abstract Material GetTabFillMaterial();
+        public abstract Material GetTabEdgeMaterial();
         public abstract int GetWindowEdgeSize();
         public abstract int GetWindowTopBarSize();
+        public abstract int GetTabHeight();
+        public abstract int GetTabWidth();
+        public abstract int GetTabEdgeSize();
 
 
         public abstract int GetButtonEdgeSize();
