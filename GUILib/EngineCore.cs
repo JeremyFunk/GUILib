@@ -54,7 +54,7 @@ namespace GUILib
             GuiElement quad4 = new BordererdButton(0, 0, 250, 60, "Credits");
             GuiElement quad5 = new BordererdButton(0, 0, 250, 60, "Quit Game");
 
-            GuiElement background = new Quad(new Material(new Texture("Background.jpg")));
+            GuiElement background = new Quad(new Material(new Texture("Background.jpg")), 0, 0, 0, 0);
             background.zIndex = -2;
             background.generalConstraint = new FillConstraintGeneral();
 
@@ -63,7 +63,6 @@ namespace GUILib
 
             Window window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
             window.heightConstraints.Add(new MinConstraint(540));
-
 
             BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
             mapIcon.yConstraints.Add(new MarginConstraint(40));
@@ -76,7 +75,12 @@ namespace GUILib
             tabPane.widthConstraints.Add(new SubtractConstraint(260));
             tabPane.heightConstraints.Add(new SubtractConstraint(window.GetTopBarSize() + 15));
 
-            tabPane.AddTab(new Tab(0, 0, 0, 0));
+            TabData generalData = new TabData("General");
+            //generalData.fontColor = new Vector4(1f, 0.7f, 0.7f, 1f);
+
+            tabPane.AddTab(generalData);
+            tabPane.AddTab(new TabData("Map"));
+            tabPane.AddTab(new TabData("Advanced", 160));
 
             window.AddChild(mapIcon);
             window.AddChild(mapInfo);

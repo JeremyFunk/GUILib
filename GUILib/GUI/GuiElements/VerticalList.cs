@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
+using GUILib.GUI.Constraints;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -16,7 +17,7 @@ namespace GUILib.GUI.GuiElements
         private int padding;
         private Dictionary<int, GuiElement> elements = new Dictionary<int, GuiElement>();
 
-        public VerticalList(float x, float y, float width, float height, int padding, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public VerticalList(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, int padding, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             this.padding = padding;
         }

@@ -12,13 +12,28 @@ using GUILib.GUI.Constraints;
 
 namespace GUILib.GUI.GuiElements
 {
+    struct TabData
+    {
+        public APixelConstraint width;
+        public string name;
+        public Material fillMaterial, edgeMaterial;
+        public Vector4 fontColor;
+
+        public TabData(string name, APixelConstraint width = null, Material fillMaterial = null, Material edgeMaterial = null)
+        {
+            this.width = width;
+            this.name = name;
+            this.fillMaterial = fillMaterial;
+            this.edgeMaterial = edgeMaterial;
+            fontColor = new Vector4(1);
+        }
+    }
+
     class TabPane : GuiElement
     {
-        private Text text;
+        private Dictionary<Tab, string> tabs = new Dictionary<Tab, string>();
 
-        private List<Tab> tabs = new List<Tab>();
-
-        public TabPane(float x, float y, float width, float height, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
+        public TabPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
                fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
@@ -27,21 +42,33 @@ namespace GUILib.GUI.GuiElements
             if (edgeSize < 0)
                 edgeSize = Theme.defaultTheme.GetButtonEdgeSize();
 
-            BorderedQuad quad = new BorderedQuad(0, 0, width, curHeight - Theme.defaultTheme.GetTabHeight(), fillMaterial, edgeMaterial, edgeSize);
+
+            BorderedQuad quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
+            quad.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - Theme.defaultTheme.GetTabEdgeSize()));
 
             AddChild(quad);
 
         }
 
-        public void AddTab(Tab tab)
+        public void AddTab(TabData tab)
         {
-            //AddChild(tab);
-            tabs.Add(tab);
-
-            BorderedQuad tabQuad = new BorderedQuad(0, 0, Theme.defaultTheme.GetTabWidth(), Theme.defaultTheme.GetTabHeight(), Theme.defaultTheme.GetTabFillMaterial(), Theme.defaultTheme.GetTabEdgeMaterial(), Theme.defaultTheme.GetTabEdgeSize());
+            Tab tabQuad = new Tab(tabs.Count * (Theme.defaultTheme.GetTabWidth() - Theme.defaultTheme.GetTabEdgeSize()) + 10, 0, tab.width == null ? Theme.defaultTheme.GetTabWidth() : tab.width, Theme.defaultTheme.GetTabHeight(), tab.name, -1, tab.fillMaterial, tab.edgeMaterial);
             tabQuad.yConstraints.Add(new MarginConstraint(0));
+            tabQuad.SetTextColor(tab.fontColor);
 
+            tabQuad.mouseButtonReleasedEvent = OnTabClicked;
+
+            tabs.Add(tabQuad, tab.name);
             AddChild(tabQuad);
+        }
+
+        private void OnTabClicked(MouseEvent e, GuiElement el)
+        {
+            foreach(Tab tab in tabs.Keys)
+            {
+                if (tab == el)
+                    Console.WriteLine(tabs[tab]);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace GUILib.GUI.GuiElements
     class BordererdButton : GuiElement
     {
         private Text text;
-        public BordererdButton(float x, float y, float width, float height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
+        public BordererdButton(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
                fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();

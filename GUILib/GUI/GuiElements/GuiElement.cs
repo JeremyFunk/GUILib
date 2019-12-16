@@ -19,6 +19,9 @@ namespace GUILib.GUI.GuiElements
 
     abstract class GuiElement
     {
+        private GuiElement parent;
+
+
         public Animation animation;
 
         private List<GuiElement> childElements = new List<GuiElement>();
@@ -71,17 +74,17 @@ namespace GUILib.GUI.GuiElements
         //The bigger the zIndex, the later gets this element rendered.
         public float zIndex;
 
-        public GuiElement(float width, float height, float x, float y, bool visible, float zIndex)
+        public GuiElement(APixelConstraint width, APixelConstraint height, APixelConstraint x, APixelConstraint y, bool visible, float zIndex)
         {
-            this.width = GetPixelConstraintForThisElement(width);
-            curWidth = (int)width;
-            this.height = GetPixelConstraintForThisElement(height);
-            curHeight = (int)height;
+            this.width = width;
+            curWidth = GetCurWidth();
+            this.height = height;
+            curHeight = GetCurHeight();
             this.visible = visible;
-            this.x = GetPixelConstraintForThisElement(x);
-            curX = (int)x;
-            this.y = GetPixelConstraintForThisElement(y);
-            curY = (int)y;
+            this.x = x;
+            curX = GetCurX();
+            this.y = y;
+            curY = GetCurY();
             opacity = 1;
             curOpacity = opacity;
             this.zIndex = zIndex;
@@ -230,17 +233,17 @@ namespace GUILib.GUI.GuiElements
             }
             else
             {
-                curWidth = HandleConstraintsW(widthConstraints, this.width.GetPixelValue(width), width, height);
-                curHeight = HandleConstraintsH(heightConstraints, this.height.GetPixelValue(height), width, height);
+                curWidth = HandleConstraintsW(widthConstraints, GetCurWidth(), width, height);
+                curHeight = HandleConstraintsH(heightConstraints, GetCurHeight(), width, height);
 
-                curX = HandleConstraintsX(xConstraints, x.GetPixelValue(width), width, height);
-                curY = HandleConstraintsY(yConstraints, y.GetPixelValue(height), width, height);
+                curX = HandleConstraintsX(xConstraints, GetCurX(), width, height);
+                curY = HandleConstraintsY(yConstraints, GetCurY(), width, height);
             }
 
             curOpacity = animationOffsetOpacity + opacity;
 
             animation?.Update(delta, this);
-
+            
             UpdateElement(delta);
 
             Vector2 realSize = GetScreenScale();
@@ -435,8 +438,39 @@ namespace GUILib.GUI.GuiElements
         public virtual void AddChild(GuiElement child) 
         {
             childElements.Add(child);
-            //childElements = Utility.GetZIndexSorted(childElements);
+            child.parent = this;
         }
+
+
+        private int GetCurX()
+        {
+            if (parent == null)
+                return x.GetPixelValue(GameSettings.Width);
+            return x.GetPixelValue(parent.curX);
+        }
+
+        private int GetCurY()
+        {
+            if (parent == null)
+                return y.GetPixelValue(GameSettings.Height);
+            return y.GetPixelValue(parent.curY);
+        }
+
+        private int GetCurWidth()
+        {
+            if (parent == null)
+                return width.GetPixelValue(GameSettings.Width);
+            return width.GetPixelValue(parent.curWidth);
+        }
+
+        private int GetCurHeight()
+        {
+            if (parent == null)
+                return height.GetPixelValue(GameSettings.Height);
+            return height.GetPixelValue(parent.curHeight);
+        }
+
+
         private static APixelConstraint GetPixelConstraintForThisElement(float value)
         {
             if (value > 1)

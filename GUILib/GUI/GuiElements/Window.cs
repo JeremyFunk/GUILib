@@ -18,9 +18,9 @@ namespace GUILib.GUI.GuiElements
         float mouseDragX, mouseDragY;
         bool drag = false;
 
-        public Window(float x, float y, float width, float height, string title = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public Window(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string title = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-            Quad background = new Quad(Theme.defaultTheme.GetWindowBackgroundMaterial());
+            Quad background = new Quad(Theme.defaultTheme.GetWindowBackgroundMaterial(), 0, 0, 0, 0);
             background.generalConstraint = new MarginConstraintGeneral(Theme.defaultTheme.GetWindowEdgeSize());
             
             Quad topBar = new Quad(Theme.defaultTheme.GetWindowTopBarMaterial(), 0, 0, 1f, Theme.defaultTheme.GetWindowTopBarSize());

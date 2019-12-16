@@ -9,12 +9,12 @@ namespace GUILib.GUI
 {
     class DarkTheme : Theme
     {
-        private readonly int buttonEdgeSize = 3, windowEdgeSize = 3, windowTopBarSize = 35, tabHeight = 35, tabWidth = 60, tabEdgeSize = 3;
+        private readonly int buttonEdgeSize = 3, windowEdgeSize = 3, windowTopBarSize = 35, tabHeight = 35, tabWidth = 130, tabEdgeSize = 3;
 
         private readonly Material buttonFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f)), buttonEdgeMaterial = new Material(new Vector4(0.7f, 0.7f, 0.7f, 1f));
         private readonly Material windowBackgroundMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f)), windowEdgeMaterial = new Material(new Vector4(0.7f, 0.7f, 0.7f, 1f)),
             windowTopBarMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f));
-        private readonly Material tabFillMaterial = new Material(new Vector4(0.35f, 0.35f, 0.35f, 1f)), tabEdgeMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f));
+        private readonly Material tabFillMaterial = new Material(new Vector4(0.35f, 0.35f, 0.35f, 1f)), tabEdgeMaterial = new Material(new Vector4(0.75f, 0.75f, 0.75f, 1f));
 
         public override Material GetBrightHighlightMaterial()
         {

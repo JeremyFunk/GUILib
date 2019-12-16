@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Render.Fonts.Data;
+using GUILib.GUI.Constraints;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -20,7 +21,7 @@ namespace GUILib.GUI.GuiElements
         public float fontSize;
         public TextData data;
 
-        public Text(float x, float y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
+        public Text(APixelConstraint x, APixelConstraint y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
         {
             if (font == null)
                 font = Font.defaultFont;

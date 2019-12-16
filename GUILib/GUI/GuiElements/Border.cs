@@ -13,7 +13,7 @@ namespace GUILib.GUI.GuiElements
 {
     class Border : GuiElement
     {
-        public Border(Material material, float width, float height, int borderSize, float zIndex = 0, bool visible = true) : base(width, height, 0, 0, visible, zIndex)
+        public Border(Material material, APixelConstraint width, APixelConstraint height, int borderSize, float zIndex = 0, bool visible = true) : base(width, height, 0, 0, visible, zIndex)
         {
             Quad left = new Quad(material, 0, 0, borderSize, 1f);
             Quad right = new Quad(material, 0, 0, borderSize, 1f);

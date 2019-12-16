@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
+using GUILib.GUI.Constraints;
 
 namespace GUILib.GUI.GuiElements
 {
     class Quad : GuiElement
     {
         private Material material;
-        public Quad(Material material, float x = 0, float y = 0, float width = 0, float height = 0, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public Quad(Material material, APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             this.material = material;
         }

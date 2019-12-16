@@ -15,7 +15,7 @@ namespace GUILib.GUI.GuiElements
     class TextArea : GuiElement
     {
         private Text text;
-        public TextArea(float x, float y, float width, float height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
+        public TextArea(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
                 fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
@@ -33,7 +33,7 @@ namespace GUILib.GUI.GuiElements
 
             if (text != "")
             {
-                this.text = new Text(6, 0, text, fontSize, null, 0, width - 12);
+                this.text = new Text(6, 0, text, fontSize, null, 0, curWidth - 12);
                 this.text.yConstraints.Add(new MarginConstraint(3));
                 //this.text.xConstraints.Add(new CenterConstraint());
                 //this.text.yConstraints.Add(new CenterConstraint());

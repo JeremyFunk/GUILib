@@ -14,12 +14,12 @@ namespace GUILib.GUI.GuiElements
 {
     class BorderedQuad : GuiElement
     {
-        public BorderedQuad(float x, float y, float width, float height, Material fillMaterial, Material edgeMaterial, int edgeSize, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public BorderedQuad(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fillMaterial, Material edgeMaterial, int edgeSize, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             Border border = new Border(edgeMaterial, width, height, edgeSize);
             border.generalConstraint = new FillConstraintGeneral();
 
-            Quad fillQuad = new Quad(fillMaterial);
+            Quad fillQuad = new Quad(fillMaterial, 0, 0, 0, 0);
             fillQuad.generalConstraint = new MarginConstraintGeneral(edgeSize);
 
             AddChild(fillQuad);

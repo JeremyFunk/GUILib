@@ -14,29 +14,32 @@ namespace GUILib.GUI.GuiElements
 {
     class Tab : GuiElement
     {
-        private Text text;
-        public Tab(float x, float y, float width, float height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
+        Text textElement;
+
+        public Tab(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
-               fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
+                fillMaterial = Theme.defaultTheme.GetTabFillMaterial();
             if (edgeMaterial == null)
-                edgeMaterial = Theme.defaultTheme.GetButtonEdgeMaterial();
-            if (edgeSize < 0)
-                edgeSize = Theme.defaultTheme.GetButtonEdgeSize();
+                edgeMaterial = Theme.defaultTheme.GetTabEdgeMaterial();
             if (fontSize < 0)
-                fontSize = 1.2f;
+                fontSize = 0.8f;
 
-            BorderedQuad quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
-
-            AddChild(quad);
-
+            BorderedQuad tabQuad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, Theme.defaultTheme.GetTabEdgeSize());
+            AddChild(tabQuad);
             if (text != "")
             {
-                this.text = new Text(0, 0, text, fontSize);
-                this.text.xConstraints.Add(new CenterConstraint());
-                this.text.yConstraints.Add(new CenterConstraint());
-                AddChild(this.text);
+                textElement = new Text(0, 0, text, fontSize);
+                textElement.xConstraints.Add(new CenterConstraint());
+                textElement.yConstraints.Add(new CenterConstraint());
+                AddChild(textElement);
             }
+        }
+
+
+        public void SetTextColor(Vector4 color)
+        {
+            textElement.color = color;
         }
     }
 }

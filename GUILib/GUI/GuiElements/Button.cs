@@ -16,7 +16,7 @@ namespace GUILib.GUI.GuiElements
     {
         private Quad quad;
         private Text text;
-        public Button(float x, float y, float width, float height, Material material, string text = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public Button(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material material, string text = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             curMaterial = material;
 
