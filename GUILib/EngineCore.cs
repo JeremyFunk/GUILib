@@ -22,6 +22,7 @@ namespace GUILib
     {
         private GuiRenderer guiRenderer;
         private GuiScene scene;
+        private Window window;
 
         public EngineCore(int widthP, int heightP, string title) : base(widthP, heightP, new OpenTK.Graphics.GraphicsMode(new OpenTK.Graphics.ColorFormat(8, 8, 8, 8), 24, 8, 4))
         {
@@ -48,11 +49,12 @@ namespace GUILib
             VerticalList vList = new VerticalList(50, 0.5f, 100, 320, 5, 0);
             vList.yConstraints.Add(new CenterConstraint());
 
-            GuiElement quad = new BordererdButton(0, 0, 250, 60, "New Game");
-            GuiElement quad2 = new BordererdButton(0, 0, 250, 60, "Load Game");
-            GuiElement quad3 = new BordererdButton(0, 0, 250, 60, "Options");
-            GuiElement quad4 = new BordererdButton(0, 0, 250, 60, "Credits");
-            GuiElement quad5 = new BordererdButton(0, 0, 250, 60, "Quit Game");
+            GuiElement quad = new BorderedButton(0, 0, 250, 60, "New Game");
+            quad.mouseButtonReleasedEvent = NewGame;
+            GuiElement quad2 = new BorderedButton(0, 0, 250, 60, "Load Game");
+            GuiElement quad3 = new BorderedButton(0, 0, 250, 60, "Options");
+            GuiElement quad4 = new BorderedButton(0, 0, 250, 60, "Credits");
+            GuiElement quad5 = new BorderedButton(0, 0, 250, 60, "Quit Game");
 
             GuiElement background = new Quad(new Material(new Texture("Background.jpg")), 0, 0, 0, 0);
             background.zIndex = -2;
@@ -61,8 +63,18 @@ namespace GUILib
             Text text = new Text(0.5f, 0.5f, "Great Game", 2f);
             Text text2 = new Text(0.5f, 5, "Copyright Stuff", 0.7f);
 
-            Window window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
+            window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
             window.heightConstraints.Add(new MinConstraint(540));
+            window.visible = false;
+
+            BorderedButton confirmButton = new BorderedButton(0, 10, 140, 40, "Confirm", true, 0.9f);
+            confirmButton.xConstraints.Add(new MarginConstraint(10));
+
+            BorderedButton cancelButton = new BorderedButton(0, 10, 140, 40, "Cancel", true, 0.9f);
+            cancelButton.xConstraints.Add(new MarginConstraint(10 + 140 + 5));
+
+            window.AddChild(confirmButton);
+            window.AddChild(cancelButton);
 
             BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
             mapIcon.yConstraints.Add(new MarginConstraint(40));
@@ -70,10 +82,10 @@ namespace GUILib
             TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
             mapInfo.heightConstraints.Add(new SubtractConstraint(300));
 
-            TabPane tabPane = new TabPane(255, 10, 1f, 1f);
+            TabPane tabPane = new TabPane(255, 60, 1f, 1f);
             tabPane.yConstraints.Add(new MarginConstraint(40));
-            tabPane.widthConstraints.Add(new SubtractConstraint(260));
-            tabPane.heightConstraints.Add(new SubtractConstraint(window.GetTopBarSize() + 15));
+            tabPane.widthConstraints.Add(new SubtractConstraint(265));
+            tabPane.heightConstraints.Add(new SubtractConstraint(window.GetTopBarSize() + 5 + 57));
 
             TabData generalData = new TabData("General");
             //generalData.fontColor = new Vector4(1f, 0.7f, 0.7f, 1f);
@@ -81,6 +93,23 @@ namespace GUILib
             tabPane.AddTab(generalData);
             tabPane.AddTab(new TabData("Map"));
             tabPane.AddTab(new TabData("Advanced", 160));
+
+            Text textGeneral = new Text(0, 0, "Hello General", 1f);
+            textGeneral.xConstraints.Add(new CenterConstraint());
+            textGeneral.yConstraints.Add(new CenterConstraint());
+
+            Text textMap = new Text(0, 0, "Hello Map", 1f);
+            textMap.xConstraints.Add(new CenterConstraint());
+            textMap.yConstraints.Add(new CenterConstraint());
+
+            Text textAdvanced = new Text(0, 0, "Hello Advanced", 1f);
+            textAdvanced.xConstraints.Add(new CenterConstraint());
+            textAdvanced.yConstraints.Add(new CenterConstraint());
+
+
+            tabPane.AddElementToTab(textGeneral, generalData);
+            tabPane.AddElementToTab(textMap, "Map");
+            tabPane.AddElementToTab(textAdvanced, "Advanced");
 
             window.AddChild(mapIcon);
             window.AddChild(mapInfo);
@@ -167,6 +196,12 @@ namespace GUILib
             quad3.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
             quad4.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
             quad5.SetLeftMouseButtonDownAnimation("Click", AnimationRunType.Run);
+        }
+
+        private void NewGame(MouseEvent e, GuiElement el)
+        {
+            if (e.leftButtonDown)
+                window.visible = true;
         }
 
         protected override void OnResize(EventArgs e)

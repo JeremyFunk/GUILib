@@ -51,6 +51,9 @@ namespace GUILib.GUI
             {
                 GuiElement parent = parents[i];
 
+                if (!parent.visible)
+                    continue;
+
                 parent.KeyEvent(e);
 
                 Vector2 mousePos = new Vector2(GameInput.mouseX, GameSettings.Height - GameInput.mouseY);

@@ -98,7 +98,8 @@ namespace GUILib.GUI.GuiElements
 
             foreach(GuiElement element in childElements)
             {
-                element.Render(shader, actualOffset, opacity * curOpacity);
+                if(element.visible)
+                    element.Render(shader, actualOffset, opacity * curOpacity);
             }
         }
 
@@ -196,22 +197,34 @@ namespace GUILib.GUI.GuiElements
             {
                 foreach (GuiElement element in childElements)
                 {
+                    if (!element.visible)
+                        continue;
+                    MouseEvent newE = new MouseEvent(e);
+
+                    if(!element.IsAnimationRunning())
+                        newE.mousePositionLocal = new Vector2(e.mousePositionLocal.X - element.curX - element.animationOffsetX, e.mousePositionLocal.Y - element.curY - element.animationOffsetY);
+                    else
+                        newE.mousePositionLocal = new Vector2(e.mousePositionLocal.X - element.curX, e.mousePositionLocal.Y - element.curY);
+
                     if (MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
                     {
-                        e.hit = true;
+                        newE.hit = true;
                     }
                     else
                     {
-                        e.hit = false;
+                        newE.hit = false;
                     }
 
-                    element.MouseEvent(e);
+
+                    element.MouseEvent(newE);
                 }
             }
             else
             {
                 foreach (GuiElement element in childElements)
                 {
+                    if (!element.visible)
+                        continue;
                     e.hit = false;
                     element.MouseEvent(e);
                 }
@@ -249,10 +262,11 @@ namespace GUILib.GUI.GuiElements
             Vector2 realSize = GetScreenScale();
 
             foreach (GuiElement element in childElements)
-                element.Update((int)realSize.X, (int)realSize.Y, delta);
+                if(element.visible)
+                    element.Update((int)realSize.X, (int)realSize.Y, delta);
         }
 
-        public bool HandleGeneralConstraints(int width, int height)
+        private bool HandleGeneralConstraints(int width, int height)
         {
             if (generalConstraint == null)
                 return false;
@@ -268,7 +282,7 @@ namespace GUILib.GUI.GuiElements
             return true;
         }
 
-        public int HandleConstraintsX(List<Constraint> constraints, int pixelValue, int width, int height)
+        private int HandleConstraintsX(List<Constraint> constraints, int pixelValue, int width, int height)
         {
             foreach(Constraint c in constraints)
             {
@@ -289,7 +303,7 @@ namespace GUILib.GUI.GuiElements
             return pixelValue;
         }
 
-        public int HandleConstraintsY(List<Constraint> constraints, int pixelValue, int width, int height)
+        private int HandleConstraintsY(List<Constraint> constraints, int pixelValue, int width, int height)
         {
             foreach (Constraint c in constraints)
             {
@@ -311,7 +325,7 @@ namespace GUILib.GUI.GuiElements
         }
 
 
-        public int HandleConstraintsW(List<Constraint> constraints, int pixelValue, int width, int height)
+        private int HandleConstraintsW(List<Constraint> constraints, int pixelValue, int width, int height)
         {
             foreach (Constraint c in constraints)
             {
@@ -323,7 +337,7 @@ namespace GUILib.GUI.GuiElements
             return pixelValue;
         }
 
-        public int HandleConstraintsH(List<Constraint> constraints, int pixelValue, int width, int height)
+        private int HandleConstraintsH(List<Constraint> constraints, int pixelValue, int width, int height)
         {
             foreach (Constraint c in constraints)
             {
@@ -335,7 +349,7 @@ namespace GUILib.GUI.GuiElements
             return pixelValue;
         }
 
-        public int HandleGeneral(Constraint c, Type cType, int pixelValue, int width, int height)
+        private int HandleGeneral(Constraint c, Type cType, int pixelValue, int width, int height)
         {
             if (cType == typeof(MinConstraint))
             {

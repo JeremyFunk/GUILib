@@ -76,10 +76,12 @@
     <Compile Include="GUI\Constraints\PixelConstraint.cs" />
     <Compile Include="GUI\Constraints\PixelSizeConstraint.cs" />
     <Compile Include="GUI\GuiElements\BorderedQuad.cs" />
+    <Compile Include="GUI\GuiElements\ChoiceBox.cs" />
     <Compile Include="GUI\GuiElements\Tab.cs" />
+    <Compile Include="GUI\GuiElements\TabContent.cs" />
     <Compile Include="GUI\GuiElements\TabPane.cs" />
     <Compile Include="GUI\GuiElements\Button.cs" />
-    <Compile Include="GUI\GuiElements\BordererdButton.cs" />
+    <Compile Include="GUI\GuiElements\BorderedButton.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
     <Compile Include="GUI\GuiElements\TextArea.cs" />
     <Compile Include="GUI\GuiElements\VerticalList.cs" />

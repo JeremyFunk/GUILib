@@ -9,14 +9,13 @@ using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Constraints;
-
 namespace GUILib.GUI.GuiElements
 {
-    class BorderedQuad : GuiElement
+    class ChoiceBox : GuiElement
     {
         private Quad fillQuad;
-        
-        public BorderedQuad(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fillMaterial, Material edgeMaterial, int edgeSize, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+
+        public ChoiceBox(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fillMaterial, Material edgeMaterial, int edgeSize, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             Border border = new Border(edgeMaterial, width, height, edgeSize);
             border.generalConstraint = new FillConstraintGeneral();

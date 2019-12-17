@@ -50,6 +50,8 @@ namespace GUILib.GUI.Render
 
             foreach (GuiElement parent in scene.GetParents())
             {
+                if (!parent.visible)
+                    continue;
                 parent.Render(shader, new Vector2(), 1f);
             }
 

@@ -37,17 +37,19 @@ namespace GUILib.GUI.GuiElements
             Material closeHovered = new Material(new Texture("Icons/CloseHover.png"));
             Material closeClicked = new Material(new Texture("Icons/CloseClick.png"));
 
-            Button button = new Button(0, 0, 28, 28, close);
-            button.xConstraints.Add(new MarginConstraint(9));
-            button.yConstraints.Add(new MarginConstraint(5));
+            Button closeButton = new Button(0, 0, 28, 28, close);
+            closeButton.xConstraints.Add(new MarginConstraint(9));
+            closeButton.yConstraints.Add(new MarginConstraint(5));
 
-            button.defaultMaterial = close;
-            button.hoverMaterial = closeHovered;
-            button.clickMaterial = closeClicked;
+            closeButton.defaultMaterial = close;
+            closeButton.hoverMaterial = closeHovered;
+            closeButton.clickMaterial = closeClicked;
+
+            closeButton.mouseButtonReleasedEvent = CloseClicked;
 
             AddChild(background);
             AddChild(topBar);
-            AddChild(button);
+            AddChild(closeButton);
 
             if (title != "")
             {
@@ -60,6 +62,12 @@ namespace GUILib.GUI.GuiElements
 
 
             AddChild(border);
+        }
+
+        private void CloseClicked(MouseEvent e, GuiElement el)
+        {
+            if(e.leftButtonDown)
+                this.visible = false;
         }
 
         private void TopBarDownEvent(MouseEvent e, GuiElement el)

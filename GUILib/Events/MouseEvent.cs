@@ -17,7 +17,7 @@ namespace GUILib.Events
         Down, Pressed, Released, None
     }
 
-    class MouseEvent
+    struct MouseEvent
     {
         public MouseEventType type;
         public Vector2 mousePositionWorld, mousePositionLocal;
@@ -46,6 +46,7 @@ namespace GUILib.Events
             rightButtonDown = e.rightButtonDown;
             hit = e.hit;
             mouseButtonType = e.mouseButtonType;
+            this.covered = e.covered;
         }
     }
 }

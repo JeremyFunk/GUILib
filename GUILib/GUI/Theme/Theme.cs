@@ -13,7 +13,9 @@ namespace GUILib.GUI
 
         public abstract Material GetButtonEdgeMaterial();
         public abstract Material GetButtonFillMaterial();
-        
+        public abstract Material GetButtonHoverMaterial();
+        public abstract Material GetButtonClickMaterial();
+
         public abstract Material GetFieldEdgeMaterial();
         public abstract Material GetFieldFillMaterial();
 
@@ -28,6 +30,9 @@ namespace GUILib.GUI
         public abstract Material GetWindowTopBarMaterial();
         public abstract Material GetTabFillMaterial();
         public abstract Material GetTabEdgeMaterial();
+        public abstract Material GetTabActiveMaterial();
+        public abstract Material GetTabHoveredMaterial();
+        public abstract Material GetTabClickedMaterial();
         public abstract int GetWindowEdgeSize();
         public abstract int GetWindowTopBarSize();
         public abstract int GetTabHeight();
@@ -36,5 +41,6 @@ namespace GUILib.GUI
 
 
         public abstract int GetButtonEdgeSize();
+        public abstract float GetButtonFontSize();
     }
 }
