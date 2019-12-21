@@ -29,10 +29,22 @@ namespace GUILib.GUI
         public GuiScene()
         {
             parents = new List<GuiElement>();
+            MouseInfo.Init(this);
+        }
+
+        public void FirstUpdate(float delta)
+        {
+            foreach (GuiElement el in parents)
+            {
+                el.FirstUpdate(GameSettings.Width, GameSettings.Height, delta);
+            }
         }
 
         public void Update(float delta)
         {
+            MouseInfo.HideMouseInfo();
+            MouseInfo.UpdatePosition(GameInput.mouseX, GameSettings.Height - GameInput.mouseY);
+
             foreach (GuiElement el in parents)
             {
                 if (!el.visible)

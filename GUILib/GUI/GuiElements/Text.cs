@@ -10,16 +10,18 @@ using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Render.Fonts.Data;
 using GUILib.GUI.Constraints;
+using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
     class Text : GuiElement
     {
-        public string text;
-        public Font font;
+        private string text;
+        private Font font;
         public Vector4 color;
-        public float fontSize;
+        private float fontSize;
         public TextData data;
+        private float maxSize;
 
         public Text(APixelConstraint x, APixelConstraint y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
         {
@@ -30,6 +32,7 @@ namespace GUILib.GUI.GuiElements
             this.font = font;
             this.fontSize = fontSize;
             this.color = new Vector4(1);
+            this.maxSize = maxSize;
 
             if(maxSize != float.MaxValue)
                 font.Reconstruct(text, this, maxSize * 2, fontSize);
@@ -43,6 +46,21 @@ namespace GUILib.GUI.GuiElements
 
             shader.SetTransform(trans, new Vector2(1f));
             font.Render(text, shader, color, this);
+        }
+
+        internal void SetText(string text)
+        {
+            if (maxSize != float.MaxValue)
+                font.Reconstruct(text, this, maxSize * 2, fontSize);
+            else
+                font.Reconstruct(text, this, maxSize, fontSize);
+
+            this.text = text;
+        }
+
+        internal string GetText()
+        {
+            return text;
         }
     }
 }

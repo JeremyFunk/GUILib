@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GUILib.Util;
 
-namespace GUILib.GUI.Constraints
+namespace GUILib.GUI.PixelConstraints
 {
     class PixelSizeConstraint : APixelConstraint
     {
@@ -14,11 +14,6 @@ namespace GUILib.GUI.Constraints
         public PixelSizeConstraint(float size)
         {
             this.size = size;
-        }
-
-        public override void ChangeValueByPixels(int value)
-        {
-            size += value / GameSettings.Width;
         }
 
         public override int GetPixelValue(int size)

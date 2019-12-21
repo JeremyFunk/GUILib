@@ -10,6 +10,7 @@ using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Render.Fonts.Data;
 using GUILib.GUI.Constraints;
+using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -105,21 +106,13 @@ namespace GUILib.GUI.GuiElements
             }
         }
 
-        public override void MouseEventElement(MouseEvent events)
-        {
-            
-        }
+        public override void MouseEventElement(MouseEvent events){ }
 
-        public override void KeyEvent(KeyEvent events)
-        {
-        }
+        public override void KeyEventElement(KeyEvent events){ }
 
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
-        {
-        }
+        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity){ }
 
-        public override void UpdateElement(float delta)
-        { }
+        public override void UpdateElement(float delta){ }
 
         public int GetTopBarSize()
         {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GUILib.GUI.Constraints
+namespace GUILib.GUI.PixelConstraints
 {
     class PixelConstraint : APixelConstraint
     {
@@ -13,11 +13,6 @@ namespace GUILib.GUI.Constraints
         public PixelConstraint(int pixel)
         {
             this.pixel = pixel;
-        }
-
-        public override void ChangeValueByPixels(int value)
-        {
-            pixel += value;
         }
 
         public override int GetPixelValue(int size)

@@ -9,6 +9,8 @@ using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Constraints;
+using GUILib.GUI.PixelConstraints;
+using GUILib.Logger;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -68,7 +70,6 @@ namespace GUILib.GUI.GuiElements
             AddChild(content);
             AddChild(tabQuad);
 
-
             if (activeTab == null)
             {
                 content.Activate();
@@ -81,14 +82,24 @@ namespace GUILib.GUI.GuiElements
         {
             foreach (Tab tab in tabs.Keys)
                 if (tabs[tab] == tabName)
+                {
                     AddElementToTab(element, tab);
+                    return;
+                }
+
+            ALogger.defaultLogger.Log("Could not add element to the tab \'" + tabName + "\', because this tab does not exist.", LogLevel.Warning);
         }
 
         public void AddElementToTab(GuiElement element, TabData data)
         {
             foreach (Tab tab in tabs.Keys)
                 if (tabs[tab] == data.name)
+                {
                     AddElementToTab(element, tab);
+                    return;
+                }
+
+            ALogger.defaultLogger.Log("Could not add element to the tab \'" + data.name + "\', because this tab does not exist.", LogLevel.Warning);
         }
 
         private void AddElementToTab(GuiElement element, Tab tab)

@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Animations;
 using GUILib.GUI.Constraints;
+using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -31,6 +32,7 @@ namespace GUILib.GUI.GuiElements
                 fontSize = 1.2f;
 
             quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
+            quad.generalConstraint = new FillConstraintGeneral();
 
             AddChild(quad);
 

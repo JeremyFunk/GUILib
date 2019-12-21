@@ -9,6 +9,8 @@ using GUILib.Events;
 using GUILib.GUI.Constraints;
 using GUILib.Util;
 using GUILib.GUI.Animations;
+using GUILib.GUI.PixelConstraints;
+using OpenTK.Graphics.OpenGL;
 
 namespace GUILib.GUI.GuiElements
 {
@@ -19,8 +21,9 @@ namespace GUILib.GUI.GuiElements
 
     abstract class GuiElement
     {
-        private GuiElement parent;
+        public string debugIdentifier = "";
 
+        private GuiElement parent;
 
         public Animation animation;
 
@@ -45,8 +48,8 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> mouseButtonDownEvent;
         public Action<MouseEvent, GuiElement> mouseButtonPressedEvent;
         public Action<MouseEvent, GuiElement> mouseButtonReleasedEvent;
-        public Action<MouseEvent, GuiElement> mouseButtonMissedEvent;
         public Action<MouseEvent, GuiElement> mouseButtonPressedMissedEvent;
+        public Action<MouseEvent, GuiElement> mouseButtonReleasedMissedEvent;
 
         public bool hovered = false;
 
@@ -69,6 +72,8 @@ namespace GUILib.GUI.GuiElements
         public Material clickMaterial;
 
         protected Material curMaterial;
+
+        public bool useStencilBuffer = false;
 
 
         //The bigger the zIndex, the later gets this element rendered.
@@ -94,6 +99,9 @@ namespace GUILib.GUI.GuiElements
             Vector2 actualOffset = GetScreenOffset();
             actualOffset = new Vector2(actualOffset.X + offset.X, actualOffset.Y + offset.Y);
 
+            if (useStencilBuffer) 
+                DrawThisElementToStencil(shader, actualOffset);
+
             RenderElement(shader, actualOffset, GetScreenScale(), opacity * curOpacity);
 
             foreach(GuiElement element in childElements)
@@ -101,6 +109,47 @@ namespace GUILib.GUI.GuiElements
                 if(element.visible)
                     element.Render(shader, actualOffset, opacity * curOpacity);
             }
+
+            if (useStencilBuffer)
+                OpenGLUtil.EndStencil();
+        }
+
+        public void DrawThisElementToStencil(GuiShader shader, Vector2 offset)
+        {
+            OpenGLUtil.StartStencilDraw();
+
+            shader.ResetVAO();
+            shader.SetTransform(offset, GetScreenScale());
+
+            new Material(new Vector4(1)).PrepareRender(shader, 1);
+            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+
+            OpenGLUtil.EndStencilDraw();
+        }
+
+        public void FirstUpdate(int width, int height, float delta)
+        {
+            if (HandleGeneralConstraints(width, height))
+            {
+
+            }
+            else
+            {
+                curWidth = HandleConstraintsW(widthConstraints, GetCurWidth(), width, height);
+                curHeight = HandleConstraintsH(heightConstraints, GetCurHeight(), width, height);
+
+                curX = HandleConstraintsX(xConstraints, GetCurX(), width, height);
+                curY = HandleConstraintsY(yConstraints, GetCurY(), width, height);
+            }
+
+            curOpacity = animationOffsetOpacity + opacity;
+
+            animation?.Update(delta, this);
+
+            Vector2 realSize = GetScreenScale();
+
+            foreach (GuiElement element in childElements)
+                element.FirstUpdate((int)realSize.X, (int)realSize.Y, delta);
         }
 
         protected virtual void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale, float opacity) { }
@@ -167,7 +216,7 @@ namespace GUILib.GUI.GuiElements
             { 
                 if (e.mouseButtonType == MouseButtonType.Released)
                 {
-                    mouseButtonMissedEvent?.Invoke(e, this);
+                    mouseButtonReleasedMissedEvent?.Invoke(e, this);
                 }else if(e.mouseButtonType == MouseButtonType.Pressed)
                 {
                     mouseButtonPressedMissedEvent?.Invoke(e, this);
@@ -215,7 +264,6 @@ namespace GUILib.GUI.GuiElements
                         newE.hit = false;
                     }
 
-
                     element.MouseEvent(newE);
                 }
             }
@@ -236,7 +284,18 @@ namespace GUILib.GUI.GuiElements
 
         }
 
-        public virtual void KeyEvent(KeyEvent e) { }
+        public  void KeyEvent(KeyEvent e) 
+        {
+            KeyEventElement(e);
+
+            foreach (GuiElement element in childElements)
+            {
+                if(element.visible)
+                    element.KeyEvent(e);
+            }
+        }
+
+        public virtual void KeyEventElement(KeyEvent e) { }
 
         public void Update(int width, int height, float delta)
         {
@@ -262,8 +321,10 @@ namespace GUILib.GUI.GuiElements
             Vector2 realSize = GetScreenScale();
 
             foreach (GuiElement element in childElements)
-                if(element.visible)
+            {
+                if (element.visible)
                     element.Update((int)realSize.X, (int)realSize.Y, delta);
+            }
         }
 
         private bool HandleGeneralConstraints(int width, int height)
@@ -272,7 +333,7 @@ namespace GUILib.GUI.GuiElements
                 return false;
             int oX, oY, oW, oH;
 
-            generalConstraint.ExecuteConstraint(this.x.GetPixelValue(width), this.y.GetPixelValue(height), this.width.GetPixelValue(width), this.height.GetPixelValue(height), width, height, out oX, out oY, out oW, out oH);
+            generalConstraint.ExecuteConstraint(GetCurX(), GetCurY(), GetCurWidth(), GetCurHeight(), width, height, out oX, out oY, out oW, out oH);
 
             curX = oX;
             curY = oY;
@@ -288,7 +349,7 @@ namespace GUILib.GUI.GuiElements
             {
                 Type cType = c.GetType();
 
-                pixelValue = HandleGeneral(c, cType, pixelValue, width, height);
+                pixelValue = HandleGeneral(c, cType, pixelValue, width);
 
                 if (cType == typeof(CenterConstraint))
                 {
@@ -309,7 +370,7 @@ namespace GUILib.GUI.GuiElements
             {
                 Type cType = c.GetType();
 
-                pixelValue = HandleGeneral(c, cType, pixelValue, width, height);
+                pixelValue = HandleGeneral(c, cType, pixelValue, height);
 
                 if (cType == typeof(CenterConstraint))
                 {
@@ -331,9 +392,8 @@ namespace GUILib.GUI.GuiElements
             {
                 Type cType = c.GetType();
 
-                pixelValue = HandleGeneral(c, cType, pixelValue, width, height);
+                pixelValue = HandleGeneral(c, cType, pixelValue, width);
             }
-
             return pixelValue;
         }
 
@@ -343,13 +403,13 @@ namespace GUILib.GUI.GuiElements
             {
                 Type cType = c.GetType();
 
-                pixelValue = HandleGeneral(c, cType, pixelValue, width, height);
+                pixelValue = HandleGeneral(c, cType, pixelValue, height);
             }
 
             return pixelValue;
         }
 
-        private int HandleGeneral(Constraint c, Type cType, int pixelValue, int width, int height)
+        private int HandleGeneral(Constraint c, Type cType, int pixelValue, int size)
         {
             if (cType == typeof(MinConstraint))
             {
@@ -371,6 +431,10 @@ namespace GUILib.GUI.GuiElements
             {
                 pixelValue = ((SubtractConstraint)c).ExecuteConstraint(pixelValue);
             }
+            else if (cType == typeof(MirrorConstraint))
+            {
+                pixelValue = ((MirrorConstraint)c).ExecuteConstraint(size, pixelValue);
+            }
 
 
             return pixelValue;
@@ -390,7 +454,6 @@ namespace GUILib.GUI.GuiElements
         {
             this.width = new PixelConstraint(width);
             curWidth = width;
-
         }
 
         public void SetHeight(int height)
@@ -452,22 +515,44 @@ namespace GUILib.GUI.GuiElements
         public virtual void AddChild(GuiElement child) 
         {
             childElements.Add(child);
-            child.parent = this;
+            child.SetParent(this);
+
+            childElements = Utility.GetZIndexSorted(childElements);
+        }
+        public void ClearChilds()
+        {
+            childElements.Clear();
         }
 
+
+        public void RemoveChild(GuiElement child)
+        {
+            childElements.Remove(child);
+            child.SetParent(null);
+        }
+        
+        protected void SetParent(GuiElement parent)
+        {
+            this.parent = parent;
+
+            curWidth = GetCurWidth();
+            curHeight = GetCurHeight();
+            curX = GetCurX();
+            curY = GetCurY();
+        }
 
         private int GetCurX()
         {
             if (parent == null)
                 return x.GetPixelValue(GameSettings.Width);
-            return x.GetPixelValue(parent.curX);
+            return x.GetPixelValue(parent.curWidth);
         }
 
         private int GetCurY()
         {
             if (parent == null)
                 return y.GetPixelValue(GameSettings.Height);
-            return y.GetPixelValue(parent.curY);
+            return y.GetPixelValue(parent.curHeight);
         }
 
         private int GetCurWidth()

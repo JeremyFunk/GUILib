@@ -18,6 +18,8 @@ namespace GUILib.GUI
 
         public abstract Material GetFieldEdgeMaterial();
         public abstract Material GetFieldFillMaterial();
+        public abstract int GetFieldEdgeSize();
+        public abstract float GetCursorTickRate();
 
         public abstract Material GetPanelEdgeMaterial();
         public abstract Material GetPanelFillMaterial();
@@ -33,14 +35,23 @@ namespace GUILib.GUI
         public abstract Material GetTabActiveMaterial();
         public abstract Material GetTabHoveredMaterial();
         public abstract Material GetTabClickedMaterial();
+        public abstract Material GetTableFillMaterial();
+        public abstract Material GetTableEdgeMaterial();
+        public abstract Material GetSliderMaterial();
+        public abstract Material GetSliderQuadMaterial();
+        public abstract Material GetMouseInfoFillMaterial();
+        public abstract Material GetMouseInfoEdgeMaterial();
         public abstract int GetWindowEdgeSize();
         public abstract int GetWindowTopBarSize();
         public abstract int GetTabHeight();
         public abstract int GetTabWidth();
         public abstract int GetTabEdgeSize();
+        public abstract int GetTableEdgeSize();
+        public abstract int GetMouseInfoEdgeSize();
 
 
         public abstract int GetButtonEdgeSize();
+        public abstract int GetInitialDropDownPadding();
         public abstract float GetButtonFontSize();
     }
 }

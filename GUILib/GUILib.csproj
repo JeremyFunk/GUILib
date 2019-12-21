@@ -59,7 +59,9 @@
     <Compile Include="GUI\Animations\Transitions\SinTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
-    <Compile Include="GUI\Constraints\APixelConstraint.cs" />
+    <Compile Include="GUI\MouseInfo.cs" />
+    <Compile Include="GUI\PixelConstraints\APixelConstraint.cs" />
+    <Compile Include="GUI\Constraints\MirrorConstraint.cs" />
     <Compile Include="GUI\GuiElements\Border.cs" />
     <Compile Include="GUI\Constraints\CenterConstraint.cs" />
     <Compile Include="GUI\Constraints\AddConstraint.cs" />
@@ -73,16 +75,23 @@
     <Compile Include="GUI\Constraints\MarginConstraint.cs" />
     <Compile Include="GUI\Constraints\MaxConstraint.cs" />
     <Compile Include="GUI\Constraints\MinConstraint.cs" />
-    <Compile Include="GUI\Constraints\PixelConstraint.cs" />
-    <Compile Include="GUI\Constraints\PixelSizeConstraint.cs" />
+    <Compile Include="GUI\PixelConstraints\CombinedSubtractConstraint.cs" />
+    <Compile Include="GUI\PixelConstraints\PixelConstraint.cs" />
+    <Compile Include="GUI\PixelConstraints\PixelSizeConstraint.cs" />
     <Compile Include="GUI\GuiElements\BorderedQuad.cs" />
     <Compile Include="GUI\GuiElements\ChoiceBox.cs" />
+    <Compile Include="GUI\GuiElements\Container.cs" />
+    <Compile Include="GUI\GuiElements\Slider.cs" />
     <Compile Include="GUI\GuiElements\Tab.cs" />
     <Compile Include="GUI\GuiElements\TabContent.cs" />
+    <Compile Include="GUI\GuiElements\Table.cs" />
     <Compile Include="GUI\GuiElements\TabPane.cs" />
     <Compile Include="GUI\GuiElements\Button.cs" />
     <Compile Include="GUI\GuiElements\BorderedButton.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
+    <Compile Include="GUI\GuiElements\NumberField.cs" />
+    <Compile Include="GUI\GuiElements\TextField.cs" />
+    <Compile Include="GUI\GuiElements\TextSelectable.cs" />
     <Compile Include="GUI\GuiElements\TextArea.cs" />
     <Compile Include="GUI\GuiElements\VerticalList.cs" />
     <Compile Include="GUI\GuiElements\Quad.cs" />
@@ -109,6 +118,7 @@
     <Compile Include="Util\Loader.cs" />
     <Compile Include="Util\Maths.cs" />
     <Compile Include="Util\OpenGLLoader.cs" />
+    <Compile Include="Util\OpenGLUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -123,6 +133,7 @@
     <Content Include="Resource\Icons\Close.png" />
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />
     <Content Include="Resource\Textures\Background.jpg" />
     <Content Include="Resource\Textures\Fonts\Candara.png" />

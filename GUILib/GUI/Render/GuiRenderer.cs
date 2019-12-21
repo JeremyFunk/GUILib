@@ -74,9 +74,12 @@ namespace GUILib.GUI.Render
 
         internal void PrepareRender()
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Disable(EnableCap.ScissorTest);
+            GL.Disable(EnableCap.StencilTest);
+            GL.StencilMask(~0);
+            GL.ClearStencil(0);
             GL.ClearColor(0, 0, 0, 1f);
-            GL.Disable(EnableCap.DepthTest);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.StencilBufferBit);
         }
     }
 }

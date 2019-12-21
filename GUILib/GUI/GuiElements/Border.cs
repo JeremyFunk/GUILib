@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Events;
 using GUILib.GUI.Constraints;
+using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
