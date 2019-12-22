@@ -17,7 +17,7 @@ namespace GUILib.GUI.GuiElements
 {
     class ScrollPane : GuiElement
     {
-        private int lowestY;
+        private int highestY;
         private Container elementContainer;
         private BorderedQuad scrollBar;
 
@@ -27,6 +27,8 @@ namespace GUILib.GUI.GuiElements
         private float scroll = 0;
         private bool scrollable = true;
 
+        private int yOffset = 0, lastYOffset = 0;
+
         public ScrollPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fill = null, Material edge = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             useStencilBuffer = true;
@@ -35,7 +37,7 @@ namespace GUILib.GUI.GuiElements
             q.generalConstraint = new FillConstraintGeneral();
             base.AddChild(q);
 
-            elementContainer = new Container(0, 0, 1f, 1f);
+            elementContainer = new Container(0, 0, 1f, 0);
             elementContainer.debugIdentifier = "S";
 
             edgeSize = edgeSize == -1 ? Theme.defaultTheme.GetScrollPaneEdgeSize() : edgeSize;
@@ -65,20 +67,29 @@ namespace GUILib.GUI.GuiElements
 
         public override void UpdateElement(float delta)
         {
-            lowestY = 0;
+            highestY = 0;
 
             foreach (GuiElement element in elementContainer.GetElements())
-                if (element.curY < lowestY)
-                    lowestY = element.curY;
+                if (element.curY > highestY)
+                {
+                    highestY = element.curY;
+                }
 
-            if(lowestY < 0)
+            yOffset = -(elementContainer.curHeight - curHeight);
+            if(yOffset != lastYOffset)
             {
-                scrollBar.SetHeight((int)(((float)curHeight / (-lowestY + curHeight)) * curHeight));
+                elementContainer.SetY(yOffset);
+                lastYOffset = yOffset;
+            }
+
+            if (highestY > curHeight)
+            {
+                scrollable = true;
+                scrollBar.SetHeight((int)(((float)curHeight / elementContainer.curHeight) * curHeight));
 
                 if (firstUpdate)
                 {
                     scrollBar.SetY(curHeight - scrollBar.curHeight);
-                    Console.WriteLine((int)(((float)curHeight / (-lowestY + curHeight)) * curHeight));
                     firstUpdate = false;
                 }
             }
@@ -122,7 +133,7 @@ namespace GUILib.GUI.GuiElements
 
                 scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
-                elementContainer.SetY((int)((-lowestY + 30) * scroll));
+                elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
 
 
                 scrollBar.SetY(newY);
@@ -148,7 +159,7 @@ namespace GUILib.GUI.GuiElements
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
-                    elementContainer.SetY((int)((-lowestY + 30) * scroll));
+                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
 
                     scrollBar.SetY(newY);
                     mouseDragY = e.mousePositionWorld.Y;
@@ -173,7 +184,7 @@ namespace GUILib.GUI.GuiElements
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
-                    elementContainer.SetY((int)((-lowestY + 30) * scroll));
+                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
 
                     scrollBar.SetY(newY);
                     mouseDragY = e.mousePositionWorld.Y;
@@ -184,6 +195,14 @@ namespace GUILib.GUI.GuiElements
         public override void AddChild(GuiElement element)
         {
             elementContainer.AddChild(element);
+
+            //elementContainer.debugIdentifier = "J"; TODO
+
+            if (element.curY < 0)
+                elementContainer.SetHeight(elementContainer.curHeight - element.curY);
+
+            elementContainer.SetY(yOffset);
+
         }
     }
 }

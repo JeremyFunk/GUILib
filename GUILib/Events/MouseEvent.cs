@@ -26,8 +26,9 @@ namespace GUILib.Events
         public bool hit;
         public bool covered;
         public int mouseWheel;
+        public bool canHit;
 
-        public MouseEvent(MouseEventType type, Vector2 mousePositionWorld, Vector2 mousePositionLocal, bool leftButtonDown, bool rightButtonDown, MouseButtonType mouseButtonType, bool hit, bool covered, int mouseWheel)
+        public MouseEvent(MouseEventType type, Vector2 mousePositionWorld, Vector2 mousePositionLocal, bool leftButtonDown, bool rightButtonDown, MouseButtonType mouseButtonType, bool hit, bool covered, int mouseWheel, bool canHit = true)
         {
             this.type = type;
             this.mousePositionLocal = mousePositionLocal;
@@ -38,6 +39,7 @@ namespace GUILib.Events
             this.mouseButtonType = mouseButtonType;
             this.covered = covered;
             this.mouseWheel = mouseWheel;
+            this.canHit = canHit;
         }
 
         public MouseEvent(MouseEvent e){
@@ -50,6 +52,7 @@ namespace GUILib.Events
             mouseButtonType = e.mouseButtonType;
             covered = e.covered;
             mouseWheel = e.mouseWheel;
+            canHit = e.canHit;
         }
     }
 }

@@ -17,13 +17,17 @@ namespace GUILib.GUI.GuiElements
     {
         private Material fillMaterialClick, fillMaterialHover, fillMaterialDefault;
 
+        private Action<TickBox> tickBoxChangedEvent;
+
         private Quad clickQuad, quad;
 
         private bool clicked = false;
 
-        public TickBox(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, bool ticked = false, Material fillMaterialClick = null, Material fillMaterialHover = null, Material fillMaterialDefault = null, Material fillMaterialClicked = null, Material edgeMaterial = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public TickBox(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, bool ticked = false, Action<TickBox> tickBoxChangedEvent = null, Material fillMaterialClick = null, Material fillMaterialHover = null, Material fillMaterialDefault = null, Material fillMaterialClicked = null, Material edgeMaterial = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             clicked = ticked;
+
+            this.tickBoxChangedEvent = tickBoxChangedEvent;
 
             this.fillMaterialClick = fillMaterialClick == null ? Theme.defaultTheme.GetTickBoxClickMaterial() : fillMaterialClick;
             this.fillMaterialHover = fillMaterialHover == null ? Theme.defaultTheme.GetTickBoxHoverMaterial() : fillMaterialHover;
@@ -47,6 +51,17 @@ namespace GUILib.GUI.GuiElements
             AddChild(border);
         }
 
+        public bool IsClicked()
+        {
+            return clicked;
+        }
+
+        public void SetClicked(bool clicked)
+        {
+            this.clicked = clicked;
+            clickQuad.visible = clicked;
+        }
+
         public override void MouseEventElement(MouseEvent e)
         {
             if (e.hit)
@@ -56,6 +71,8 @@ namespace GUILib.GUI.GuiElements
                     if (e.mouseButtonType == MouseButtonType.Released)
                     {
                         clicked = !clicked;
+
+                        tickBoxChangedEvent?.Invoke(this);
 
                         clickQuad.visible = clicked;
                         quad.SetMaterial(fillMaterialHover);

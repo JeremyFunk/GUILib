@@ -104,6 +104,9 @@ namespace GUILib.GUI.GuiElements
             Vector2 actualOffset = GetScreenOffset();
             actualOffset = new Vector2(actualOffset.X + offset.X, actualOffset.Y + offset.Y);
 
+            if (debugIdentifier == "Z")
+                Console.WriteLine(GetScreenScale());
+
             if (useStencilBuffer) 
                 DrawThisElementToStencil(shader, actualOffset);
 
@@ -290,6 +293,15 @@ namespace GUILib.GUI.GuiElements
 
             MouseEventElement(e);
 
+            bool canHit = true;
+
+            if (e.mousePositionLocal.X > curWidth || e.mousePositionLocal.Y > curHeight || e.mousePositionLocal.X < 0 || e.mousePositionLocal.Y < 0 || e.canHit == false)
+            {
+                canHit = false;
+                if (debugIdentifier == "J")
+                    Console.WriteLine(e.mousePositionLocal);
+            }
+
             if (!e.covered)
             {
                 foreach (GuiElement element in childElements)
@@ -303,9 +315,18 @@ namespace GUILib.GUI.GuiElements
                     else
                         newE.mousePositionLocal = new Vector2(e.mousePositionLocal.X - element.curX, e.mousePositionLocal.Y - element.curY);
 
-                    if (MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
+                    newE.canHit = canHit;
+
+                    if (canHit)
                     {
-                        newE.hit = true;
+                        if (MathsGeometry.IsInsideQuad(e.mousePositionLocal, element))
+                        {
+                            newE.hit = true;
+                        }
+                        else
+                        {
+                            newE.hit = false;
+                        }
                     }
                     else
                     {
@@ -474,24 +495,32 @@ namespace GUILib.GUI.GuiElements
         {
             this.width = new PixelConstraint(width);
             curWidth = width;
+            if(parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f);
         }
 
         public void SetHeight(int height)
         {
             this.height = new PixelConstraint(height);
             curHeight = height;
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f);
         }
 
         public void SetX(int x)
         {
             this.x = new PixelConstraint(x);
             curX = x;
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f);
         }
 
         public void SetY(int y)
         {
             this.y = new PixelConstraint(y);
             curY = y;
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f);
         }
 
         public void SetHoverDelay(float delay)
@@ -574,10 +603,8 @@ namespace GUILib.GUI.GuiElements
         {
             this.parent = parent;
 
-            curWidth = GetCurWidth();
-            curHeight = GetCurHeight();
-            curX = GetCurX();
-            curY = GetCurY();
+            if(parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f);
         }
 
         private int GetCurX()

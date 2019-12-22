@@ -42,6 +42,7 @@ namespace GUILib.GUI.GuiElements
         private List<Quad> columnBorders = new List<Quad>();
 
         private Dictionary<Vector2i, Container> tableCells = new Dictionary<Vector2i, Container>();
+        private Dictionary<Vector2i, Quad> disabledCells = new Dictionary<Vector2i, Quad>();
 
         public Table(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material pFillMaterial = null, Material pEdgeMaterial = null, float zIndex = 0, int pEdgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
@@ -124,11 +125,23 @@ namespace GUILib.GUI.GuiElements
                 h = (tableRows[row - 1] - tableRows[row]);
 
             Container c = new Container(x, y, w, h);
-
-            Console.WriteLine(c.curHeight);
+            c.widthConstraints.Add(new SubtractConstraint(column == tableColumns.Length ? edgeSize * 2 : edgeSize));
+            c.xConstraints.Add(new AddConstraint(edgeSize));
+            c.yConstraints.Add(new AddConstraint(edgeSize));
+            c.heightConstraints.Add(new SubtractConstraint(row == 0 ? edgeSize * 2 : edgeSize));
 
             tableCells.Add(key, c);
             AddChild(c);
+
+            Quad q = new Quad(new Material(new Vector4(0.2f, 0.2f, 0.2f, 0.8f)), x, y, w, h, 4);
+            q.widthConstraints.Add(new SubtractConstraint(column == tableColumns.Length ? edgeSize * 2 : edgeSize));
+            q.xConstraints.Add(new AddConstraint(edgeSize));
+            q.yConstraints.Add(new AddConstraint(edgeSize));
+            q.heightConstraints.Add(new SubtractConstraint(row == 0 ? edgeSize * 2 : edgeSize));
+            q.visible = false;
+
+            disabledCells.Add(key, q);
+            AddChild(q);
         }
 
         /*
@@ -169,6 +182,28 @@ namespace GUILib.GUI.GuiElements
 
                 counter++;
             }
+        }
+
+        internal void DisableCell(int column, int row)
+        {
+            Vector2i key = new Vector2i(row, column);
+
+            if (!disabledCells.ContainsKey(key))
+            {
+                AddContainerToCell(column, row);
+            }
+            disabledCells[key].visible = true;
+        }
+
+        internal void EnableCell(int column, int row)
+        {
+            Vector2i key = new Vector2i(row, column);
+
+            if (!disabledCells.ContainsKey(key))
+            {
+                AddContainerToCell(column, row);
+            }
+            disabledCells[key].visible = false;
         }
     }
 }

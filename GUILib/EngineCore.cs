@@ -25,6 +25,8 @@ namespace GUILib
         private GuiScene scene;
         private Window window;
 
+        private Table mapSettingsTable;
+
         public EngineCore(int widthP, int heightP, string title) : base(widthP, heightP, new OpenTK.Graphics.GraphicsMode(new OpenTK.Graphics.ColorFormat(8, 8, 8, 8), 24, 8, 4))
         {
         }
@@ -122,7 +124,7 @@ namespace GUILib
 
         private void LoadGameMenu()
         {
-            VerticalList vList = new VerticalList(50, 0.5f, 100, 320, 5, 0);
+            VerticalList vList = new VerticalList(50, 0.5f, 300, 320, 5, 0);
             vList.yConstraints.Add(new CenterConstraint());
 
             GuiElement quad = new BorderedButton(0, 0, 250, 60, "New Game");
@@ -376,7 +378,7 @@ namespace GUILib
 
             contentPane.AddChild(mapSettings);
 
-            Table mapSettingsTable = new Table(10, 10, 700, 330);
+            mapSettingsTable = new Table(10, 10, 700, 330);
             mapSettingsTable.widthConstraints.Add(new SubtractConstraint(20));
             mapSettingsTable.heightConstraints.Add(new SubtractConstraint(20));
             mapSettingsTable.yConstraints.Add(new MarginConstraint(440));
@@ -420,15 +422,15 @@ namespace GUILib
             structures.yConstraints.Add(new CenterConstraint());
 
 
-            TickBox mountainsBox = new TickBox(20, 0, 20, 20, true);
+            TickBox mountainsBox = new TickBox(20, 0, 20, 20, true, MountainClicked);
             mountainsBox.yConstraints.Add(new CenterConstraint());
-            TickBox waterBox = new TickBox(20, 0, 20, 20, true);
+            TickBox waterBox = new TickBox(20, 0, 20, 20, true, WatersClicked);
             waterBox.yConstraints.Add(new CenterConstraint());
-            TickBox vegetationBox = new TickBox(20, 0, 20, 20, true);
+            TickBox vegetationBox = new TickBox(20, 0, 20, 20, true, VegetationClicked);
             vegetationBox.yConstraints.Add(new CenterConstraint());
-            TickBox creaturesBox = new TickBox(20, 0, 20, 20, true);
+            TickBox creaturesBox = new TickBox(20, 0, 20, 20, true, CreaturesClicked);
             creaturesBox.yConstraints.Add(new CenterConstraint());
-            TickBox structuresBox = new TickBox(20, 0, 20, 20, true);
+            TickBox structuresBox = new TickBox(20, 0, 20, 20, true, StructuresClicked);
             structuresBox.yConstraints.Add(new CenterConstraint());
 
             mapSettingsTable.SetCell(mountains, 0, 1);
@@ -493,9 +495,87 @@ namespace GUILib
             mapSettingsTable.SetCell(structuresStre, 3, 5);
             mapSettingsTable.SetCellHoverText("Resistance of structures against attacks", 3, 5);
 
-
             contentPane.AddChild(mapSettingsTable);
+        }
 
+        private void MountainClicked(TickBox box)
+        {
+            if (!box.IsClicked())
+            {
+                mapSettingsTable.DisableCell(1, 1);
+                mapSettingsTable.DisableCell(2, 1);
+                mapSettingsTable.DisableCell(3, 1);
+            }
+            else
+            {
+                mapSettingsTable.EnableCell(1, 1);
+                mapSettingsTable.EnableCell(2, 1);
+                mapSettingsTable.EnableCell(3, 1);
+            }
+        }
+
+        private void WatersClicked(TickBox box)
+        {
+            if (!box.IsClicked())
+            {
+                mapSettingsTable.DisableCell(1, 2);
+                mapSettingsTable.DisableCell(2, 2);
+                mapSettingsTable.DisableCell(3, 2);
+            }
+            else
+            {
+                mapSettingsTable.EnableCell(1, 2);
+                mapSettingsTable.EnableCell(2, 2);
+                mapSettingsTable.EnableCell(3, 2);
+            }
+        }
+
+        private void VegetationClicked(TickBox box)
+        {
+            if (!box.IsClicked())
+            {
+                mapSettingsTable.DisableCell(1, 3);
+                mapSettingsTable.DisableCell(2, 3);
+                mapSettingsTable.DisableCell(3, 3);
+            }
+            else
+            {
+                mapSettingsTable.EnableCell(1, 3);
+                mapSettingsTable.EnableCell(2, 3);
+                mapSettingsTable.EnableCell(3, 3);
+            }
+        }
+
+        private void CreaturesClicked(TickBox box)
+        {
+            if (!box.IsClicked())
+            {
+                mapSettingsTable.DisableCell(1, 4);
+                mapSettingsTable.DisableCell(2, 4);
+                mapSettingsTable.DisableCell(3, 4);
+            }
+            else
+            {
+                mapSettingsTable.EnableCell(1, 4);
+                mapSettingsTable.EnableCell(2, 4);
+                mapSettingsTable.EnableCell(3, 4);
+            }
+        }
+
+        private void StructuresClicked(TickBox box)
+        {
+            if (!box.IsClicked())
+            {
+                mapSettingsTable.DisableCell(1, 5);
+                mapSettingsTable.DisableCell(2, 5);
+                mapSettingsTable.DisableCell(3, 5);
+            }
+            else
+            {
+                mapSettingsTable.EnableCell(1, 5);
+                mapSettingsTable.EnableCell(2, 5);
+                mapSettingsTable.EnableCell(3, 5);
+            }
         }
 
         private Slider GetSlider()
