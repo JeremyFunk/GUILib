@@ -39,6 +39,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,6 +60,8 @@
     <Compile Include="GUI\Animations\Transitions\SinTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
+    <Compile Include="GUI\GuiElements\TickBox.cs" />
+    <Compile Include="GUI\GuiElements\ScrollPane.cs" />
     <Compile Include="GUI\MouseInfo.cs" />
     <Compile Include="GUI\PixelConstraints\APixelConstraint.cs" />
     <Compile Include="GUI\Constraints\MirrorConstraint.cs" />
@@ -133,6 +136,7 @@
     <Content Include="Resource\Icons\Close.png" />
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\TickBoxClicked.png" />
     <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />
     <Content Include="Resource\Textures\Background.jpg" />

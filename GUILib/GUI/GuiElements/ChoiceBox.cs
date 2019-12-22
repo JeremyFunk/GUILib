@@ -42,9 +42,9 @@ namespace GUILib.GUI.GuiElements
             text.xConstraints.Add(new CenterConstraint());
             text.yConstraints.Add(new MarginConstraint(7));
 
-            AddChild(quad);
-            AddChild(dropDown);
-            AddChild(text);
+            base.AddChild(quad);
+            base.AddChild(dropDown);
+            base.AddChild(text);
         }
 
         private void ClickMissed(MouseEvent e, GuiElement el)
@@ -75,8 +75,16 @@ namespace GUILib.GUI.GuiElements
             dropDown.visible = selected;
         }
 
-        public void AddElement(TextSelectable element)
+        public override void AddChild(GuiElement guiElement)
         {
+            if(guiElement.GetType() != typeof(TextSelectable))
+            {
+                Logger.ALogger.defaultLogger.Log("Could not add Element to choice box because this element was not of the supported type \"TextSelectable\"!", Logger.LogLevel.Error);
+                return;
+            }
+
+            TextSelectable element = (TextSelectable)guiElement;
+
             element.xConstraints.Add(new CenterConstraint());
 
             if(elements.Count == 0)
@@ -105,7 +113,7 @@ namespace GUILib.GUI.GuiElements
                 dropDown.SetHeight(dropDown.curHeight + element.curHeight + padding);
             }
 
-            AddChild(element);
+            base.AddChild(element);
 
             element.mouseButtonReleasedEvent = ElementClicked;
 

@@ -198,11 +198,11 @@ namespace GUILib
             quad4.opacity = 0.6f;
             quad5.opacity = 0.6f;
 
-            vList.AddElement(quad);
-            vList.AddElement(quad2);
-            vList.AddElement(quad3);
-            vList.AddElement(quad4);
-            vList.AddElement(quad5);
+            vList.AddChild(quad);
+            vList.AddChild(quad2);
+            vList.AddChild(quad3);
+            vList.AddChild(quad4);
+            vList.AddChild(quad5);
 
             scene.AddParent(vList);
         }
@@ -243,28 +243,28 @@ namespace GUILib
             mapType.yConstraints.Add(new MarginConstraint(10));
             mapType.xConstraints.Add(new CenterConstraint());
             mapType.xConstraints.Add(new AddConstraint(150));
-            mapType.AddElement(GetHoverText("Farmers Dream"));
-            mapType.AddElement(GetHoverText("Desert"));
-            mapType.AddElement(GetHoverText("Winterworld"));
-            mapType.AddElement(GetHoverText("Iceland"));
-            mapType.AddElement(GetHoverText("Moonbase"));
-            mapType.AddElement(GetHoverText("Afterearth"));
-            mapType.AddElement(GetHoverText("Rogue"));
-            mapType.AddElement(GetHoverText("Riverful"));
-            mapType.AddElement(GetHoverText("Oasis"));
-            mapType.AddElement(GetHoverText("Steppe"));
-            mapType.AddElement(GetHoverText("Tundra"));
-            mapType.AddElement(GetHoverText("Darkness"));
-            mapType.AddElement(GetHoverText("Islands"));
+            mapType.AddChild(GetHoverText("Farmers Dream"));
+            mapType.AddChild(GetHoverText("Desert"));
+            mapType.AddChild(GetHoverText("Winterworld"));
+            mapType.AddChild(GetHoverText("Iceland"));
+            mapType.AddChild(GetHoverText("Moonbase"));
+            mapType.AddChild(GetHoverText("Afterearth"));
+            mapType.AddChild(GetHoverText("Rogue"));
+            mapType.AddChild(GetHoverText("Riverful"));
+            mapType.AddChild(GetHoverText("Oasis"));
+            mapType.AddChild(GetHoverText("Steppe"));
+            mapType.AddChild(GetHoverText("Tundra"));
+            mapType.AddChild(GetHoverText("Darkness"));
+            mapType.AddChild(GetHoverText("Islands"));
 
             difficulty.yConstraints.Add(new MarginConstraint(60));
             difficulty.xConstraints.Add(new CenterConstraint());
             difficulty.xConstraints.Add(new AddConstraint(150));
-            difficulty.AddElement(GetHoverText("Easy"));
-            difficulty.AddElement(GetHoverText("Not AS Easy"));
-            difficulty.AddElement(GetHoverText("Medium"));
-            difficulty.AddElement(GetHoverText("Hard"));
-            difficulty.AddElement(GetHoverText("Nightmare"));
+            difficulty.AddChild(GetHoverText("Easy"));
+            difficulty.AddChild(GetHoverText("Not AS Easy"));
+            difficulty.AddChild(GetHoverText("Medium"));
+            difficulty.AddChild(GetHoverText("Hard"));
+            difficulty.AddChild(GetHoverText("Nightmare"));
 
             tabPane.AddElementToTab(mapType, "General");
             tabPane.AddElementToTab(mapTypeText, "General");
@@ -277,11 +277,17 @@ namespace GUILib
 
         private void LoadMapTab(TabPane tabPane)
         {
+            ScrollPane contentPane = new ScrollPane(0, 5, 730, 1f);
+            contentPane.xConstraints.Add(new CenterConstraint());
+            contentPane.heightConstraints.Add(new SubtractConstraint(10));
+
+            tabPane.AddElementToTab(contentPane, "Map");
+
             Text resources = new Text(0, 0, "Resources", 1.3f);
             resources.yConstraints.Add(new MarginConstraint(10));
             resources.xConstraints.Add(new CenterConstraint());
 
-            tabPane.AddElementToTab(resources, "Map");
+            contentPane.AddChild(resources);
 
             Table table = new Table(10, 10, 700, 330);
             table.widthConstraints.Add(new SubtractConstraint(20));
@@ -291,7 +297,9 @@ namespace GUILib
             table.SetColumnCount(0.3f, 0.5333f, 0.7666f);
             table.SetRowCount(60, 110, 160, 210, 260, 310);
 
-            tabPane.AddElementToTab(table, "Map");
+
+
+            contentPane.AddChild(table);
 
             Text size = new Text(0, 0, "Size", 0.8f);
             size.xConstraints.Add(new CenterConstraint());
@@ -362,17 +370,11 @@ namespace GUILib
             Slider uraniumRich = GetSlider();
             table.SetCell(uraniumRich, 3, 5);
 
-
-
-
-
-
-
             Text mapSettings = new Text(0, 0, "Map Settings", 1.3f);
             mapSettings.yConstraints.Add(new MarginConstraint(390));
             mapSettings.xConstraints.Add(new CenterConstraint());
 
-            tabPane.AddElementToTab(mapSettings, "Map");
+            contentPane.AddChild(mapSettings);
 
             Table mapSettingsTable = new Table(10, 10, 700, 330);
             mapSettingsTable.widthConstraints.Add(new SubtractConstraint(20));
@@ -382,7 +384,118 @@ namespace GUILib
             mapSettingsTable.SetColumnCount(0.3f, 0.5333f, 0.7666f);
             mapSettingsTable.SetRowCount(60, 110, 160, 210, 260, 310);
 
-            tabPane.AddElementToTab(mapSettingsTable, "Map");
+            Text mapSize = new Text(0, 0, "Size", 0.8f);
+            mapSize.xConstraints.Add(new CenterConstraint());
+            mapSize.yConstraints.Add(new CenterConstraint());
+            Text mapFrequency = new Text(0, 0, "Frequency", 0.8f);
+            mapFrequency.xConstraints.Add(new CenterConstraint());
+            mapFrequency.yConstraints.Add(new CenterConstraint());
+            Text mapStrength = new Text(0, 0, "Strength", 0.8f);
+            mapStrength.xConstraints.Add(new CenterConstraint());
+            mapStrength.yConstraints.Add(new CenterConstraint());
+            mapSettingsTable.SetCell(mapSize, 1, 0);
+            mapSettingsTable.SetCell(mapFrequency, 2, 0);
+            mapSettingsTable.SetCell(mapStrength, 3, 0);
+
+
+            Text mountains = new Text(0, 0, "Mountains", 0.8f);
+            mountains.xConstraints.Add(new CenterConstraint());
+            mountains.xConstraints.Add(new AddConstraint(20));
+            mountains.yConstraints.Add(new CenterConstraint());
+            Text water = new Text(0, 0, "Water", 0.8f);
+            water.xConstraints.Add(new CenterConstraint());
+            water.xConstraints.Add(new AddConstraint(20));
+            water.yConstraints.Add(new CenterConstraint());
+            Text vegetation = new Text(0, 0, "Vegetation", 0.8f);
+            vegetation.xConstraints.Add(new CenterConstraint());
+            vegetation.xConstraints.Add(new AddConstraint(20));
+            vegetation.yConstraints.Add(new CenterConstraint());
+            Text creatures = new Text(0, 0, "Creatures", 0.8f);
+            creatures.xConstraints.Add(new CenterConstraint());
+            creatures.xConstraints.Add(new AddConstraint(20));
+            creatures.yConstraints.Add(new CenterConstraint());
+            Text structures = new Text(0, 0, "Structures", 0.8f);
+            structures.xConstraints.Add(new CenterConstraint());
+            structures.xConstraints.Add(new AddConstraint(20));
+            structures.yConstraints.Add(new CenterConstraint());
+
+
+            TickBox mountainsBox = new TickBox(20, 0, 20, 20, true);
+            mountainsBox.yConstraints.Add(new CenterConstraint());
+            TickBox waterBox = new TickBox(20, 0, 20, 20, true);
+            waterBox.yConstraints.Add(new CenterConstraint());
+            TickBox vegetationBox = new TickBox(20, 0, 20, 20, true);
+            vegetationBox.yConstraints.Add(new CenterConstraint());
+            TickBox creaturesBox = new TickBox(20, 0, 20, 20, true);
+            creaturesBox.yConstraints.Add(new CenterConstraint());
+            TickBox structuresBox = new TickBox(20, 0, 20, 20, true);
+            structuresBox.yConstraints.Add(new CenterConstraint());
+
+            mapSettingsTable.SetCell(mountains, 0, 1);
+            mapSettingsTable.SetCell(mountainsBox, 0, 1);
+            mapSettingsTable.SetCell(water, 0, 2);
+            mapSettingsTable.SetCell(waterBox, 0, 2);
+            mapSettingsTable.SetCell(vegetation, 0, 3);
+            mapSettingsTable.SetCell(vegetationBox, 0, 3);
+            mapSettingsTable.SetCell(creatures, 0, 4);
+            mapSettingsTable.SetCell(creaturesBox, 0, 4);
+            mapSettingsTable.SetCell(structures, 0, 5);
+            mapSettingsTable.SetCell(structuresBox, 0, 5);
+
+
+            Slider mountainsSize = GetSlider();
+            mapSettingsTable.SetCell(mountainsSize, 1, 1);
+            mapSettingsTable.SetCellHoverText("Physical size of mountains", 1, 1);
+            Slider mountainsFreq = GetSlider();
+            mapSettingsTable.SetCell(mountainsFreq, 2, 1);
+            mapSettingsTable.SetCellHoverText("Amount of mountains in the world", 2, 1);
+            Slider mountainsStre = GetSlider();
+            mapSettingsTable.SetCell(mountainsStre, 3, 1);
+            mapSettingsTable.SetCellHoverText("Height of mountains", 3, 1);
+
+            Slider waterSize = GetSlider();
+            mapSettingsTable.SetCell(waterSize, 1, 2);
+            mapSettingsTable.SetCellHoverText("Physical size of waters", 1, 2);
+            Slider waterFreq = GetSlider();
+            mapSettingsTable.SetCell(waterFreq, 2, 2);
+            mapSettingsTable.SetCellHoverText("Amount of waters in the world", 2, 2);
+            Slider waterStre = GetSlider();
+            mapSettingsTable.SetCell(waterStre, 3, 2);
+            mapSettingsTable.SetCellHoverText("The physical force water exerts", 3, 2);
+
+            Slider vegetationSize = GetSlider();
+            mapSettingsTable.SetCell(vegetationSize, 1, 3);
+            mapSettingsTable.SetCellHoverText("Physical size of mountains", 1, 3);
+            Slider vegetationFreq = GetSlider();
+            mapSettingsTable.SetCell(vegetationFreq, 2, 3);
+            mapSettingsTable.SetCellHoverText("Amount of mountains in the world", 2, 3);
+            Slider vegetationStre = GetSlider();
+            mapSettingsTable.SetCell(vegetationStre, 3, 3);
+            mapSettingsTable.SetCellHoverText("Height of mountains", 3, 3);
+
+            Slider creaturesSize = GetSlider();
+            mapSettingsTable.SetCell(creaturesSize, 1, 4);
+            mapSettingsTable.SetCellHoverText("The amount of creatures in each group", 1, 4);
+            Slider creaturesFreq = GetSlider();
+            mapSettingsTable.SetCell(creaturesFreq, 2, 4);
+            mapSettingsTable.SetCellHoverText("Amount of creature groups in the world", 2, 4);
+            Slider creaturesStre = GetSlider();
+            mapSettingsTable.SetCell(creaturesStre, 3, 4);
+            mapSettingsTable.SetCellHoverText("Strength of creatures", 3, 4);
+
+            Slider structuresSize = GetSlider();
+            mapSettingsTable.SetCell(structuresSize, 1, 5);
+            mapSettingsTable.SetCellHoverText("Physical size of structures", 1, 5);
+            Slider structuresFreq = GetSlider();
+            mapSettingsTable.SetCell(structuresFreq, 2, 5);
+            mapSettingsTable.SetCellHoverText("Amount of structures in the world", 2, 5);
+            Slider structuresStre = GetSlider();
+            mapSettingsTable.SetCell(structuresStre, 3, 5);
+            mapSettingsTable.SetCellHoverText("Resistance of structures against attacks", 3, 5);
+
+
+            contentPane.AddChild(mapSettingsTable);
+
         }
 
         private Slider GetSlider()
@@ -444,9 +557,6 @@ namespace GUILib
 
             guiRenderer.CleanUp();
         }
-
-
-
 
 
 

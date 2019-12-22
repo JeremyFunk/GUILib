@@ -32,6 +32,7 @@ namespace GUILib.GUI
         public abstract Material GetWindowTopBarMaterial();
         public abstract Material GetTabFillMaterial();
         public abstract Material GetTabEdgeMaterial();
+
         public abstract Material GetTabActiveMaterial();
         public abstract Material GetTabHoveredMaterial();
         public abstract Material GetTabClickedMaterial();
@@ -41,6 +42,19 @@ namespace GUILib.GUI
         public abstract Material GetSliderQuadMaterial();
         public abstract Material GetMouseInfoFillMaterial();
         public abstract Material GetMouseInfoEdgeMaterial();
+        public abstract Material GetScrollPaneFillMaterial();
+        public abstract Material GetScrollPaneEdgeMaterial(); 
+        public abstract Material GetScrollPaneScrollBarBackgroundMaterial();
+        public abstract Material GetScrollPaneScrollBarMaterial();
+        public abstract Material GetScrollPaneScrollBarEdgeMaterial();
+
+        public abstract Material GetTickBoxEdgeMaterial();
+        public abstract Material GetTickBoxHoverMaterial();
+        public abstract Material GetTickBoxDefaultMaterial();
+        public abstract Material GetTickBoxClickedMaterial();
+        public abstract Material GetTickBoxClickMaterial();
+
+        public abstract int GetTickBoxEdgeSize();
         public abstract int GetWindowEdgeSize();
         public abstract int GetWindowTopBarSize();
         public abstract int GetTabHeight();
@@ -49,8 +63,9 @@ namespace GUILib.GUI
         public abstract int GetTableEdgeSize();
         public abstract int GetMouseInfoEdgeSize();
 
-
-        public abstract int GetButtonEdgeSize();
+        public abstract int GetScrollPaneEdgeSize();
+        public abstract int GetScrollPaneScrollBarWidth();
+        public abstract int GetButtonEdgeSize(); 
         public abstract int GetInitialDropDownPadding();
         public abstract float GetButtonFontSize();
     }

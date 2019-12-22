@@ -55,53 +55,80 @@ namespace GUILib.GUI.GuiElements
             AddChild(quad);
         }
 
+        public void SetCellHoverText(string text, int column, int row, float delay = 0)
+        {
+            Vector2i key = new Vector2i(row, column);
+            if (tableCells.ContainsKey(key))
+            {
+                tableCells[key].SetHoverDelay(delay);
+                tableCells[key].SetHoverText(text);
+            }
+            else
+            {
+                AddContainerToCell(column, row); 
+                tableCells[key].SetHoverDelay(delay);
+                tableCells[key].SetHoverText(text);
+            }
+        }
+
         public void SetCell(GuiElement element, int column, int row)
         {
             Vector2i key = new Vector2i(row, column);
 
             if (!tableCells.ContainsKey(key))
             {
-                APixelConstraint x = null;
-                APixelConstraint y = null;
-                APixelConstraint w = null;
-                APixelConstraint h = null;
-
-                if (column == 0)
-                    x = 0;
-                else if (column >= tableColumns.Length)
-                    x = tableColumns[tableColumns.Length - 1];
-                else
-                    x = tableColumns[column - 1];
-
-                if (row == 0)
-                    y = tableRows[0];
-                else if (row >= tableRows.Length)
-                    y = 0;
-                else
-                    y = tableRows[row - 1];
-
-                if (column == 0)
-                    w = tableColumns[0];
-                else if (column >= tableColumns.Length)
-                    w = 1f - tableColumns[tableColumns.Length - 1];
-                else
-                    w = tableColumns[column] - tableColumns[column - 1];
-
-                if (row == 0)
-                    h = 1f - tableRows[0];
-                else if(row >= tableRows.Length)
-                    h = tableRows[tableRows.Length - 1];
-                else
-                    h = (tableRows[row] - tableRows[row - 1]);
-
-                Container c = new Container(x, y, w, h);
-
-                tableCells.Add(key, c);
-                AddChild(c);
+                AddContainerToCell(column, row);
             }
 
-
             tableCells[key].AddChild(element);
+        }
+
+        private void AddContainerToCell(int column, int row)
+        {
+            Vector2i key = new Vector2i(row, column);
+
+            APixelConstraint x = null;
+            APixelConstraint y = null;
+            APixelConstraint w = null;
+            APixelConstraint h = null;
+
+            if (column == 0)
+                x = 0;
+            else if (column >= tableColumns.Length)
+                x = tableColumns[tableColumns.Length - 1];
+            else
+                x = tableColumns[column - 1];
+
+            if (column == 0)
+                w = tableColumns[0];
+            else if (column >= tableColumns.Length)
+                w = 1f - tableColumns[tableColumns.Length - 1];
+            else
+                w = tableColumns[column] - tableColumns[column - 1];
+
+
+
+            if (row == 0)
+                y = tableRows[0];
+            else if (row >= tableRows.Length)
+                y = 0;
+            else
+                y = tableRows[row];
+
+
+            if (row == 0)
+                h = 1f - tableRows[0];
+            else if (row >= tableRows.Length)
+                h = tableRows[tableRows.Length - 1];
+            else
+                h = (tableRows[row - 1] - tableRows[row]);
+
+            Container c = new Container(x, y, w, h);
+
+            Console.WriteLine(c.curHeight);
+
+            tableCells.Add(key, c);
+            AddChild(c);
         }
 
         /*

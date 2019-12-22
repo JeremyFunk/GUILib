@@ -16,9 +16,23 @@ namespace GUILib.GUI.GuiElements
 {
     class Container : GuiElement
     {
+        private static Random r = new Random();
+
         public Container(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex) 
-        { 
-            //Quad q = new Quad(new Material(new Vector4(1, 0, 0, 1)), 0, 0, 0, 0); q.generalConstraint = new FillConstraintGeneral(); AddChild(q);
+        {
+            //Quad q = new Quad(new Material(new Vector4((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble())), 0, 0, 0, 0); q.generalConstraint = new FillConstraintGeneral(); AddChild(q);
+            //q.hoverEvent = Hover;
+        }
+
+        /*private void Hover(MouseEvent e, GuiElement arg2)
+        {
+            if (e.hit && debugIdentifier != "S")
+                Console.WriteLine("hit" + r.Next());
+        }*/
+
+        public List<GuiElement> GetElements()
+        {
+            return GetChildElements();
         }
     }
 }

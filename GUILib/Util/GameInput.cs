@@ -14,6 +14,7 @@ namespace GUILib.Util
         public const int UPS = 60;
         public const float AnimationFramesPerUpdate = 0.5f;
         public const float CursorTickSpeed = 0.5f;
+        public const float ScrollSpeed = 20f;
     }
 
     static class GameInput

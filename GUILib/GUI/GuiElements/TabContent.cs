@@ -30,10 +30,10 @@ namespace GUILib.GUI.GuiElements
             visible = false;
         }
 
-        public void AddData(GuiElement element)
+        public override void AddChild(GuiElement element)
         {
             dataChilds.Add(element);
-            AddChild(element);
+            base.AddChild(element);
         }
     }
 }

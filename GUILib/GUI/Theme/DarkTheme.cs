@@ -9,7 +9,8 @@ namespace GUILib.GUI
 {
     class DarkTheme : Theme
     {
-        private readonly int buttonEdgeSize = 3, windowEdgeSize = 3, windowTopBarSize = 35, tabHeight = 35, tabWidth = 130, tabEdgeSize = 3, fieldEdgeSize = 3, tableEdgeSize = 3, mouseInfoEdgeSize = 3;
+        private readonly int buttonEdgeSize = 3, windowEdgeSize = 3, windowTopBarSize = 35, tabHeight = 35, tabWidth = 130, tabEdgeSize = 3, fieldEdgeSize = 3, tableEdgeSize = 3, mouseInfoEdgeSize = 3, scrollPaneEdgeSize = 3, tickBoxEdgeSize = 1;
+        private readonly int scrollBarWidth = 20;
 
         private readonly int initialDropDownPadding = 10;
 
@@ -31,6 +32,11 @@ namespace GUILib.GUI
         private readonly Material sliderMaterial = new Material(new Vector4(0.55f, 0.55f, 0.55f, 1f)), sliderQuadMaterial = new Material(new Vector4(0.85f, 0.85f, 0.85f, 1f));
 
         private readonly Material mouseInfoFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f)), mouseInfoEdgeMaterial = new Material(new Vector4(0.6f, 0.6f, 0.6f, 1f));
+        private readonly Material scrollPaneFillMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 1f)), scrollPaneEdgeMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 1f)), 
+            scrollBarBackgroundFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f)), scrollBarFillMaterial = new Material(new Vector4(0.5f, 0.5f, 0.5f, 1f)), scrollBarEdgeMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 1f));
+
+        private readonly Material tickBoxDefaultMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 0.5f)), tickBoxHoverMaterial = new Material(new Vector4(0.6f, 0.6f, 0.6f, 0.7f)), tickBoxClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.9f)),
+            tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png")), tickBoxEdgeMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 1f));
 
         public override Material GetBrightHighlightMaterial()
         {
@@ -210,6 +216,71 @@ namespace GUILib.GUI
         public override int GetMouseInfoEdgeSize()
         {
             return mouseInfoEdgeSize;
+        }
+
+        public override Material GetScrollPaneFillMaterial()
+        {
+            return scrollPaneFillMaterial;
+        }
+
+        public override Material GetScrollPaneEdgeMaterial()
+        {
+            return scrollPaneEdgeMaterial;
+        }
+
+        public override int GetScrollPaneEdgeSize()
+        {
+            return scrollPaneEdgeSize;
+        }
+
+        public override int GetScrollPaneScrollBarWidth()
+        {
+            return scrollBarWidth;
+        }
+
+        public override Material GetScrollPaneScrollBarBackgroundMaterial()
+        {
+            return scrollBarBackgroundFillMaterial;
+        }
+
+        public override Material GetScrollPaneScrollBarMaterial()
+        {
+            return scrollBarFillMaterial;
+        }
+
+        public override Material GetScrollPaneScrollBarEdgeMaterial()
+        {
+            return scrollBarEdgeMaterial;
+        }
+
+        public override Material GetTickBoxEdgeMaterial()
+        {
+            return tickBoxEdgeMaterial;
+        }
+
+        public override Material GetTickBoxHoverMaterial()
+        {
+            return tickBoxHoverMaterial;
+        }
+
+        public override Material GetTickBoxDefaultMaterial()
+        {
+            return tickBoxDefaultMaterial;
+        }
+
+        public override Material GetTickBoxClickedMaterial()
+        {
+            return tickBoxClickedMaterial;
+        }
+
+        public override Material GetTickBoxClickMaterial()
+        {
+            return tickBoxClickMaterial;
+        }
+
+        public override int GetTickBoxEdgeSize()
+        {
+            return tickBoxEdgeSize;
         }
     }
 }

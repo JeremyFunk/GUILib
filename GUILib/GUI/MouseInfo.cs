@@ -25,8 +25,6 @@ namespace GUILib.GUI
         {
             quad = new BorderedQuad(0, 0, 0, 0, Theme.defaultTheme.GetMouseInfoFillMaterial(), Theme.defaultTheme.GetMouseInfoEdgeMaterial(), Theme.defaultTheme.GetMouseInfoEdgeSize(), float.MaxValue - 1);
 
-            quad.debugIdentifier = "C";
-
             quad.visible = false;
             scene.AddParent(quad);
         }

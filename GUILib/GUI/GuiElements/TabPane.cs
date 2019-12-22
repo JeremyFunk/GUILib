@@ -49,9 +49,7 @@ namespace GUILib.GUI.GuiElements
             BorderedQuad quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
             quad.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - Theme.defaultTheme.GetTabEdgeSize()));
 
-            AddChild(quad);
-
-
+            base.AddChild(quad);
         }
 
         public void AddTab(TabData tab)
@@ -104,7 +102,7 @@ namespace GUILib.GUI.GuiElements
 
         private void AddElementToTab(GuiElement element, Tab tab)
         {
-            tabContent[tab].AddData(element);
+            tabContent[tab].AddChild(element);
         }
 
         private void TabClicked(MouseEvent e, GuiElement el)

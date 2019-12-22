@@ -23,7 +23,7 @@ namespace GUILib.GUI.GuiElements
             this.padding = padding;
         }
 
-        public void AddElement(GuiElement element)
+        public override void AddChild(GuiElement element)
         {
             if(elements.Count > 0)
             {
@@ -51,7 +51,7 @@ namespace GUILib.GUI.GuiElements
             }
 
 
-            AddChild(element);
+            base.AddChild(element);
         }
     }
 }

@@ -23,6 +23,10 @@ namespace GUILib.GUI.GuiElements
     {
         public string debugIdentifier = "";
 
+        private string hoverText = "";
+        private float hoverDelay = 0, hoverCounter = 0;
+        private bool usesHoverText = false;
+
         private GuiElement parent;
 
         public Animation animation;
@@ -50,6 +54,7 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> mouseButtonReleasedEvent;
         public Action<MouseEvent, GuiElement> mouseButtonPressedMissedEvent;
         public Action<MouseEvent, GuiElement> mouseButtonReleasedMissedEvent;
+        public Action<MouseEvent, GuiElement> mouseWheelEvent;
 
         public bool hovered = false;
 
@@ -127,6 +132,43 @@ namespace GUILib.GUI.GuiElements
             OpenGLUtil.EndStencilDraw();
         }
 
+        public void Update(int width, int height, float delta)
+        {
+            if (hovered && usesHoverText)
+            {
+                hoverCounter += delta;
+                if (hoverCounter > hoverDelay)
+                    MouseInfo.SetMouseInfo(hoverText);
+            }
+
+            if (HandleGeneralConstraints(width, height))
+            {
+
+            }
+            else
+            {
+                curWidth = HandleConstraintsW(widthConstraints, GetCurWidth(), width, height);
+                curHeight = HandleConstraintsH(heightConstraints, GetCurHeight(), width, height);
+
+                curX = HandleConstraintsX(xConstraints, GetCurX(), width, height);
+                curY = HandleConstraintsY(yConstraints, GetCurY(), width, height);
+            }
+
+            curOpacity = animationOffsetOpacity + opacity;
+
+            animation?.Update(delta, this);
+
+            UpdateElement(delta);
+
+            Vector2 realSize = GetScreenScale();
+
+            foreach (GuiElement element in childElements)
+            {
+                if (element.visible)
+                    element.Update((int)realSize.X, (int)realSize.Y, delta);
+            }
+        }
+
         public void FirstUpdate(int width, int height, float delta)
         {
             if (HandleGeneralConstraints(width, height))
@@ -159,9 +201,13 @@ namespace GUILib.GUI.GuiElements
         public void MouseEvent(MouseEvent e)
         {
             bool hoverResult = false;
-
             if (e.hit)
             {
+                if(e.mouseWheel != 0)
+                {
+                    mouseWheelEvent?.Invoke(e, this);
+                }
+
                 hoverResult = true;
                 if (!hovered)
                 {
@@ -236,6 +282,8 @@ namespace GUILib.GUI.GuiElements
 
                 if (defaultMaterial != null)
                     curMaterial = defaultMaterial;
+
+                hoverCounter = 0;
             }
 
             hovered = hoverResult;
@@ -297,35 +345,7 @@ namespace GUILib.GUI.GuiElements
 
         public virtual void KeyEventElement(KeyEvent e) { }
 
-        public void Update(int width, int height, float delta)
-        {
-            if(HandleGeneralConstraints(width, height))
-            {
-
-            }
-            else
-            {
-                curWidth = HandleConstraintsW(widthConstraints, GetCurWidth(), width, height);
-                curHeight = HandleConstraintsH(heightConstraints, GetCurHeight(), width, height);
-
-                curX = HandleConstraintsX(xConstraints, GetCurX(), width, height);
-                curY = HandleConstraintsY(yConstraints, GetCurY(), width, height);
-            }
-
-            curOpacity = animationOffsetOpacity + opacity;
-
-            animation?.Update(delta, this);
-            
-            UpdateElement(delta);
-
-            Vector2 realSize = GetScreenScale();
-
-            foreach (GuiElement element in childElements)
-            {
-                if (element.visible)
-                    element.Update((int)realSize.X, (int)realSize.Y, delta);
-            }
-        }
+        
 
         private bool HandleGeneralConstraints(int width, int height)
         {
@@ -474,6 +494,25 @@ namespace GUILib.GUI.GuiElements
             curY = y;
         }
 
+        public void SetHoverDelay(float delay)
+        {
+            this.hoverDelay = delay;
+        }
+
+        public void SetHoverText(string text)
+        {
+            this.hoverText = text;
+            usesHoverText = true;
+        }
+        public void SetHoverTextUsage(bool usesHoverText)
+        {
+            this.usesHoverText = usesHoverText;
+        }
+
+        protected List<GuiElement> GetChildElements()
+        {
+            return childElements;
+        }
 
         //The real visible position
         private Vector2 GetScreenOffset()
