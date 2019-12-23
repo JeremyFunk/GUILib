@@ -18,7 +18,6 @@ namespace GUILib.GUI.GuiElements
         private Text text;
         public bool defaultBehaviour = false;
         private BorderedQuad quad;
-        public Material defaultMaterial;
 
         public BorderedButton(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", bool defaultBehaviour = false, float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
@@ -53,20 +52,22 @@ namespace GUILib.GUI.GuiElements
             }
 
             defaultMaterial = fillMaterial;
+            clickMaterial = Theme.defaultTheme.GetButtonClickMaterial();
+            hoverMaterial = Theme.defaultTheme.GetButtonHoverMaterial();
         }
 
 
-        private static void HoverStart(MouseEvent e, GuiElement el)
+        private void HoverStart(MouseEvent e, GuiElement el)
         {
-            ((BorderedButton)el).SetMaterial(Theme.defaultTheme.GetButtonHoverMaterial());
+            SetMaterial(hoverMaterial);
         }
-        private static void HoverEnd(MouseEvent e, GuiElement el)
+        private void HoverEnd(MouseEvent e, GuiElement el)
         {
-            ((BorderedButton)el).SetMaterial(((BorderedButton)el).defaultMaterial);
+            SetMaterial(defaultMaterial);
         }
-        private static void Click(MouseEvent e, GuiElement el)
+        private void Click(MouseEvent e, GuiElement el)
         {
-            ((BorderedButton)el).SetMaterial(Theme.defaultTheme.GetButtonClickMaterial());
+            SetMaterial(clickMaterial);
         }
 
         public void SetMaterial(Material material)

@@ -125,9 +125,7 @@ namespace GUILib.GUI.GuiElements
             OpenGLUtil.StartStencilDraw();
 
             shader.ResetVAO();
-            shader.SetTransform(offset, GetScreenScale());
-
-            new Material(new Vector4(1)).PrepareRender(shader, 1);
+            new Material(new Vector4(1)).PrepareRender(shader, 1, offset, GetScreenScale());
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
 
             OpenGLUtil.EndStencilDraw();

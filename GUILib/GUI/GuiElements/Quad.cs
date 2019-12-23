@@ -25,9 +25,7 @@ namespace GUILib.GUI.GuiElements
         {
             shader.ResetVAO();
 
-            material.PrepareRender(shader, opacity);
-            shader.SetTransform(trans, scale);
-
+            material.PrepareRender(shader, opacity, trans, scale);
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
         }
 

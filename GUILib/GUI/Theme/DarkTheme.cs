@@ -43,6 +43,7 @@ namespace GUILib.GUI
         private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png")), rightArrowMaterial = new Material(new Texture("RightArrow.png")), downArrowMaterial = new Material(new Texture("DownArrow.png")),
             upArrowMaterial = new Material(new Texture("UpArrow.png"));
 
+        private readonly Material seperatorMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f));
         public override Material GetBrightHighlightMaterial()
         {
             throw new NotImplementedException();
@@ -93,9 +94,9 @@ namespace GUILib.GUI
             throw new NotImplementedException();
         }
 
-        public override Material GetPanelSeperatorMaterial()
+        public override Material GetSeperatorMaterial()
         {
-            throw new NotImplementedException();
+            return seperatorMaterial;
         }
 
         public override Material GetWindowBackgroundMaterial()

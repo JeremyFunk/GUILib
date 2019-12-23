@@ -40,12 +40,14 @@ namespace GUILib.GUI
         }
 
 
-        public void PrepareRender(GuiShader shader, float opacity)
+        public void PrepareRender(GuiShader shader, float opacity, Vector2 offset, Vector2 scale)
         {
             Vector4 color = new Vector4(this.color.X, this.color.Y, this.color.Z, this.color.W * opacity);
 
+            shader.SetTransform(offset, scale);
+
             shader.SetUseRoundEdges(roundEdges);
-            shader.SetEdgeWidth(edgeSize);
+            shader.SetEdgeWidth(edgeSize, scale);
 
             shader.SetRenderMode(renderMode);
             if (renderMode == RenderMode.Color)

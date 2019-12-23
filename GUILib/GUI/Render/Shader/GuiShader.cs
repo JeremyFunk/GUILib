@@ -40,7 +40,7 @@ namespace GUILib.GUI.Render.Shader
             SetUniform(roundEdgeUniform, roundEdges);
         }
 
-        internal void SetEdgeWidth(int edgeWidth)
+        internal void SetEdgeWidth(int edgeWidth, Vector2 scale)
         {
             SetUniform(edgeWidthUniform, edgeWidth);
         }

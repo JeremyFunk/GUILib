@@ -17,7 +17,6 @@ namespace GUILib.GUI.GuiElements
 {
     class ScrollPane : GuiElement
     {
-        private int highestY;
         private Container elementContainer;
         private BorderedQuad scrollBar;
 
@@ -25,9 +24,9 @@ namespace GUILib.GUI.GuiElements
         bool drag = false;
 
         private float scroll = 0;
-        private bool scrollable = true;
+        private bool scrollable = false;
 
-        private int yOffset = 0, lastYOffset = 0;
+        private int yOffset = 0;
 
         public ScrollPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fill = null, Material edge = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
@@ -37,7 +36,7 @@ namespace GUILib.GUI.GuiElements
             q.generalConstraint = new FillConstraintGeneral();
             base.AddChild(q);
 
-            elementContainer = new Container(0, 0, 1f, 0);
+            elementContainer = new Container(0, 0, 1f, 1f);
             elementContainer.debugIdentifier = "S";
 
             edgeSize = edgeSize == -1 ? Theme.defaultTheme.GetScrollPaneEdgeSize() : edgeSize;
@@ -51,7 +50,7 @@ namespace GUILib.GUI.GuiElements
             base.AddChild(elementContainer);
             base.AddChild(border);
 
-            scrollBar = new BorderedQuad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 0.5f, Theme.defaultTheme.GetScrollPaneScrollBarMaterial(), Theme.defaultTheme.GetScrollPaneScrollBarEdgeMaterial(), edgeSize);
+            scrollBar = new BorderedQuad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarMaterial(), Theme.defaultTheme.GetScrollPaneScrollBarEdgeMaterial(), edgeSize);
             scrollBar.xConstraints.Add(new MarginConstraint(0));
 
             scrollBar.mouseButtonPressedEvent = ScrollBarDragEvent;
@@ -63,40 +62,53 @@ namespace GUILib.GUI.GuiElements
             base.AddChild(scrollBar);
         }
 
-        bool firstUpdate = true;
-
         public override void UpdateElement(float delta)
         {
-            highestY = 0;
-
-            foreach (GuiElement element in elementContainer.GetElements())
-                if (element.curY > highestY)
-                {
-                    highestY = element.curY;
-                }
-
-            yOffset = -(elementContainer.curHeight - curHeight);
-            if(yOffset != lastYOffset)
+            UpdateContainer();
+        }
+        bool firstUpdate = true;
+        int lastHeight = 0;
+        private void UpdateContainer()
+        {
+            if(lastHeight != curHeight)
             {
-                elementContainer.SetY(yOffset);
-                lastYOffset = yOffset;
+                elementContainer.SetHeight(curHeight);
+                lastHeight = curHeight;
             }
 
-            if (highestY > curHeight)
+
+            int lowestY = int.MaxValue;
+
+            foreach (GuiElement element in elementContainer.GetElements())
             {
+                if (element.curY < lowestY)
+                {
+                    lowestY = element.curY;
+                }
+            }
+
+            if (lowestY < 0)
+            {
+                scrollBar.SetHeight((int)(((float)curHeight / (curHeight - lowestY)) * curHeight));
+
+                elementContainer.SetHeight(curHeight - lowestY);
+                elementContainer.SetY(lowestY);
                 scrollable = true;
-                scrollBar.SetHeight((int)(((float)curHeight / elementContainer.curHeight) * curHeight));
+
+                yOffset = lowestY;
 
                 if (firstUpdate)
                 {
-                    scrollBar.SetY(curHeight - scrollBar.curHeight);
                     firstUpdate = false;
+                    scrollBar.SetY(curHeight - scrollBar.curHeight);
                 }
             }
-            else 
+            else if(elementContainer.curHeight - lowestY < curHeight)
             {
-                scrollBar.SetHeight(curHeight);
                 scrollable = false;
+                scrollBar.SetHeight(curHeight);
+                scrollBar.SetY(0);
+                elementContainer.SetY(curHeight - elementContainer.curHeight);
             }
         }
 
@@ -184,6 +196,7 @@ namespace GUILib.GUI.GuiElements
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
+
                     elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
 
                     scrollBar.SetY(newY);
@@ -195,14 +208,6 @@ namespace GUILib.GUI.GuiElements
         public override void AddChild(GuiElement element)
         {
             elementContainer.AddChild(element);
-
-            //elementContainer.debugIdentifier = "J"; TODO
-
-            if (element.curY < 0)
-                elementContainer.SetHeight(elementContainer.curHeight - element.curY);
-
-            elementContainer.SetY(yOffset);
-
         }
     }
 }

@@ -31,7 +31,7 @@ namespace GUILib.GUI
 
         public abstract Material GetPanelEdgeMaterial();
         public abstract Material GetPanelFillMaterial();
-        public abstract Material GetPanelSeperatorMaterial();
+        public abstract Material GetSeperatorMaterial();
 
         public abstract Material GetBrightHighlightMaterial();
 

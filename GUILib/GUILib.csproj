@@ -137,6 +137,10 @@
     <Content Include="Resource\Icons\Close.png" />
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\badge.png" />
+    <Content Include="Resource\Textures\Delete.png" />
+    <Content Include="Resource\Textures\DeleteClick.png" />
+    <Content Include="Resource\Textures\DeleteHover.png" />
     <Content Include="Resource\Textures\DownArrow.png" />
     <Content Include="Resource\Textures\LeftArrow.png" />
     <Content Include="Resource\Textures\RightArrow.png" />

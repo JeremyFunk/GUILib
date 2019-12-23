@@ -23,7 +23,7 @@ namespace GUILib
     {
         private GuiRenderer guiRenderer;
         private GuiScene scene;
-        private Window window;
+        private Window newGameWindow, loadGameWindow;
 
         private Table mapSettingsTable;
 
@@ -53,14 +53,15 @@ namespace GUILib
 
             LoadBackground();
 
-            LoadWindow();
+            NewGameWindow();
+            LoadGameWindow();
 
             scene.FirstUpdate(0.0001f);
         }
 
         private void LoadBackground()
         {
-            GuiElement background = new Quad(new Material(new Texture("Background.jpg"), 0, true), 0, 0, 0, 0);
+            GuiElement background = new Quad(new Material(new Texture("Background.jpg"), 0, false), 0, 0, 0, 0);
             background.zIndex = -2;
             background.generalConstraint = new FillConstraintGeneral();
 
@@ -75,61 +76,15 @@ namespace GUILib
             scene.AddParent(text);
             scene.AddParent(text2);
         }
-
-        private void LoadWindow()
-        {
-            window = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
-            window.heightConstraints.Add(new MinConstraint(540));
-            window.visible = false;
-
-            BorderedButton confirmButton = new BorderedButton(0, 10, 140, 40, "Confirm", true, 0.9f);
-            confirmButton.xConstraints.Add(new MarginConstraint(10));
-
-            BorderedButton cancelButton = new BorderedButton(0, 10, 140, 40, "Cancel", true, 0.9f);
-            cancelButton.xConstraints.Add(new MarginConstraint(10 + 140 + 5));
-
-            TextField nameField = new TextField(255, 10, 1f, 40, "Enter Map Name...");
-            nameField.widthConstraints.Add(new SubtractConstraint(260 + 10 + 140 + 5 + 140));
-
-            window.AddChild(confirmButton);
-            window.AddChild(cancelButton);
-            window.AddChild(nameField);
-
-            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
-            mapIcon.yConstraints.Add(new MarginConstraint(40));
-
-            TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
-            mapInfo.heightConstraints.Add(new SubtractConstraint(300));
-
-            TabPane tabPane = new TabPane(255, 60, 1f, 1f, new Material(new Vector4(0.5f, 0.5f, 0.5f, 0.6f)));
-            tabPane.yConstraints.Add(new MarginConstraint(40));
-            tabPane.widthConstraints.Add(new SubtractConstraint(265));
-            tabPane.heightConstraints.Add(new SubtractConstraint(window.GetTopBarSize() + 5 + 57));
-
-            TabData generalData = new TabData("General");
-
-            tabPane.AddTab(generalData);
-            tabPane.AddTab(new TabData("Map"));
-            tabPane.AddTab(new TabData("Advanced", 160));
-
-            LoadGeneralTab(tabPane);
-
-            window.AddChild(mapIcon);
-            window.AddChild(mapInfo);
-            window.AddChild(tabPane);
-            scene.AddParent(window);
-
-            LoadMapTab(tabPane);
-        }
-
         private void LoadGameMenu()
         {
-            VerticalList vList = new VerticalList(50, 0.5f, 300, 320, 5, 0);
+            VerticalList vList = new VerticalList(50, 0.5f, 300, 320, 5);
             vList.yConstraints.Add(new CenterConstraint());
 
             GuiElement quad = new BorderedButton(0, 0, 250, 60, "New Game");
             quad.mouseButtonReleasedEvent = NewGame;
             GuiElement quad2 = new BorderedButton(0, 0, 250, 60, "Load Game");
+            quad2.mouseButtonReleasedEvent = LoadGame;
             GuiElement quad3 = new BorderedButton(0, 0, 250, 60, "Options");
             GuiElement quad4 = new BorderedButton(0, 0, 250, 60, "Credits");
             GuiElement quad5 = new BorderedButton(0, 0, 250, 60, "Quit Game");
@@ -207,6 +162,130 @@ namespace GUILib
             vList.AddChild(quad5);
 
             scene.AddParent(vList);
+        }
+
+
+        private void LoadGame(MouseEvent e, GuiElement el)
+        {
+            if (e.leftButtonDown)
+                loadGameWindow.visible = true;
+        }
+
+        private void LoadGameWindow()
+        {
+            loadGameWindow = new Window(0.2f, 0.2f, 0.6f, 0.6f, "Load Game...", 1);
+            loadGameWindow.heightConstraints.Add(new MinConstraint(540));
+            loadGameWindow.visible = false;
+
+            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
+            mapIcon.yConstraints.Add(new MarginConstraint(40));
+            loadGameWindow.AddChild(mapIcon);
+
+            TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
+            mapInfo.heightConstraints.Add(new SubtractConstraint(300));
+            loadGameWindow.AddChild(mapInfo);
+
+            ScrollPane scrollPane = new ScrollPane(255, 0, 1f, 1f);
+            scrollPane.yConstraints.Add(new MarginConstraint(40));
+            scrollPane.heightConstraints.Add(new SubtractConstraint(50));
+            scrollPane.widthConstraints.Add(new SubtractConstraint(255 + 255));
+            loadGameWindow.AddChild(scrollPane);
+
+            BorderedButton loadButton = new BorderedButton(0, 10, 240, 40, "Load Game", true, 0.9f);
+            loadButton.xConstraints.Add(new MarginConstraint(10));
+            loadGameWindow.AddChild(loadButton);
+
+            BorderedButton deleteButton = new BorderedButton(0, 10, 40, 40, "", true, 0.9f, new Material(new Texture("Delete.png")));
+            deleteButton.hoverMaterial = new Material(new Texture("DeleteHover.png"));
+            deleteButton.clickMaterial = new Material(new Texture("DeleteClick.png"));
+            deleteButton.yConstraints.Add(new MarginConstraint(40));
+            deleteButton.xConstraints.Add(new MarginConstraint(10));
+            loadGameWindow.AddChild(deleteButton);
+
+            BorderedButton copyButton = new BorderedButton(0, 10, 195, 40, "Copy", true, 0.9f);
+            copyButton.yConstraints.Add(new MarginConstraint(40));
+            copyButton.xConstraints.Add(new MarginConstraint(55));
+            loadGameWindow.AddChild(copyButton);
+
+            TextArea info = new TextArea(0, 55, 240, 1f);
+            info.xConstraints.Add(new MarginConstraint(10));
+            info.heightConstraints.Add(new SubtractConstraint(55 + 85));
+            loadGameWindow.AddChild(info);
+
+            VerticalList gameList = new VerticalList(10, 0, 1f, 1f, 5, true);
+            gameList.yConstraints.Add(new MarginConstraint(10));
+            gameList.widthConstraints.Add(new SubtractConstraint(30));
+            scrollPane.AddChild(gameList);
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText("Hallo"));
+
+            scene.AddParent(loadGameWindow);
+        }
+
+        #region New Game Window
+
+        private void NewGameWindow()
+        {
+            newGameWindow = new Window(0.2f, 0.2f, 0.6f, 0.6f, "New Game...", 1);
+            newGameWindow.heightConstraints.Add(new MinConstraint(540));
+            newGameWindow.widthConstraints.Add(new MinConstraint(1005));
+            newGameWindow.visible = false;
+
+            BorderedButton confirmButton = new BorderedButton(0, 10, 140, 40, "Confirm", true, 0.9f);
+            confirmButton.xConstraints.Add(new MarginConstraint(10));
+
+            BorderedButton cancelButton = new BorderedButton(0, 10, 140, 40, "Cancel", true, 0.9f);
+            cancelButton.xConstraints.Add(new MarginConstraint(10 + 140 + 5));
+
+            TextField nameField = new TextField(255, 10, 1f, 40, "Enter Map Name...");
+            nameField.widthConstraints.Add(new SubtractConstraint(260 + 10 + 140 + 5 + 140));
+
+            newGameWindow.AddChild(confirmButton);
+            newGameWindow.AddChild(cancelButton);
+            newGameWindow.AddChild(nameField);
+
+            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
+            mapIcon.yConstraints.Add(new MarginConstraint(40));
+
+            TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
+            mapInfo.heightConstraints.Add(new SubtractConstraint(300));
+
+            TabPane tabPane = new TabPane(255, 60, 1f, 1f, new Material(new Vector4(0.5f, 0.5f, 0.5f, 0.6f)));
+            tabPane.yConstraints.Add(new MarginConstraint(40));
+            tabPane.widthConstraints.Add(new SubtractConstraint(265));
+            tabPane.heightConstraints.Add(new SubtractConstraint(newGameWindow.GetTopBarSize() + 5 + 57));
+
+            TabData generalData = new TabData("General");
+
+            tabPane.AddTab(generalData);
+            tabPane.AddTab(new TabData("Map"));
+
+            LoadGeneralTab(tabPane);
+
+            newGameWindow.AddChild(mapIcon);
+            newGameWindow.AddChild(mapInfo);
+            newGameWindow.AddChild(tabPane);
+            scene.AddParent(newGameWindow);
+
+            LoadMapTab(tabPane);
         }
 
         private void LoadGeneralTab(TabPane tabPane)
@@ -600,8 +679,17 @@ namespace GUILib
         private void NewGame(MouseEvent e, GuiElement el)
         {
             if (e.leftButtonDown)
-                window.visible = true;
+                newGameWindow.visible = true;
         }
+
+
+        private Text GetText(string text)
+        {
+            Text curText = new Text(10, 0, text, 0.7f);
+            return curText;
+        }
+
+        #endregion
 
         protected override void OnResize(EventArgs e)
         {
