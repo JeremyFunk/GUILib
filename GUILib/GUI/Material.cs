@@ -20,23 +20,32 @@ namespace GUILib.GUI
         private Vector4 color;
         private RenderMode renderMode;
         private Texture texture;
+        private bool roundEdges;
+        private int edgeSize;
 
-        public Material(Vector4 color)
+        public Material(Vector4 color, int edgeSize = 0, bool roundEdges = false)
         {
             this.color = color;
             this.renderMode = RenderMode.Color;
+            this.roundEdges = roundEdges;
+            this.edgeSize = edgeSize;
         }
 
-        public Material(Texture texture)
+        public Material(Texture texture, int edgeSize = 0, bool roundEdges = false)
         {
             this.texture = texture;
             this.renderMode = RenderMode.Texture;
+            this.roundEdges = roundEdges;
+            this.edgeSize = edgeSize;
         }
 
 
         public void PrepareRender(GuiShader shader, float opacity)
         {
             Vector4 color = new Vector4(this.color.X, this.color.Y, this.color.Z, this.color.W * opacity);
+
+            shader.SetUseRoundEdges(roundEdges);
+            shader.SetEdgeWidth(edgeSize);
 
             shader.SetRenderMode(renderMode);
             if (renderMode == RenderMode.Color)

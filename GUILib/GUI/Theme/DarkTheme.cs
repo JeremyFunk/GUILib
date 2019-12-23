@@ -38,6 +38,11 @@ namespace GUILib.GUI
         private readonly Material tickBoxDefaultMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 0.5f)), tickBoxHoverMaterial = new Material(new Vector4(0.6f, 0.6f, 0.6f, 0.7f)), tickBoxClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.9f)),
             tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png")), tickBoxEdgeMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 1f));
 
+        private readonly Material leftRightSliderFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f)), leftRightSliderEdgeMaterial = new Material(new Vector4(0.7f, 0.7f, 0.7f, 1f));
+
+        private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png")), rightArrowMaterial = new Material(new Texture("RightArrow.png")), downArrowMaterial = new Material(new Texture("DownArrow.png")),
+            upArrowMaterial = new Material(new Texture("UpArrow.png"));
+
         public override Material GetBrightHighlightMaterial()
         {
             throw new NotImplementedException();
@@ -281,6 +286,36 @@ namespace GUILib.GUI
         public override int GetTickBoxEdgeSize()
         {
             return tickBoxEdgeSize;
+        }
+
+        public override Material GetLeftRightTextSliderEdgeMaterial()
+        {
+            return leftRightSliderEdgeMaterial;
+        }
+
+        public override Material GetLeftRightTextSliderFillMaterial()
+        {
+            return leftRightSliderFillMaterial;
+        }
+
+        public override Material GetLeftArrowEdgeMaterial()
+        {
+            return leftArrowMaterial;
+        }
+
+        public override Material GetRightArrowEdgeMaterial()
+        {
+            return rightArrowMaterial;
+        }
+
+        public override Material GetUpArrowEdgeMaterial()
+        {
+            return upArrowMaterial;
+        }
+
+        public override Material GetDownArrowEdgeMaterial()
+        {
+            return downArrowMaterial;
         }
     }
 }

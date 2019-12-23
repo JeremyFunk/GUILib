@@ -104,8 +104,6 @@ namespace GUILib.GUI.GuiElements
             Vector2 actualOffset = GetScreenOffset();
             actualOffset = new Vector2(actualOffset.X + offset.X, actualOffset.Y + offset.Y);
 
-            if (debugIdentifier == "Z")
-                Console.WriteLine(GetScreenScale());
 
             if (useStencilBuffer) 
                 DrawThisElementToStencil(shader, actualOffset);
@@ -298,8 +296,6 @@ namespace GUILib.GUI.GuiElements
             if (e.mousePositionLocal.X > curWidth || e.mousePositionLocal.Y > curHeight || e.mousePositionLocal.X < 0 || e.mousePositionLocal.Y < 0 || e.canHit == false)
             {
                 canHit = false;
-                if (debugIdentifier == "J")
-                    Console.WriteLine(e.mousePositionLocal);
             }
 
             if (!e.covered)

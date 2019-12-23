@@ -60,7 +60,7 @@ namespace GUILib
 
         private void LoadBackground()
         {
-            GuiElement background = new Quad(new Material(new Texture("Background.jpg")), 0, 0, 0, 0);
+            GuiElement background = new Quad(new Material(new Texture("Background.jpg"), 0, true), 0, 0, 0, 0);
             background.zIndex = -2;
             background.generalConstraint = new FillConstraintGeneral();
 
@@ -230,7 +230,15 @@ namespace GUILib
             seedText.xConstraints.Add(new SubtractConstraint(145));
 
             ChoiceBox mapType = new ChoiceBox(0, 0, 250, 40, 5, "Map Type", 2);
-            ChoiceBox difficulty = new ChoiceBox(0, 0, 250, 40, 5, "Difficulty", 1);
+
+            List<string> difficulties = new List<string>();
+            difficulties.Add("Easy");
+            difficulties.Add("Not AS Easy");
+            difficulties.Add("Medium");
+            difficulties.Add("Hard");
+            difficulties.Add("Nightmare");
+
+            LeftRightTextSlider difficulty = new LeftRightTextSlider(0, 0, 250, 40, difficulties);
             NumberField seed = new NumberField(0, 0, 210, 40, 0);
 
             seed.yConstraints.Add(new MarginConstraint(110));
@@ -262,11 +270,7 @@ namespace GUILib
             difficulty.yConstraints.Add(new MarginConstraint(60));
             difficulty.xConstraints.Add(new CenterConstraint());
             difficulty.xConstraints.Add(new AddConstraint(150));
-            difficulty.AddChild(GetHoverText("Easy"));
-            difficulty.AddChild(GetHoverText("Not AS Easy"));
-            difficulty.AddChild(GetHoverText("Medium"));
-            difficulty.AddChild(GetHoverText("Hard"));
-            difficulty.AddChild(GetHoverText("Nightmare"));
+            
 
             tabPane.AddElementToTab(mapType, "General");
             tabPane.AddElementToTab(mapTypeText, "General");

@@ -16,6 +16,14 @@ namespace GUILib.GUI
         public abstract Material GetButtonHoverMaterial();
         public abstract Material GetButtonClickMaterial();
 
+        public abstract Material GetLeftArrowEdgeMaterial();
+        public abstract Material GetRightArrowEdgeMaterial();
+        public abstract Material GetUpArrowEdgeMaterial();
+        public abstract Material GetDownArrowEdgeMaterial();
+
+        public abstract Material GetLeftRightTextSliderEdgeMaterial();
+        public abstract Material GetLeftRightTextSliderFillMaterial();
+
         public abstract Material GetFieldEdgeMaterial();
         public abstract Material GetFieldFillMaterial();
         public abstract int GetFieldEdgeSize();

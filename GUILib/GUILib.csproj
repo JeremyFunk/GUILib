@@ -60,6 +60,7 @@
     <Compile Include="GUI\Animations\Transitions\SinTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
+    <Compile Include="GUI\GuiElements\LeftRightTextSlider.cs" />
     <Compile Include="GUI\GuiElements\TickBox.cs" />
     <Compile Include="GUI\GuiElements\ScrollPane.cs" />
     <Compile Include="GUI\MouseInfo.cs" />
@@ -136,12 +137,16 @@
     <Content Include="Resource\Icons\Close.png" />
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
+    <Content Include="Resource\Textures\DownArrow.png" />
+    <Content Include="Resource\Textures\LeftArrow.png" />
+    <Content Include="Resource\Textures\RightArrow.png" />
     <Content Include="Resource\Textures\TickBoxClicked.png" />
     <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />
     <Content Include="Resource\Textures\Background.jpg" />
     <Content Include="Resource\Textures\Fonts\Candara.png" />
     <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />
+    <Content Include="Resource\Textures\UpArrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
