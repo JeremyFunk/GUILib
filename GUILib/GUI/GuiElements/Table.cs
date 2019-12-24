@@ -31,9 +31,9 @@ namespace GUILib.GUI.GuiElements
 
     class Table : GuiElement
     {
-        private BorderedButton quad;
+        private Quad quad;
 
-        private Material fillMaterial, edgeMaterial;
+        private Material fillMaterial, seperatorMaterial;
 
         private APixelConstraint[] tableRows, tableColumns;
         private int edgeSize;
@@ -47,10 +47,13 @@ namespace GUILib.GUI.GuiElements
         public Table(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material pFillMaterial = null, Material pEdgeMaterial = null, float zIndex = 0, int pEdgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             fillMaterial = pFillMaterial == null ? Theme.defaultTheme.GetTableFillMaterial() : pFillMaterial;
-            edgeMaterial = pEdgeMaterial == null ? Theme.defaultTheme.GetTableEdgeMaterial() : pEdgeMaterial;
-            edgeSize = pEdgeSize == -1 ? Theme.defaultTheme.GetTableEdgeSize() : pEdgeSize;
+            seperatorMaterial = pEdgeMaterial == null ? Theme.defaultTheme.GetTableSeperatorMaterial() : pEdgeMaterial;
 
-            quad = new BorderedButton(0, 0, 0, 0, "", false, -1, fillMaterial, edgeMaterial, 0, true, edgeSize);
+            edgeSize = fillMaterial.GetBorderSize();
+
+            seperatorMaterial = new Material(new Vector4(1));
+
+            quad = new Quad(0, 0, 0, 0, fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
             AddChild(quad);
@@ -133,7 +136,7 @@ namespace GUILib.GUI.GuiElements
             tableCells.Add(key, c);
             AddChild(c);
 
-            Quad q = new Quad(new Material(new Vector4(0.2f, 0.2f, 0.2f, 0.8f)), x, y, w, h, 4);
+            Quad q = new Quad(x, y, w, h, new Material(new Vector4(0.2f, 0.2f, 0.2f, 0.8f)));
             q.widthConstraints.Add(new SubtractConstraint(column == tableColumns.Length ? edgeSize * 2 : edgeSize));
             q.xConstraints.Add(new AddConstraint(edgeSize));
             q.yConstraints.Add(new AddConstraint(edgeSize));
@@ -157,7 +160,7 @@ namespace GUILib.GUI.GuiElements
 
             foreach(APixelConstraint c in columns)
             {
-                Quad quad = new Quad(edgeMaterial, c, 0, edgeSize, 1f);
+                Quad quad = new Quad(c, 0, edgeSize, 1f, seperatorMaterial);
                 AddChild(quad);
                 columnBorders.Add(quad);
             }
@@ -176,7 +179,7 @@ namespace GUILib.GUI.GuiElements
             {
                 tableRows[counter] = 1f - c;
 
-                Quad quad = new Quad(edgeMaterial, 0, tableRows[counter], 1f, edgeSize);
+                Quad quad = new Quad(0, tableRows[counter], 1f, edgeSize, seperatorMaterial);
                 AddChild(quad);
                 rowBorders.Add(quad);
 

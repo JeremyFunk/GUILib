@@ -11,8 +11,56 @@ namespace GUILib.GUI.Render.Shader
 {
     class GuiShader : ShaderProgram
     {
-        private static readonly string renderModeUniform = "u_renderMode", textureUniform = "u_texture", colorUniform = "u_color", positionUniform = "u_positionOffset", scaleUniform = "u_scale", absoluteScaleUniform = "u_absScale",
-            roundEdgeUniform = "u_roundEdges", gradientUniform = "u_gradient", edgeWidthUniform = "u_edgeWidth";
+        /*
+         * 
+        uniform int u_renderMode;
+
+        uniform sampler2D u_fillTexture;
+        uniform vec4 u_fillColor;
+
+        uniform sampler2D u_borderTexture;
+        uniform vec4 u_borderColor;
+
+        uniform vec2 u_absScale;
+        uniform vec2 u_normScale;
+        uniform vec2 u_windowScale;
+
+        uniform bool u_roundEdges;
+        uniform float u_edgeRadius;
+
+        uniform bool u_gradient;
+        uniform float u_gradientFalloff;
+
+        uniform bool u_border;
+        uniform float u_borderWidth;
+         */
+        private static readonly string
+            renderModeUniform = "u_renderMode",
+
+            fillTextureUniform = "u_filltexture",
+            fillColorUniform = "u_fillColor",
+
+            borderTextureUniform = "u_borderTexture",
+            borderColorUniform = "u_borderColor",
+
+            absoluteScaleUniform = "u_absScale",
+            normalizedScaleUniform = "u_normScale",
+            windowScaleUniform = "u_windowScale",
+
+            roundEdgesUniform = "u_roundEdges",
+            edgeRadiusUniform = "u_edgeRadius",
+
+            gradientUniform = "u_gradient",
+            gradientFalloffUniform = "u_gradientFalloff",
+            gradientRadiusUniform = "u_gradientRadius",
+            gradientOpacityUniform = "u_gradientOpacity",
+
+            borderUniform = "u_border",
+            borderWidthUniform = "u_borderWidth",
+
+            positionOffsetUniform = "u_positionOffset";
+
+            
 
         private int quadVao;
 
@@ -21,28 +69,86 @@ namespace GUILib.GUI.Render.Shader
         public override void LoadUniforms()
         {
             CreateUniform(renderModeUniform);
-            CreateUniform(textureUniform);
-            CreateUniform(colorUniform);
-            CreateUniform(positionUniform);
-            CreateUniform(scaleUniform);
+
+            CreateUniform(fillTextureUniform);
+            CreateUniform(fillColorUniform);
+            
+            CreateUniform(borderTextureUniform);
+            CreateUniform(borderColorUniform);
+
             CreateUniform(absoluteScaleUniform);
-            CreateUniform(roundEdgeUniform);
+            CreateUniform(normalizedScaleUniform);
+            CreateUniform(windowScaleUniform);
+
+            CreateUniform(roundEdgesUniform);
+            CreateUniform(edgeRadiusUniform);
+
             CreateUniform(gradientUniform);
-            CreateUniform(edgeWidthUniform);
+            CreateUniform(gradientFalloffUniform);
+            CreateUniform(gradientRadiusUniform);
+            CreateUniform(gradientOpacityUniform);
+
+            CreateUniform(borderUniform);
+            CreateUniform(borderWidthUniform);
+
+            CreateUniform(positionOffsetUniform);
+
 
             Start();
-            SetUniform(textureUniform, 0);
+            SetUniform(fillTextureUniform, 0);
+            SetUniform(borderTextureUniform, 0);
             Stop();
         }
 
         internal void SetUseRoundEdges(bool roundEdges)
         {
-            SetUniform(roundEdgeUniform, roundEdges);
+            SetUniform(roundEdgesUniform, roundEdges);
         }
 
-        internal void SetEdgeWidth(int edgeWidth, Vector2 scale)
+        internal void SetEdgeRadius(float radius)
         {
-            SetUniform(edgeWidthUniform, edgeWidth);
+            SetUniform(edgeRadiusUniform, radius);
+        }
+
+        internal void SetBorderVisibility(bool border)
+        {
+            SetUniform(borderUniform, border);
+        }
+
+        internal void SetGradient(bool gradient)
+        {
+            SetUniform(gradientUniform, gradient);
+        }
+
+        internal void SetGradientFalloff(float falloff)
+        {
+            SetUniform(gradientFalloffUniform, falloff);
+        }
+
+        internal void SetGradientRadius(float radius)
+        {
+            
+            SetUniform(gradientRadiusUniform, radius);
+        }
+
+        //Influence of Gradient: The higher the opacity, the lower the alpha value in the center of the gradient effect.
+        internal void SetGradientOpacity(float opacity)
+        {
+            SetUniform(gradientOpacityUniform, opacity);
+        }
+
+        internal void SetBorderWidth(int edgeWidth, Vector2 scale)
+        {
+            float scaler;
+            if (scale[0] > scale[1])
+            {
+                scaler = scale[1];
+            }
+            else
+            {
+                scaler = scale[0];
+            }
+            SetUniform(borderWidthUniform, edgeWidth/scaler);
         }
 
         public void SetRenderMode(RenderMode renderMode)
@@ -61,35 +167,31 @@ namespace GUILib.GUI.Render.Shader
             }
         }
 
-        public void SetColor(Vector4 color)
+        public void SetFillColor(Vector4 color)
         {
-            SetUniform(colorUniform, color);
+            SetUniform(fillColorUniform, color);
         }
 
+        public void SetBorderColor(Vector4 color)
+        {
+            SetUniform(borderColorUniform, color);
+        }
+        
         public void SetTransform(Vector2 offset, Vector2 scale)
         {
-            float absScaleX;
+            
+            Vector2 normScale = NormalizeScale(scale);
 
-            float absScaleY;
-            if (scale.Y < scale.X)
-            {
-                absScaleX = scale.X / scale.Y;
-                absScaleY = 1;
-            }
-            else
-            {
-                absScaleX = 1;
-                absScaleY = scale.Y / scale.X;
-            }
-            Vector2 absScale = new Vector2(absScaleX, absScaleY);
-            scale = new Vector2(scale.X / GameSettings.Width, scale.Y / GameSettings.Height);
-            offset = new Vector2(((offset.X / GameSettings.Width) * 2) - 1 + scale.X, ((offset.Y / GameSettings.Height) * 2) - 1 + scale.Y);
-            SetUniform(positionUniform, offset);
-            SetUniform(scaleUniform, scale);
-            SetUniform(absoluteScaleUniform, absScale);
+            Vector2 winScale = WindowScale(scale);
+            offset = new Vector2(((offset.X / GameSettings.Width) * 2) - 1 + winScale.X, ((offset.Y / GameSettings.Height) * 2) - 1 + winScale.Y);
+            SetUniform(positionOffsetUniform, offset);
+            SetUniform(windowScaleUniform, winScale);
+            SetUniform(absoluteScaleUniform, scale);
+            SetUniform(normalizedScaleUniform, normScale);
 
         }
-
+        
+       
         private int currentVaoID = 0;
         public void SetRenderVAO(int vaoID)
         {
@@ -112,5 +214,29 @@ namespace GUILib.GUI.Render.Shader
                 GL.EnableVertexAttribArray(1);
             }
         }
+
+        private Vector2 NormalizeScale(Vector2 scale)
+        {
+            float newScaleX;
+
+            float newScaleY;
+            if (scale.Y < scale.X)
+            {
+                newScaleX = scale.X / scale.Y;
+                newScaleY = 1;
+            }
+            else
+            {
+                newScaleX = 1;
+                newScaleY = scale.Y / scale.X;
+            }
+            return new Vector2(newScaleX, newScaleY);
+        }
+
+        private Vector2 WindowScale(Vector2 scale)
+        {
+            return new Vector2(scale.X / GameSettings.Width, scale.Y / GameSettings.Height);
+        }
+
     }
 }

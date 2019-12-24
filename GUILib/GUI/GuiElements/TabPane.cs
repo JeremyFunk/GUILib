@@ -36,25 +36,24 @@ namespace GUILib.GUI.GuiElements
         private Dictionary<Tab, string> tabs = new Dictionary<Tab, string>();
         private Dictionary<Tab, TabContent> tabContent = new Dictionary<Tab, TabContent>();
         private Tab activeTab = null;
+        private int borderSize = 0;
 
         public TabPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
                fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
-            if (edgeMaterial == null)
-                edgeMaterial = Theme.defaultTheme.GetButtonEdgeMaterial();
-            if (edgeSize < 0)
-                edgeSize = Theme.defaultTheme.GetButtonEdgeSize();
 
-            BorderedQuad quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
-            quad.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - Theme.defaultTheme.GetTabEdgeSize()));
+            borderSize = fillMaterial.GetBorderSize();
+
+            Quad quad = new Quad(0, 0, width, height, fillMaterial);
+            quad.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - borderSize));
 
             base.AddChild(quad);
         }
 
         public void AddTab(TabData tab)
         {
-            Tab tabQuad = new Tab(tabs.Count * (Theme.defaultTheme.GetTabWidth() - Theme.defaultTheme.GetTabEdgeSize()) + 10, 0, tab.width == null ? Theme.defaultTheme.GetTabWidth() : tab.width, Theme.defaultTheme.GetTabHeight(), tab.name, -1, tab.fillMaterial, tab.edgeMaterial);
+            Tab tabQuad = new Tab(tabs.Count * (Theme.defaultTheme.GetTabWidth() - borderSize) + 10, 0, tab.width == null ? Theme.defaultTheme.GetTabWidth() : tab.width, Theme.defaultTheme.GetTabHeight(), tab.name, -1, tab.fillMaterial, tab.edgeMaterial);
             tabQuad.yConstraints.Add(new MarginConstraint(0));
             tabQuad.SetTextColor(tab.fontColor);
             tabQuad.mouseButtonReleasedEvent = TabClicked;
@@ -62,7 +61,7 @@ namespace GUILib.GUI.GuiElements
             tabs.Add(tabQuad, tab.name);
 
             TabContent content = new TabContent(0, 0, width, height);
-            content.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - Theme.defaultTheme.GetTabEdgeSize()));
+            content.heightConstraints.Add(new SubtractConstraint(Theme.defaultTheme.GetTabHeight() - borderSize));
             tabContent.Add(tabQuad, content);
 
             AddChild(content);

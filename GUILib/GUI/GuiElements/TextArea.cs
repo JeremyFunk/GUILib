@@ -16,29 +16,39 @@ namespace GUILib.GUI.GuiElements
     class TextArea : GuiElement
     {
         private Text text;
+
+        private int lastCurWidth = 0;
+
         public TextArea(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
                 fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
-            if (edgeMaterial == null)
-                edgeMaterial = Theme.defaultTheme.GetButtonEdgeMaterial();
-            if (edgeSize < 0)
-                edgeSize = Theme.defaultTheme.GetButtonEdgeSize();
             if (fontSize < 0)
                 fontSize = 1.2f;
 
-            BorderedQuad quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
-            //quad.generalConstraint = new FillConstraintGeneral();
+            Quad quad = new Quad(0, 0, width, height, fillMaterial);
 
             AddChild(quad);
 
-            if (text != "")
+            this.text = new Text(6, 0, text, fontSize, null, 0, curWidth - 12);
+
+            lastCurWidth = curWidth;
+
+            this.text.yConstraints.Add(new MarginConstraint(3));
+            AddChild(this.text);
+        }
+
+        public void SetText(string text)
+        {
+            this.text.SetText(text);
+        }
+
+        public override void UpdateElement(float delta)
+        {
+            if(lastCurWidth != curWidth)
             {
-                this.text = new Text(6, 0, text, fontSize, null, 0, curWidth - 12);
-                this.text.yConstraints.Add(new MarginConstraint(3));
-                //this.text.xConstraints.Add(new CenterConstraint());
-                //this.text.yConstraints.Add(new CenterConstraint());
-                AddChild(this.text);
+                this.text.SetMaxSize(curWidth - 12);
+                lastCurWidth = curWidth;
             }
         }
     }

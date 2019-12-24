@@ -16,14 +16,14 @@ namespace GUILib.GUI.GuiElements
     {
         public Border(Material material, APixelConstraint width, APixelConstraint height, int borderSize, float zIndex = 0, bool visible = true) : base(width, height, 0, 0, visible, zIndex)
         {
-            Quad left = new Quad(material, 0, 0, borderSize, 1f);
-            Quad right = new Quad(material, 0, 0, borderSize, 1f);
+            Quad left = new Quad(0, 0, borderSize, 1f, material);
+            Quad right = new Quad(0, 0, borderSize, 1f, material);
             right.xConstraints.Add(new MarginConstraint(0));
 
-            Quad bot = new Quad(material, borderSize, 0, 1f, borderSize);
+            Quad bot = new Quad(borderSize, 0, 1f, borderSize, material);
             bot.widthConstraints.Add(new SubtractConstraint(borderSize * 2));
 
-            Quad top = new Quad(material, borderSize, 1f, 1f, borderSize);
+            Quad top = new Quad(borderSize, 1f, 1f, borderSize, material);
             top.yConstraints.Add(new MarginConstraint(0));
             top.widthConstraints.Add(new SubtractConstraint(borderSize * 2));
 

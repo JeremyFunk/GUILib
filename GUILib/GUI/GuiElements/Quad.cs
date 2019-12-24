@@ -16,8 +16,10 @@ namespace GUILib.GUI.GuiElements
     class Quad : GuiElement
     {
         private Material material;
-        public Quad(Material material, APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public Quad(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material material, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
+            if (material == null)
+                throw new NullReferenceException();
             this.material = material;
         }
 
@@ -31,6 +33,7 @@ namespace GUILib.GUI.GuiElements
 
         internal void SetMaterial(Material material)
         {
+
             this.material = material;
         }
     }

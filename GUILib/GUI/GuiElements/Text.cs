@@ -62,5 +62,10 @@ namespace GUILib.GUI.GuiElements
         {
             return text;
         }
+
+        public void SetMaxSize(int width)
+        {
+            font.Reconstruct(text, this, maxSize * 2, fontSize);
+        }
     }
 }

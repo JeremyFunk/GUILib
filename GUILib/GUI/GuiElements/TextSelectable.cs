@@ -16,17 +16,17 @@ namespace GUILib.GUI.GuiElements
 {
     class TextSelectable : GuiElement
     {
-        private Material selectedMaterial, hoverMaterial, defaultMaterial;
         private Quad quad;
         private Text textElement;
+        private bool selected;
 
         public TextSelectable(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text, float fontSize, Material selectedMaterial, Material hoverMaterial, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-            this.selectedMaterial = selectedMaterial;
+            this.clickMaterial = selectedMaterial;
             this.hoverMaterial = hoverMaterial;
             this.defaultMaterial = new Material(new Vector4(0));
             
-            quad = new Quad(defaultMaterial, 0, 0, width, height);
+            quad = new Quad(0, 0, width, height, defaultMaterial);
 
             quad.generalConstraint = new FillConstraintGeneral();
 
@@ -46,24 +46,48 @@ namespace GUILib.GUI.GuiElements
             AddChild(quad);
         }
 
+        public void SetSelected(bool clicked)
+        {
+            selected = clicked;
+
+            if (selected)
+            {
+                quad.SetMaterial(clickMaterial);
+            }
+            else
+            {
+                quad.SetMaterial(defaultMaterial);
+            }
+        }
+
+        public bool IsSelected()
+        {
+            return selected;
+        }
+
         private void StartClick(MouseEvent e, GuiElement el)
         {
-            quad.SetMaterial(hoverMaterial);
+            quad.SetMaterial(clickMaterial);
         }
 
         private void EndHover(MouseEvent e, GuiElement el)
         {
-            quad.SetMaterial(defaultMaterial);
+            if(!selected)
+                quad.SetMaterial(defaultMaterial);
         }
 
         private void EndClick(MouseEvent e, GuiElement el)
         {
-            quad.SetMaterial(hoverMaterial);
+            if(!selected)
+                quad.SetMaterial(hoverMaterial);
+            else
+                quad.SetMaterial(clickMaterial);
         }
 
         private void StartHover(MouseEvent e, GuiElement el)
         {
-            quad.SetMaterial(hoverMaterial);
+            if (!selected) 
+                quad.SetMaterial(hoverMaterial);
         }
 
         public string GetText()

@@ -17,7 +17,7 @@ namespace GUILib.GUI.GuiElements
     {
         private Text text;
         public bool defaultBehaviour = false;
-        private BorderedQuad quad;
+        private Quad quad;
 
         private List<string> options = new List<string>();
         private string selectedText = "";
@@ -30,14 +30,10 @@ namespace GUILib.GUI.GuiElements
 
             if (fillMaterial == null)
                 fillMaterial = Theme.defaultTheme.GetLeftRightTextSliderFillMaterial();
-            if (edgeMaterial == null)
-                edgeMaterial = Theme.defaultTheme.GetLeftRightTextSliderEdgeMaterial();
-            if (edgeSize < 0)
-                edgeSize = Theme.defaultTheme.GetButtonEdgeSize();
             if (fontSize < 0)
                 fontSize = 0.8f;
 
-            quad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, edgeSize);
+            quad = new Quad(0, 0, width, height, fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
             quad.startHoverEvent = StartHover;
@@ -52,11 +48,11 @@ namespace GUILib.GUI.GuiElements
             this.text.yConstraints.Add(new CenterConstraint());
             AddChild(this.text);
 
-            Quad leftQuad = new Quad(Theme.defaultTheme.GetLeftArrowEdgeMaterial(), 10, 0, 20, 20);
+            Quad leftQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetLeftArrowEdgeMaterial());
             leftQuad.yConstraints.Add(new CenterConstraint());
             leftQuad.mouseButtonReleasedEvent = LeftClick;
 
-            Quad rightQuad = new Quad(Theme.defaultTheme.GetRightArrowEdgeMaterial(), 10, 0, 20, 20);
+            Quad rightQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetRightArrowEdgeMaterial());
             rightQuad.yConstraints.Add(new CenterConstraint());
             rightQuad.xConstraints.Add(new MarginConstraint(10));
             rightQuad.mouseButtonReleasedEvent = RightClick;

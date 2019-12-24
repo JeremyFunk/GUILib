@@ -21,24 +21,24 @@ namespace GUILib.GUI.GuiElements
 
         public Window(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string title = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-            Quad background = new Quad(Theme.defaultTheme.GetWindowBackgroundMaterial(), 0, 0, 0, 0);
-            background.generalConstraint = new MarginConstraintGeneral(Theme.defaultTheme.GetWindowEdgeSize());
+            Quad background = new Quad(0, 0, 0, 0, Theme.defaultTheme.GetWindowBackgroundMaterial());
+            background.generalConstraint = new MarginConstraintGeneral(Theme.defaultTheme.GetWindowBorderMaterial().GetBorderSize());
             
-            Quad topBar = new Quad(Theme.defaultTheme.GetWindowTopBarMaterial(), 0, 0, 1f, Theme.defaultTheme.GetWindowTopBarSize());
+            Quad topBar = new Quad(0, 0, 1f, Theme.defaultTheme.GetWindowTopBarSize(), Theme.defaultTheme.GetWindowTopBarMaterial());
             topBar.yConstraints.Add(new MarginConstraint(0));
             topBar.mouseButtonPressedEvent = TopBarDragEvent;
             topBar.mouseButtonPressedMissedEvent = TopBarDragEvent;
             topBar.mouseButtonDownEvent = TopBarDownEvent;
             topBar.mouseButtonReleasedEvent = TopBarReleasedEvent;
 
-            Border border = new Border(Theme.defaultTheme.GetWindowEdgeMaterial(), width, height, Theme.defaultTheme.GetWindowEdgeSize());
+            Border border = new Border(Theme.defaultTheme.GetWindowBorderMaterial(), width, height, Theme.defaultTheme.GetWindowBorderMaterial().GetBorderSize());
             border.generalConstraint = new FillConstraintGeneral();
 
             Material close = new Material(new Texture("Icons/Close.png"));
             Material closeHovered = new Material(new Texture("Icons/CloseHover.png"));
             Material closeClicked = new Material(new Texture("Icons/CloseClick.png"));
 
-            Button closeButton = new Button(0, 0, 28, 28, close);
+            Button closeButton = new Button(0, 0, 28, 28, "", false, 1, close);
             closeButton.xConstraints.Add(new MarginConstraint(9));
             closeButton.yConstraints.Add(new MarginConstraint(5));
 

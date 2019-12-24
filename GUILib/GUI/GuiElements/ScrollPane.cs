@@ -18,7 +18,7 @@ namespace GUILib.GUI.GuiElements
     class ScrollPane : GuiElement
     {
         private Container elementContainer;
-        private BorderedQuad scrollBar;
+        private Quad scrollBar;
 
         float mouseDragY;
         bool drag = false;
@@ -32,25 +32,23 @@ namespace GUILib.GUI.GuiElements
         {
             useStencilBuffer = true;
 
-            Quad q = new Quad(fill == null ? Theme.defaultTheme.GetScrollPaneFillMaterial() : fill, 0, 0, 0, 0); 
+            Quad q = new Quad(0, 0, 0, 0, fill == null ? Theme.defaultTheme.GetScrollPaneFillMaterial() : fill); 
             q.generalConstraint = new FillConstraintGeneral();
             base.AddChild(q);
 
             elementContainer = new Container(0, 0, 1f, 1f);
-            elementContainer.debugIdentifier = "S";
+            elementContainer.debugIdentifier = "J";
 
-            edgeSize = edgeSize == -1 ? Theme.defaultTheme.GetScrollPaneEdgeSize() : edgeSize;
-
-            Border border = new Border(edge == null ? Theme.defaultTheme.GetScrollPaneEdgeMaterial() : edge, 1f, 1f, edgeSize, 1);
+            Border border = new Border(edge == null ? Theme.defaultTheme.GetScrollPaneBorderMaterial() : edge, 1f, 1f, 1);
             border.generalConstraint = new FillConstraintGeneral();
 
-            BorderedQuad scrollBarBackground = new BorderedQuad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial(), edge == null ? Theme.defaultTheme.GetScrollPaneEdgeMaterial() : edge, edgeSize);
+            Quad scrollBarBackground = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial());
             scrollBarBackground.xConstraints.Add(new MarginConstraint(0));
             base.AddChild(scrollBarBackground);
             base.AddChild(elementContainer);
             base.AddChild(border);
 
-            scrollBar = new BorderedQuad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarMaterial(), Theme.defaultTheme.GetScrollPaneScrollBarEdgeMaterial(), edgeSize);
+            scrollBar = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarMaterial());
             scrollBar.xConstraints.Add(new MarginConstraint(0));
 
             scrollBar.mouseButtonPressedEvent = ScrollBarDragEvent;
@@ -68,6 +66,9 @@ namespace GUILib.GUI.GuiElements
         }
         bool firstUpdate = true;
         int lastHeight = 0;
+
+        int updateCounter = 0;
+
         private void UpdateContainer()
         {
             if(lastHeight != curHeight)

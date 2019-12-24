@@ -34,7 +34,7 @@ namespace GUILib.GUI.Render.Fonts.Data
         public void Render(string text, GuiShader shader, Vector4 color, Text textElement)
         {
             shader.SetRenderMode(RenderMode.DistanceFieldFonts);
-            shader.SetColor(color);
+            shader.SetFillColor(color);
             shader.SetRenderVAO(textElement.data.vaoID);
 
             GL.BindTexture(TextureTarget.Texture2D, texture.textureID);

@@ -35,7 +35,7 @@ namespace GUILib.GUI.GuiElements
                 {
                     addSeperatorRun = true;
 
-                    Quad seperator = new Quad(Theme.defaultTheme.GetSeperatorMaterial(), 10, 5, 1f, 2);
+                    Quad seperator = new Quad(10, 5, 1f, 2, Theme.defaultTheme.GetSeperatorMaterial());
                     seperator.widthConstraints.Add(new SubtractConstraint(20));
 
                     AddChild(seperator);

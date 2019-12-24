@@ -40,6 +40,12 @@ namespace GUILib
             scene = new GuiScene();
 
             LoadGameMenuExample();
+            //LoadGameMenuExample();
+
+            LoadBackground();
+
+            Quad quad = new Quad(200, 200, 1520, 820, new Material(new Vector4(1f)));
+            //scene.AddParent(quad);
 
             GameInput.Initialize();
 
@@ -47,6 +53,18 @@ namespace GUILib
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             GL.Enable(EnableCap.Blend);
         }
+
+
+
+
+
+
+
+
+
+
+        #region GameMenu
+
         private void LoadGameMenuExample()
         {
             LoadGameMenu();
@@ -61,7 +79,7 @@ namespace GUILib
 
         private void LoadBackground()
         {
-            GuiElement background = new Quad(new Material(new Texture("Background.jpg"), 0, false), 0, 0, 0, 0);
+            GuiElement background = new Quad(0, 0, 0, 0, new Material(new Texture("Background.jpg")));
             background.zIndex = -2;
             background.generalConstraint = new FillConstraintGeneral();
 
@@ -81,13 +99,18 @@ namespace GUILib
             VerticalList vList = new VerticalList(50, 0.5f, 300, 320, 5);
             vList.yConstraints.Add(new CenterConstraint());
 
-            GuiElement quad = new BorderedButton(0, 0, 250, 60, "New Game");
+            Material menuMaterial = new Material(new Vector4(new Vector4(0.3f, 0.3f, 0.3f, 1f)), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.45f, true, 0.3f, 0.15f, 0.3f);
+            Material hoverMaterial = new Material(new Vector4(new Vector4(0.4f, 0.4f, 0.4f, 1f)), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.45f, true, 0.3f, 0.15f, 0.3f);
+            Material clickMaterial = new Material(new Vector4(new Vector4(0.5f, 0.5f, 0.5f, 1f)), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.45f, true, 0.3f, 0.15f, 0.3f);
+
+
+            GuiElement quad = new Button(0, 0, 250, 60, "New Game", false, 1f, menuMaterial, hoverMaterial, clickMaterial);
             quad.mouseButtonReleasedEvent = NewGame;
-            GuiElement quad2 = new BorderedButton(0, 0, 250, 60, "Load Game");
+            GuiElement quad2 = new Button(0, 0, 250, 60, "Load Game", false, 1f, menuMaterial, hoverMaterial, clickMaterial);
             quad2.mouseButtonReleasedEvent = LoadGame;
-            GuiElement quad3 = new BorderedButton(0, 0, 250, 60, "Options");
-            GuiElement quad4 = new BorderedButton(0, 0, 250, 60, "Credits");
-            GuiElement quad5 = new BorderedButton(0, 0, 250, 60, "Quit Game");
+            GuiElement quad3 = new Button(0, 0, 250, 60, "Options", false, 1f, menuMaterial, hoverMaterial, clickMaterial);
+            GuiElement quad4 = new Button(0, 0, 250, 60, "Credits", false, 1f, menuMaterial, hoverMaterial, clickMaterial);
+            GuiElement quad5 = new Button(0, 0, 250, 60, "Quit Game", false, 1f, menuMaterial, hoverMaterial, clickMaterial);
 
             AnimationKeyframe k1 = new AnimationKeyframe(0);
             AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
@@ -171,13 +194,19 @@ namespace GUILib
                 loadGameWindow.visible = true;
         }
 
+        #region Load Game Window
+
+        private string gameInfoText = "Game Information:\n\nMap Name:\n---\n\nKills:\n---\n\nDeaths:\n---\n\nAchievements:\n---/256\n\nCharacter Level:\n---";
+        private TextArea gameInfo;
+        private VerticalList gameList;
+
         private void LoadGameWindow()
         {
             loadGameWindow = new Window(0.2f, 0.2f, 0.6f, 0.6f, "Load Game...", 1);
             loadGameWindow.heightConstraints.Add(new MinConstraint(540));
             loadGameWindow.visible = false;
 
-            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
+            Quad mapIcon = new Quad(10, 10, 240, 240, new Material(new Texture("Map.png")));
             mapIcon.yConstraints.Add(new MarginConstraint(40));
             loadGameWindow.AddChild(mapIcon);
 
@@ -191,54 +220,131 @@ namespace GUILib
             scrollPane.widthConstraints.Add(new SubtractConstraint(255 + 255));
             loadGameWindow.AddChild(scrollPane);
 
-            BorderedButton loadButton = new BorderedButton(0, 10, 240, 40, "Load Game", true, 0.9f);
+            Button loadButton = new Button(0, 10, 240, 40, "Load Game", true, 0.9f);
             loadButton.xConstraints.Add(new MarginConstraint(10));
             loadGameWindow.AddChild(loadButton);
 
-            BorderedButton deleteButton = new BorderedButton(0, 10, 40, 40, "", true, 0.9f, new Material(new Texture("Delete.png")));
+            Button deleteButton = new Button(0, 10, 40, 40, "", true, 0.9f, new Material(new Texture("Delete.png")));
             deleteButton.hoverMaterial = new Material(new Texture("DeleteHover.png"));
             deleteButton.clickMaterial = new Material(new Texture("DeleteClick.png"));
             deleteButton.yConstraints.Add(new MarginConstraint(40));
             deleteButton.xConstraints.Add(new MarginConstraint(10));
+            //deleteButton.mouseButtonReleasedEvent = Delete;                
             loadGameWindow.AddChild(deleteButton);
 
-            BorderedButton copyButton = new BorderedButton(0, 10, 195, 40, "Copy", true, 0.9f);
+            Button copyButton = new Button(0, 10, 195, 40, "Copy", true, 0.9f);
             copyButton.yConstraints.Add(new MarginConstraint(40));
             copyButton.xConstraints.Add(new MarginConstraint(55));
+            //copyButton.mouseButtonReleasedEvent = Copy;
             loadGameWindow.AddChild(copyButton);
 
-            TextArea info = new TextArea(0, 55, 240, 1f);
-            info.xConstraints.Add(new MarginConstraint(10));
-            info.heightConstraints.Add(new SubtractConstraint(55 + 85));
-            loadGameWindow.AddChild(info);
+            gameInfo = new TextArea(0, 55, 240, 1f, gameInfoText, 0.66f);
+            gameInfo.xConstraints.Add(new MarginConstraint(10));
+            gameInfo.heightConstraints.Add(new SubtractConstraint(55 + 85));
+            loadGameWindow.AddChild(gameInfo);
 
-            VerticalList gameList = new VerticalList(10, 0, 1f, 1f, 5, true);
+            gameList = new VerticalList(10, 0, 1f, 1f, 5, true);
             gameList.yConstraints.Add(new MarginConstraint(10));
             gameList.widthConstraints.Add(new SubtractConstraint(30));
             scrollPane.AddChild(gameList);
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
-            gameList.AddChild(GetText("Hallo"));
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
+            gameList.AddChild(GetText());
 
             scene.AddParent(loadGameWindow);
         }
+
+        private void Copy(MouseEvent e, GuiElement el)
+        {
+            foreach(TextSelectable selectable in texts)
+            {
+                if (selectable.IsSelected())
+                {
+                    TextSelectable curText = new TextSelectable(15, 0, 1f, 40, selectable.GetText(), 0.7f, new Material(new Vector4(1f, 1f, 1f, 0.4f)), new Material(new Vector4(1f, 1f, 1f, 0.2f)));
+                    curText.widthConstraints.Add(new SubtractConstraint(30));
+                    curText.mouseButtonReleasedEvent = GameClicked;
+                    texts.Add(curText);
+                    gameList.AddChild(GetText());
+
+                    return;
+                }
+            }
+        }
+
+        private void Delete(MouseEvent e, GuiElement el)
+        {
+            
+        }
+
+        private string[] words = { "Adult", "Aeroplane", "Air", "Airforce", "Airport", "Album", "Alphabet", "Apple", "Arm", "Army", "Baby", "Baby", "Backpack", "Balloon", "Banana", "Bank", "Barbecue", "Bathroom", "Bathtub", "Bed", "Bed", "Bee", "Bible", "Bible", "Bird", "Bomb", "Book", "Boss", "Bottle", "Bowl", "Box", "Boy", "Brain", "Bridge", "Butterfly", "Button", "Cappuccino", "Car", "Car-race", "Carpet", "Carrot", "Cave", "Chair", "Chess Board", "Chief", "Child", "Chisel", "Chocolates", "Church", "Church", "Circle", "Circus", "Circus", "Clock", "Clown", "Coffee", "Comet", "Compass", "Computer", "Crystal", "Cup", "Cycle", "Data Base", "Desk", "Diamond", "Dress", "Drill", "Drink", "Drum", "Dung", "Ears", "Earth", "Egg", "Elephant", "Eraser", "Explosive", "Eyes", "Family", "Fan", "Feather", "Festival", "Film", "Finger", "Fire", "Floodlight", "Flower", "Foot", "Fork", "Freeway", "Fruit", "Fungus", "Game", "Garden", "Gas", "Gate", "Gemstone", "Girl", "Gloves", "God", "Grapes", "Guitar", "Hammer", "Hat", "Hieroglyph", "Highway", "Horoscope", "Horse", "Hose", "Ice", "Ice-cream", "Insect", "Jet fighter", "Junk", "Kaleidoscope", "Kitchen", "Knife", "Leather jacket", "Leg", "Library", "Liquid", "Magnet", "Man", "Map", "Maze", "Meat", "Meteor", "Microscope", "Milk", "Milkshake", "Mist", "Money", "Monster", "Mosquito", "Mouth", "Nail", "Navy", "Necklace", "Needle", "Onion", "Pants", "Parachute", "Passport", "Pebble", "Pendulum", "Pepper", "Perfume", "Pillow", "Plane", "Planet", "Pocket", "Potato", "Printer", "Prison", "Pyramid", "Radar", "Rainbow", "Record", "Restaurant", "Rifle", "Ring", "Robot", "Rock", "Rocket", "Roof", "Room", "Rope", "Saddle", "Salt", "Sandpaper", "Sandwich", "Satellite", "School", "Ship", "Shoes", "Shop", "Shower", "Signature", "Skeleton", "Snail", "Software", "Solid", "Space Shuttle", "Spectrum", "Sphere", "Spice", "Spiral", "Spoon", "Square", "Staircase", "Star", "Stomach", "Sun", "Sunglasses", "Surveyor", "Sword", "Table", "Tapestry", "Teeth", "Telescope", "Tiger", "Toilet", "Tongue", "Torch", "Torpedo", "Train", "Treadmill", "Triangle", "Tunnel", "Typewriter", "Umbrella", "Vacuum", "Vampire", "Videotape", "Vulture", "Water", "Weapon", "Web", "Wheelchair", "Window", "Woman", "Worm", "X-ray", };
+        private Random r = new Random();
+
+        private List<TextSelectable> texts = new List<TextSelectable>();
+
+        private TextSelectable GetText()
+        {
+            string word1 = words[r.Next(0, words.Length)];
+            string word2 = words[r.Next(0, words.Length)];
+
+            TextSelectable curText = new TextSelectable(15, 0, 1f, 40, word1 + " " + word2, 0.7f, new Material(new Vector4(1f, 1f, 1f, 0.4f)), new Material(new Vector4(1f, 1f, 1f, 0.2f)));
+            curText.widthConstraints.Add(new SubtractConstraint(30));
+            curText.mouseButtonReleasedEvent = GameClicked;
+            texts.Add(curText);
+            return curText;
+        }
+
+        private void GameClicked(MouseEvent e, GuiElement el)
+        {
+            TextSelectable selectedEl = (TextSelectable)el;
+
+            bool selected = !selectedEl.IsSelected();
+
+            if (selected)
+            {
+                foreach (TextSelectable text in texts)
+                {
+                    text.SetSelected(false);
+                }
+
+                gameInfo.SetText(ReplaceFirst(ReplaceFirst(ReplaceFirst(ReplaceFirst(ReplaceFirst(gameInfoText, "---", selectedEl.GetText()), "---", r.Next(0, 20000) + ""), "---", r.Next(0, 100) + ""), "---", r.Next(0, 256) + ""), "---", r.Next(0, 100) + ""));
+            }
+            else
+            {
+                gameInfo.SetText(gameInfoText);
+            }
+
+            selectedEl.SetSelected(selected);
+        }
+
+        public string ReplaceFirst(string text, string search, string replace)
+        {
+            int pos = text.IndexOf(search);
+            if (pos < 0)
+            {
+                return text;
+            }
+            return text.Substring(0, pos) + replace + text.Substring(pos + search.Length);
+        }
+
+        #endregion
 
         #region New Game Window
 
@@ -249,10 +355,10 @@ namespace GUILib
             newGameWindow.widthConstraints.Add(new MinConstraint(1005));
             newGameWindow.visible = false;
 
-            BorderedButton confirmButton = new BorderedButton(0, 10, 140, 40, "Confirm", true, 0.9f);
+            Button confirmButton = new Button(0, 10, 140, 40, "Confirm", true, 0.9f);
             confirmButton.xConstraints.Add(new MarginConstraint(10));
 
-            BorderedButton cancelButton = new BorderedButton(0, 10, 140, 40, "Cancel", true, 0.9f);
+            Button cancelButton = new Button(0, 10, 140, 40, "Cancel", true, 0.9f);
             cancelButton.xConstraints.Add(new MarginConstraint(10 + 140 + 5));
 
             TextField nameField = new TextField(255, 10, 1f, 40, "Enter Map Name...");
@@ -262,7 +368,7 @@ namespace GUILib
             newGameWindow.AddChild(cancelButton);
             newGameWindow.AddChild(nameField);
 
-            BorderedQuad mapIcon = new BorderedQuad(10, 10, 240, 240, new Material(new Texture("Map.png")), new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f)), 2);
+            Quad mapIcon = new Quad(10, 10, 240, 240, new Material(new Texture("Map.png")));
             mapIcon.yConstraints.Add(new MarginConstraint(40));
 
             TextArea mapInfo = new TextArea(10, 10, 240, 1f, "This is very important information about the game map. Lorem ipsum dolor sit amet.", 0.7f);
@@ -324,7 +430,7 @@ namespace GUILib
             seed.xConstraints.Add(new CenterConstraint());
             seed.xConstraints.Add(new AddConstraint(130));
 
-            Button seedButton = new Button(0, 0, 30, 30, new Material(new Texture("Loop.png")));
+            Button seedButton = new Button(0, 0, 30, 30, "", false, 1, new Material(new Texture("Loop.png")));
             seedButton.yConstraints.Add(new MarginConstraint(115));
             seedButton.xConstraints.Add(new CenterConstraint());
             seedButton.xConstraints.Add(new AddConstraint(250 + 5));
@@ -682,15 +788,12 @@ namespace GUILib
                 newGameWindow.visible = true;
         }
 
-
-        private Text GetText(string text)
-        {
-            Text curText = new Text(10, 0, text, 0.7f);
-            return curText;
-        }
-
         #endregion
-
+        #endregion GameMenu
+        
+        
+        
+        
         protected override void OnResize(EventArgs e)
         {
             GameSettings.Width = Width;

@@ -22,16 +22,16 @@ namespace GUILib.GUI.GuiElements
 
         private TextSelectable topElement = null;
         
-        private BorderedQuad quad;
-        private BorderedQuad dropDown;
+        private Quad quad;
+        private Quad dropDown;
 
         private bool selected, newSelected;
 
         public ChoiceBox(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, int padding, string noSelection, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             this.padding = padding;
-            quad = new BorderedQuad(0, 0, 1f, height, Theme.defaultTheme.GetButtonFillMaterial(), Theme.defaultTheme.GetButtonEdgeMaterial(), Theme.defaultTheme.GetButtonEdgeSize());
-            dropDown = new BorderedQuad(0, 0, 1f, 0, Theme.defaultTheme.GetButtonFillMaterial(), Theme.defaultTheme.GetButtonEdgeMaterial(), 1);
+            quad = new Quad(0, 0, 1f, height, Theme.defaultTheme.GetButtonFillMaterial());
+            dropDown = new Quad(0, 0, 1f, 0, Theme.defaultTheme.GetButtonFillMaterial());
             dropDown.visible = false;
 
             quad.mouseButtonReleasedEvent = QuadClicked;

@@ -33,22 +33,20 @@ namespace GUILib.GUI.GuiElements
             this.fillMaterialHover = fillMaterialHover == null ? Theme.defaultTheme.GetTickBoxHoverMaterial() : fillMaterialHover;
             this.fillMaterialDefault = fillMaterialDefault == null ? Theme.defaultTheme.GetTickBoxDefaultMaterial() : fillMaterialDefault;
             fillMaterialClicked = fillMaterialClicked == null ? Theme.defaultTheme.GetTickBoxClickedMaterial() : fillMaterialClicked;
-            edgeMaterial = edgeMaterial == null ? Theme.defaultTheme.GetTickBoxEdgeMaterial() : edgeMaterial;
-            edgeSize = edgeSize == -1 ? Theme.defaultTheme.GetTickBoxEdgeSize() : edgeSize;
 
-            quad = new Quad(this.fillMaterialDefault, 0, 0, 0, 0);
+            int borderWidth = this.fillMaterialDefault.GetBorderSize();
+
+            quad = new Quad(0, 0, 0, 0, this.fillMaterialDefault);
             quad.generalConstraint = new FillConstraintGeneral();
 
-            clickQuad = new Quad(fillMaterialClicked, 0, 0, 1f, 1f, 1);
-            quad.generalConstraint = new FillConstraintGeneral();
+            clickQuad = new Quad(borderWidth, borderWidth, 1f, 1f, fillMaterialClicked, 1);
+            clickQuad.widthConstraints.Add(new SubtractConstraint(borderWidth * 2));
+            clickQuad.heightConstraints.Add(new SubtractConstraint(borderWidth * 2));
+
             clickQuad.visible = ticked;
-
-            Border border = new Border(edgeMaterial, 0, 0, edgeSize, 2);
-            border.generalConstraint = new FillConstraintGeneral();
 
             AddChild(quad);
             AddChild(clickQuad);
-            AddChild(border);
         }
 
         public bool IsClicked()

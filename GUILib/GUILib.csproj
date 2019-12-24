@@ -82,7 +82,6 @@
     <Compile Include="GUI\PixelConstraints\CombinedSubtractConstraint.cs" />
     <Compile Include="GUI\PixelConstraints\PixelConstraint.cs" />
     <Compile Include="GUI\PixelConstraints\PixelSizeConstraint.cs" />
-    <Compile Include="GUI\GuiElements\BorderedQuad.cs" />
     <Compile Include="GUI\GuiElements\ChoiceBox.cs" />
     <Compile Include="GUI\GuiElements\Container.cs" />
     <Compile Include="GUI\GuiElements\Slider.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="GUI\GuiElements\Table.cs" />
     <Compile Include="GUI\GuiElements\TabPane.cs" />
     <Compile Include="GUI\GuiElements\Button.cs" />
-    <Compile Include="GUI\GuiElements\BorderedButton.cs" />
     <Compile Include="GUI\GuiElements\GuiElement.cs" />
     <Compile Include="GUI\GuiElements\NumberField.cs" />
     <Compile Include="GUI\GuiElements\TextField.cs" />

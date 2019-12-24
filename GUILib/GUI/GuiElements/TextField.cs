@@ -16,7 +16,7 @@ namespace GUILib.GUI.GuiElements
 {
     class TextField : GuiElement
     {
-        private BorderedQuad quad;
+        private Quad quad;
         private Text defaultText, textElement, textElementCursor;
         private float timer;
 
@@ -25,7 +25,7 @@ namespace GUILib.GUI.GuiElements
         public TextField(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
 
-            quad = new BorderedQuad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldFillMaterial() : fillMaterial, edgeMaterial == null ? Theme.defaultTheme.GetFieldEdgeMaterial() : edgeMaterial, edgeSize == -1 ? Theme.defaultTheme.GetFieldEdgeSize() : edgeSize);
+            quad = new Quad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldFillMaterial() : fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
             quad.mouseButtonReleasedEvent = Click;

@@ -15,10 +15,8 @@ namespace GUILib.GUI.GuiElements
 {
     class Tab : GuiElement
     {
-        private List<GuiElement> dataChilds = new List<GuiElement>();
-
         private Text textElement;
-        private BorderedQuad tabQuad;
+        private Quad tabQuad;
 
         private bool active = false;
 
@@ -26,12 +24,10 @@ namespace GUILib.GUI.GuiElements
         {
             if (fillMaterial == null)
                 fillMaterial = Theme.defaultTheme.GetTabFillMaterial();
-            if (edgeMaterial == null)
-                edgeMaterial = Theme.defaultTheme.GetTabEdgeMaterial();
             if (fontSize < 0)
                 fontSize = 0.8f;
 
-            tabQuad = new BorderedQuad(0, 0, width, height, fillMaterial, edgeMaterial, Theme.defaultTheme.GetTabEdgeSize());
+            tabQuad = new Quad(0, 0, width, height, fillMaterial);
 
             tabQuad.mouseButtonPressedEvent = MousePressed;
             tabQuad.hoverEvent = Hover;
@@ -52,21 +48,21 @@ namespace GUILib.GUI.GuiElements
         private void EndHover(MouseEvent e, GuiElement el)
         {
             if(!active)
-                tabQuad.SetFillMaterial(defaultMaterial);
+                tabQuad.SetMaterial(defaultMaterial);
             else
-                tabQuad.SetFillMaterial(Theme.defaultTheme.GetTabActiveMaterial());
+                tabQuad.SetMaterial(Theme.defaultTheme.GetTabActiveMaterial());
         }
 
         private void Hover(MouseEvent e, GuiElement el)
         {
             if(!active)
-                tabQuad.SetFillMaterial(Theme.defaultTheme.GetTabHoveredMaterial());
+                tabQuad.SetMaterial(Theme.defaultTheme.GetTabHoveredMaterial());
         }
 
         private void MousePressed(MouseEvent e, GuiElement el)
         {
             if(e.leftButtonDown)
-                tabQuad.SetFillMaterial(Theme.defaultTheme.GetTabClickedMaterial());
+                tabQuad.SetMaterial(Theme.defaultTheme.GetTabClickedMaterial());
         }
 
         public void SetTextColor(Vector4 color)
@@ -77,12 +73,12 @@ namespace GUILib.GUI.GuiElements
         public void Activate()
         {
             active = true;
-            tabQuad.SetFillMaterial(Theme.defaultTheme.GetTabActiveMaterial());
+            tabQuad.SetMaterial(Theme.defaultTheme.GetTabActiveMaterial());
         }
         public void Deactivate()
         {
             active = false;
-            tabQuad.SetFillMaterial(defaultMaterial);
+            tabQuad.SetMaterial(defaultMaterial);
         }
     }
 }

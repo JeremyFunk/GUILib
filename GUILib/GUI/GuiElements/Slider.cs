@@ -28,19 +28,19 @@ namespace GUILib.GUI.GuiElements
 
             curMaterial = material == null ? Theme.defaultTheme.GetSliderMaterial() : material;
 
-            Quad centerQuad = new Quad(curMaterial, 0, 0, 1f, 4);
+            Quad centerQuad = new Quad(0, 0, 1f, 4, curMaterial);
             centerQuad.yConstraints.Add(new CenterConstraint());
 
-            Quad leftQuad = new Quad(curMaterial, 0, 0, 4, 1f);
+            Quad leftQuad = new Quad(0, 0, 4, 1f, curMaterial);
             leftQuad.yConstraints.Add(new CenterConstraint());
 
-            Quad rightQuad = new Quad(curMaterial, 0, 0, 4, 1f);
+            Quad rightQuad = new Quad(0, 0, 4, 1f, curMaterial);
             rightQuad.yConstraints.Add(new CenterConstraint());
             rightQuad.xConstraints.Add(new MarginConstraint(0));
 
             float resultFactor = number == lowerValue ? 0 : (number - lowerValue) / (higherValue - lowerValue);
 
-            quad = new Quad(Theme.defaultTheme.GetSliderQuadMaterial(), resultFactor, 0, 4, 1f);
+            quad = new Quad(resultFactor, 0, 4, 1f, Theme.defaultTheme.GetSliderQuadMaterial());
 
             AddChild(centerQuad);
             AddChild(leftQuad);

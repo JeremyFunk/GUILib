@@ -17,13 +17,13 @@ namespace GUILib.GUI
 {
     class MouseInfo
     {
-        private static BorderedQuad quad;
+        private static Quad quad;
         private static string newInfo = "";
         private static Text lastText;
 
         public static void Init(GuiScene scene)
         {
-            quad = new BorderedQuad(0, 0, 0, 0, Theme.defaultTheme.GetMouseInfoFillMaterial(), Theme.defaultTheme.GetMouseInfoEdgeMaterial(), Theme.defaultTheme.GetMouseInfoEdgeSize(), float.MaxValue - 1);
+            quad = new Quad(0, 0, 0, 0, Theme.defaultTheme.GetMouseInfoFillMaterial(), float.MaxValue - 1);
             quad.debugIdentifier = "Z";
             quad.visible = false;
             scene.AddParent(quad);
