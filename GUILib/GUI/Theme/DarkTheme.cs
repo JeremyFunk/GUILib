@@ -17,19 +17,21 @@ namespace GUILib.GUI
         private readonly float cursorTickRate = 0.5f;
 
         private readonly Material 
-            buttonFillMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true), 
+            buttonFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f), 
             buttonHoverMaterial = GetDefaultMaterial(new Vector4(0.4f, 0.4f, 0.4f, 1f), true), 
             buttonClickMaterial = GetDefaultMaterial(new Vector4(0.5f, 0.5f, 0.5f, 1f), true);
 
-        private readonly Material 
-            fieldFillMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true);
+        private readonly Material textAreaMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.035f, true, 1f, 0.2f);
+
+        private readonly Material
+            fieldFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f);
 
         private readonly Material 
             tableFillMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true), 
             tableEdgeMaterial = GetDefaultMaterial(new Vector4(0.6f, 0.6f, 0.6f, 1f));
 
         private readonly Material 
-            windowBackgroundMaterial = GetDefaultMaterial(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), true), 
+            windowBackgroundMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.02f, true, 1f, 0.3f, 0.5f), 
             windowEdgeMaterial = GetDefaultMaterial(new Vector4(0.7f, 0.7f, 0.7f, 1f)),
             windowTopBarMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true);
 
@@ -58,8 +60,8 @@ namespace GUILib.GUI
             tickBoxClickMaterial = GetDefaultMaterial(new Vector4(0.8f, 0.8f, 0.8f, 0.9f), true),
             tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png"));
 
-        private readonly Material 
-            leftRightSliderFillMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true);
+        private readonly Material
+            leftRightSliderFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f);
 
         private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png")), rightArrowMaterial = new Material(new Texture("RightArrow.png")), downArrowMaterial = new Material(new Texture("DownArrow.png")),
             upArrowMaterial = new Material(new Texture("UpArrow.png"));
@@ -263,6 +265,11 @@ namespace GUILib.GUI
         public override Material GetWindowBorderMaterial()
         {
             return windowEdgeMaterial;
+        }
+
+        public override Material GetTextAreaMaterial()
+        {
+            return textAreaMaterial;
         }
     }
 }

@@ -25,6 +25,8 @@ namespace GUILib.GUI
         public abstract Material GetFieldFillMaterial();
         public abstract float GetCursorTickRate();
 
+        public abstract Material GetTextAreaMaterial();
+
         public abstract Material GetPanelFillMaterial();
         public abstract Material GetSeperatorMaterial();
 

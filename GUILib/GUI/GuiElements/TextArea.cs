@@ -22,7 +22,7 @@ namespace GUILib.GUI.GuiElements
         public TextArea(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true, int edgeSize = -1) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
-                fillMaterial = Theme.defaultTheme.GetButtonFillMaterial();
+                fillMaterial = Theme.defaultTheme.GetTextAreaMaterial();
             if (fontSize < 0)
                 fontSize = 1.2f;
 
