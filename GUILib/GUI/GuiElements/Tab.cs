@@ -23,7 +23,7 @@ namespace GUILib.GUI.GuiElements
         public Tab(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", float fontSize = -1, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             if (fillMaterial == null)
-                fillMaterial = Theme.defaultTheme.GetTabFillMaterial();
+                fillMaterial = Theme.defaultTheme.GetTabMaterial();
             if (fontSize < 0)
                 fontSize = 0.8f;
 

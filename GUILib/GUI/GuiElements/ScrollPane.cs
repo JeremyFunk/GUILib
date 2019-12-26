@@ -32,7 +32,7 @@ namespace GUILib.GUI.GuiElements
         {
             useStencilBuffer = true;
 
-            Quad q = new Quad(0, 0, 0, 0, fill == null ? Theme.defaultTheme.GetScrollPaneFillMaterial() : fill); 
+            Quad q = new Quad(0, 0, 0, 0, fill == null ? Theme.defaultTheme.GetScrollPaneMaterial() : fill); 
             q.generalConstraint = new FillConstraintGeneral();
             base.AddChild(q);
 

@@ -12,7 +12,7 @@ namespace GUILib.Util
     {
         public static List<GuiElement> GetZIndexSorted(List<GuiElement> elements)
         {
-            elements.Sort((e1, e2) => e1.zIndex.CompareTo(e2.zIndex));
+            elements.Sort((e1, e2) => e1.ZIndex.CompareTo(e2.ZIndex));
 
             return elements;
         }

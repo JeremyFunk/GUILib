@@ -9,29 +9,31 @@ namespace GUILib.GUI
 {
     class DarkTheme : Theme
     {
-        private readonly int windowTopBarSize = 35, tabHeight = 35, tabWidth = 130, tickBoxEdgeSize = 1;
+        private readonly int windowTopBarSize = 35, tabHeight = 35, tabWidth = 130;
         private readonly int scrollBarWidth = 20;
 
         private readonly int initialDropDownPadding = 10;
 
         private readonly float cursorTickRate = 0.5f;
 
-        private readonly Material 
-            buttonFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f), 
-            buttonHoverMaterial = GetDefaultMaterial(new Vector4(0.4f, 0.4f, 0.4f, 1f), true), 
-            buttonClickMaterial = GetDefaultMaterial(new Vector4(0.5f, 0.5f, 0.5f, 1f), true);
+        private readonly Material
+            buttonFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f, 0.5f)),
+            buttonHoverMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f, 0.5f)),
+            buttonClickMaterial = new Material(new Vector4(0.5f, 0.5f, 0.5f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f, 0.5f));
 
-        private readonly Material textAreaMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.035f, true, 1f, 0.2f);
+        private readonly Material textAreaMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.035f), new GradientData(1f, 0.2f));
+
+        private readonly Material choiceBoxFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.035f), new GradientData(1f, 0.2f));
 
         private readonly Material
-            fieldFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f);
+            fieldFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f));
 
         private readonly Material 
             tableFillMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true), 
             tableEdgeMaterial = GetDefaultMaterial(new Vector4(0.6f, 0.6f, 0.6f, 1f));
 
         private readonly Material 
-            windowBackgroundMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.02f, true, 1f, 0.3f, 0.5f), 
+            windowBackgroundMaterial = new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.02f), new GradientData(2f, 0.1f, 0.5f)), 
             windowEdgeMaterial = GetDefaultMaterial(new Vector4(0.7f, 0.7f, 0.7f, 1f)),
             windowTopBarMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 1f), true);
 
@@ -61,7 +63,7 @@ namespace GUILib.GUI
             tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png"));
 
         private readonly Material
-            leftRightSliderFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f, true, 1f, 0.2f);
+            leftRightSliderFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f));
 
         private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png")), rightArrowMaterial = new Material(new Texture("RightArrow.png")), downArrowMaterial = new Material(new Texture("DownArrow.png")),
             upArrowMaterial = new Material(new Texture("UpArrow.png"));
@@ -73,7 +75,7 @@ namespace GUILib.GUI
         {
             if(!useBorder)
                 return new Material(color);
-            return new Material(color, new Vector4(0.7f, 0.7f, 0.7f, 1f), 2);
+            return new Material(color, new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2));
         }
 
 
@@ -92,12 +94,12 @@ namespace GUILib.GUI
             return buttonFillMaterial;
         }
 
-        public override Material GetFieldFillMaterial()
+        public override Material GetFieldMaterial()
         {
             return fieldFillMaterial;
         }
 
-        public override Material GetPanelFillMaterial()
+        public override Material GetPanelMaterial()
         {
             return scrollPaneFillMaterial;
         }
@@ -132,7 +134,7 @@ namespace GUILib.GUI
             return tabWidth;
         }
 
-        public override Material GetTabFillMaterial()
+        public override Material GetTabMaterial()
         {
             return tabFillMaterial;
         }
@@ -167,7 +169,7 @@ namespace GUILib.GUI
             return cursorTickRate;
         }
 
-        public override Material GetTableFillMaterial()
+        public override Material GetTableMaterial()
         {
             return tableFillMaterial;
         }
@@ -182,12 +184,12 @@ namespace GUILib.GUI
             return sliderQuadMaterial;
         }
 
-        public override Material GetMouseInfoFillMaterial()
+        public override Material GetMouseInfoMaterial()
         {
             return mouseInfoFillMaterial;
         }
 
-        public override Material GetScrollPaneFillMaterial()
+        public override Material GetScrollPaneMaterial()
         {
             return scrollPaneFillMaterial;
         }
@@ -227,27 +229,27 @@ namespace GUILib.GUI
             return tickBoxClickMaterial;
         }
 
-        public override Material GetLeftRightTextSliderFillMaterial()
+        public override Material GetLeftRightTextSliderMaterial()
         {
             return leftRightSliderFillMaterial;
         }
 
-        public override Material GetLeftArrowEdgeMaterial()
+        public override Material GetLeftArrowMaterial()
         {
             return leftArrowMaterial;
         }
 
-        public override Material GetRightArrowEdgeMaterial()
+        public override Material GetRightArrowMaterial()
         {
             return rightArrowMaterial;
         }
 
-        public override Material GetUpArrowEdgeMaterial()
+        public override Material GetUpArrowMaterial()
         {
             return upArrowMaterial;
         }
 
-        public override Material GetDownArrowEdgeMaterial()
+        public override Material GetDownArrowMaterial()
         {
             return downArrowMaterial;
         }
@@ -270,6 +272,11 @@ namespace GUILib.GUI
         public override Material GetTextAreaMaterial()
         {
             return textAreaMaterial;
+        }
+
+        public override Material GetChoiceBoxMaterial()
+        {
+            return choiceBoxFillMaterial;
         }
     }
 }

@@ -80,9 +80,9 @@ namespace GUILib.GUI.GuiElements
 
         public bool useStencilBuffer = false;
 
-
+        private float zIndex;
         //The bigger the zIndex, the later gets this element rendered.
-        public float zIndex;
+        public float ZIndex { get { return zIndex; } set { zIndex = value; childElements = Utility.GetZIndexSorted(childElements); } }
 
         public GuiElement(APixelConstraint width, APixelConstraint height, APixelConstraint x, APixelConstraint y, bool visible, float zIndex)
         {

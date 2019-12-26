@@ -79,11 +79,11 @@ namespace GUILib.GUI
                 else
                     localPos = new Vector2(GameInput.mouseX - parent.curX, GameSettings.Height - GameInput.mouseY - parent.curY);
 
-                bool covered = parent.zIndex < zIndex;
+                bool covered = parent.ZIndex < zIndex;
 
                 if (MathsGeometry.IsInsideQuad(mousePos, parent) && !covered)
                 {
-                    zIndex = parent.zIndex;
+                    zIndex = parent.ZIndex;
 
                     if (leftMousePressed)
                     {

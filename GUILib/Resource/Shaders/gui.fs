@@ -8,7 +8,6 @@ uniform int u_renderMode;
 uniform sampler2D u_fillTexture;
 uniform vec4 u_fillColor;
 
-uniform sampler2D u_borderTexture;
 uniform vec4 u_borderColor;
 
 uniform vec2 u_absScale;
@@ -19,6 +18,15 @@ uniform bool u_roundEdges;
 uniform float u_edgeRadius;
 
 uniform bool u_gradient;
+
+uniform bool u_left;
+uniform bool u_right;
+uniform bool u_up;
+uniform bool u_down;
+
+uniform bool inverseGradient;
+
+
 uniform float u_gradientFalloff;
 uniform float u_gradientRadius;
 uniform float u_gradientOpacity;
@@ -28,7 +36,8 @@ uniform float u_borderWidth;
 
 out vec4 color;
 
-const float width = 0.46;
+
+uniform float width;
 const float edge = 0.19;
 
 //---------------------------------------
@@ -151,7 +160,7 @@ float roundEdges(vec2 nCoord, vec2 scale, float radius,float offset)
 
 float gradientSingle(float value, float falloff, float radius)
 {
-    float remap=(value-1+radius)/radius;
+    float remap=(radius - value) / radius;
 	if(remap<0)
 	{
 		return 0;
@@ -159,28 +168,28 @@ float gradientSingle(float value, float falloff, float radius)
     return pow(remap,falloff);
 }
 
-float gradientDirection(vec2 coord, float falloff,float limiter, vec2 scale, int direction,float radius)
+float gradientDirection(vec2 coord, float falloff, vec2 scale, int direction,float radius)
 {
     //coord normalized Coord
     //Direction: 1 := ^, 2 := >, 3 := v , 4 := < 
     float value;
     if(direction==1)
     {
-        value=1-coord.y;
+        value=coord.y;
     }
     else if(direction == 2)
     {
-        value=coord.x-scale.x+1;
+        value=scale.x-coord.x;
     }
     else if(direction == 3)
     {
-        value = coord.y-scale.y+1;
+        value = scale.y-coord.y;
     }
     else
     {
-        value = 1-coord.x;
+        value = coord.x;
     }
-    if(value>limiter || value<0)
+    if(value<0)
     {
         return 0;
     }
@@ -190,15 +199,50 @@ float gradientDirection(vec2 coord, float falloff,float limiter, vec2 scale, int
 float gradientQuad(vec2 coord, vec2 scale, float falloff, float radius)
 {
     //coord is normalized
-    float up = gradientDirection(coord, falloff,1,scale, 1,radius);
-    float left = gradientDirection(coord, falloff,1,scale, 2,radius);
-    float down = gradientDirection(coord, falloff,1,scale, 3,radius);
-    float rigth = gradientDirection(coord, falloff,1,scale, 4,radius);
+    float up = gradientDirection(coord, falloff,scale, 1,radius);
+    float left = gradientDirection(coord, falloff,scale, 2,radius);
+    float down = gradientDirection(coord, falloff,scale, 3,radius);
+    float right = gradientDirection(coord, falloff,scale, 4,radius);
 
-    float YAxis = blendScreen(up,down);
-    float XAxis = blendScreen(left,rigth);
-    return blendScreen(YAxis,XAxis);
-
+    if(u_up == false && u_down == false){
+        if(u_left == false){
+            return right;
+        }else if(u_right == false){
+            return left;
+        }else{
+            return blendScreen(left,right);
+        }
+    }else if(u_up == true && u_down == false){
+        if(u_left == true && u_right == true){
+            return blendScreen(up, blendScreen(right,left));
+        }if(u_left == false && u_right == true){
+            return blendScreen(up, right);
+        }else if(u_left == true && u_right == false){
+            return blendScreen(up, left);
+        }else{
+            return up;
+        }
+    }else if(u_up == false && u_down == true){
+        if(u_left == true && u_right == true){
+            return blendScreen(down, blendScreen(right,left));
+        }if(u_left == false && u_right == true){
+            return blendScreen(down, right);
+        }else if(u_left == true && u_right == false){
+            return blendScreen(down, left);
+        }else{
+            return down;
+        }
+    }else{
+        if(u_left == true && u_right == true){
+            return blendScreen(blendScreen(up,down), blendScreen(right,left));
+        }if(u_left == false && u_right == true){
+            return blendScreen(blendScreen(up,down), right);
+        }else if(u_left == true && u_right == false){
+            return blendScreen(blendScreen(up,down), left);
+        }else{
+            return blendScreen(up,down);
+        }
+    }
 }
 
 float gradientQuad(vec2 coord, vec2 scale, float falloff,float radius, float offset)
@@ -208,6 +252,8 @@ float gradientQuad(vec2 coord, vec2 scale, float falloff,float radius, float off
     {
         return 0;
     }
+    if(inverseGradient)
+        return 1f - gradientQuad(newCoord,scale,falloff,radius);
 	return gradientQuad(newCoord,scale,falloff,radius);
 }
 
@@ -282,8 +328,8 @@ void main()
 {
 	if(u_renderMode==0)
 	{
-        color = textureColor();
-		
+        vec4 texColor = textureColor();
+		color = vec4(u_fillColor.x * texColor.x, u_fillColor.y * texColor.y, u_fillColor.z * texColor.z, u_fillColor.w * texColor.w);
 	}else if(u_renderMode==1)
     {
         color = solidColor();
@@ -293,5 +339,4 @@ void main()
     }else{
         color = vec4(0.5);
     }
-    
 }

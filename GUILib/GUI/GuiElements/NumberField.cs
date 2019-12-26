@@ -24,7 +24,7 @@ namespace GUILib.GUI.GuiElements
 
         public NumberField(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, int number, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-            quad = new Quad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldFillMaterial() : fillMaterial);
+            quad = new Quad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldMaterial() : fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
             quad.mouseButtonReleasedEvent = Click;

@@ -15,69 +15,82 @@ namespace GUILib.GUI
         Texture, Color, DistanceFieldFonts
     }
 
+    class GradientData
+    {
+        public bool left, up, right, down;
+        public bool inverseGradient;
+        public float gradientFalloff, gradientOpacity, gradientRadius;
+
+        public GradientData(float gradientFalloff, float gradientOpacity, float gradientRadius = 0.5f, bool inverseGradient = false, bool left = true, bool up = true, bool right = true, bool down = true)
+        {
+            this.gradientFalloff = gradientFalloff;
+            this.gradientOpacity = gradientOpacity;
+            this.gradientRadius = gradientRadius;
+            this.inverseGradient = inverseGradient;
+
+            this.left = left;
+            this.up = up;
+            this.right = right;
+            this.down = down;
+        }
+    }
+
+    class BorderData
+    {
+        public Vector4 borderColor;
+        public int borderSize;
+        public bool roundEdges;
+        public float radius;
+
+        public BorderData(Vector4 borderColor, int borderSize = 2, bool roundEdges = false, float radius = 0)
+        {
+            this.borderColor = borderColor;
+            this.borderSize = borderSize;
+            this.roundEdges = roundEdges;
+            this.radius = radius;
+        }
+    }
+
     class Material
     {
-        private Vector4 color, borderColor;
-        private RenderMode renderMode;
+        private Vector4 color;
         private Texture texture;
-        private bool usesBorder, roundEdges, usesGradient;
-        private int borderSize;
-        private float radius;
-        private float gradientFalloff, gradientOpacity, gradientRadius;
+        private RenderMode renderMode;
+        private bool usesBorder, usesGradient;
+        private GradientData gradient;
+        private BorderData border;
 
-        public Material(Vector4 color)
+        public Material(Vector4 color, BorderData border = null, GradientData gradient = null)
         {
-            usesBorder = false;
-            usesGradient = false;
+            usesBorder = border != null;
+            usesGradient = gradient != null;
+            this.border = border;
+            this.gradient = gradient;
 
             this.color = color;
             this.renderMode = RenderMode.Color;
         }
 
-        public Material(Texture texture)
+        public Material(Texture texture, BorderData border = null, GradientData gradient = null)
         {
-            usesBorder = false;
-            usesGradient = false;
+            usesBorder = border != null;
+            usesGradient = gradient != null;
+            this.border = border;
+            this.gradient = gradient;
+            color = new Vector4(1);
 
             this.texture = texture;
-            this.renderMode = RenderMode.Texture;
-        }
-
-        public Material(Vector4 color, Vector4 borderColor, int borderSize = 0, bool roundEdges = false, float radius = 0.3f, bool usesGradient = false, float gradientFalloff = 0.6f, float gradientOpacity = 0.3f, float gradientRadius = 0.3f)
-        {
-            this.color = color;
-            this.borderSize = borderSize;
-            this.roundEdges = roundEdges;
-            this.radius = radius;
-            this.usesGradient = usesGradient;
-            this.gradientFalloff = gradientFalloff;
-            this.gradientOpacity = gradientOpacity;
-            this.gradientRadius = gradientRadius;
-            this.usesBorder = true;
-            this.borderColor = borderColor;
-
-            this.renderMode = RenderMode.Color;
-        }
-
-        public Material(Texture texture, Vector4 borderColor, int borderSize = 0, bool roundEdges = false, float radius = 0.3f, bool usesGradient = false, float gradientFalloff = 0.6f, float gradientOpacity = 0.3f, float gradientRadius = 0.3f)
-        {
-            this.texture = texture;
-            this.borderSize = borderSize;
-            this.roundEdges = roundEdges;
-            this.radius = radius;
-            this.usesGradient = usesGradient;
-            this.gradientFalloff = gradientFalloff;
-            this.gradientOpacity = gradientOpacity;
-            this.gradientRadius = gradientRadius;
-            this.usesBorder = true;
-            this.borderColor = borderColor;
-
             this.renderMode = RenderMode.Texture;
         }
 
         public int GetBorderSize()
         {
-            return borderSize;
+            return border == null ? 0 : border.borderSize;
+        }
+
+        public void SetColor(Vector4 color)
+        {
+            this.color = color;
         }
 
         public void PrepareRender(GuiShader shader, float opacity, Vector2 offset, Vector2 scale)
@@ -88,15 +101,38 @@ namespace GUILib.GUI
 
             shader.SetBorderVisibility(usesBorder);
 
-            shader.SetBorderColor(borderColor);
-            shader.SetUseRoundEdges(roundEdges);
-            shader.SetBorderWidth(borderSize, scale);
-            shader.SetEdgeRadius(radius);
+            if (usesBorder)
+            {
+                shader.SetBorderColor(border.borderColor);
+                shader.SetUseRoundEdges(border.roundEdges);
+                shader.SetBorderWidth(border.borderSize, scale);
+                shader.SetEdgeRadius(border.radius);
+            }
+            else
+            {
+                shader.SetBorderColor(new Vector4());
+                shader.SetUseRoundEdges(false);
+                shader.SetBorderWidth(0, scale);
+                shader.SetEdgeRadius(0);
+            }
 
             shader.SetGradient(usesGradient);
-            shader.SetGradientFalloff(gradientFalloff);
-            shader.SetGradientOpacity(gradientOpacity);
-            shader.SetGradientRadius(gradientRadius);
+
+            if (usesGradient)
+            {
+                shader.SetGradientFalloff(gradient.gradientFalloff);
+                shader.SetGradientOpacity(gradient.gradientOpacity);
+                shader.SetGradientRadius(gradient.gradientRadius);
+                shader.SetGradientDirection(gradient.up, gradient.down, gradient.left, gradient.right);
+                shader.SetGradientInverse(gradient.inverseGradient);
+            }else
+            {
+                shader.SetGradientFalloff(0);
+                shader.SetGradientOpacity(0);
+                shader.SetGradientRadius(0);
+                shader.SetGradientDirection(false, false, false, false);
+                shader.SetGradientInverse(false);
+            }
 
 
 
@@ -107,6 +143,8 @@ namespace GUILib.GUI
             }
             else if (renderMode == RenderMode.Texture)
             {
+                shader.SetFillColor(color);
+
                 GL.ActiveTexture(TextureUnit.Texture0);
                 GL.BindTexture(TextureTarget.Texture2D, texture.textureID);
             }

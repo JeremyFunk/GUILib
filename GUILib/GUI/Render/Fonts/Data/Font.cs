@@ -13,10 +13,12 @@ namespace GUILib.GUI.Render.Fonts.Data
 {
     class Font
     {
-        public static readonly Font defaultFont = FontFileParser.LoadFont("Candara");
+        public static Font defaultFont = FontFileParser.LoadFont("Candara");
 
         Dictionary<int, Character> characters = new Dictionary<int, Character>();
         Texture texture;
+
+        public float xAdvance = 0.8f;
 
         public Font(Dictionary<int, Character> characters, Texture texture)
         {

@@ -15,25 +15,29 @@ namespace GUILib.GUI
         public abstract Material GetButtonHoverMaterial();
         public abstract Material GetButtonClickMaterial();
 
-        public abstract Material GetLeftArrowEdgeMaterial();
-        public abstract Material GetRightArrowEdgeMaterial();
-        public abstract Material GetUpArrowEdgeMaterial();
-        public abstract Material GetDownArrowEdgeMaterial();
+        public abstract Material GetLeftArrowMaterial();
+        public abstract Material GetRightArrowMaterial();
+        public abstract Material GetUpArrowMaterial();
+        public abstract Material GetDownArrowMaterial();
 
-        public abstract Material GetLeftRightTextSliderFillMaterial();
+        public abstract Material GetLeftRightTextSliderMaterial();
 
-        public abstract Material GetFieldFillMaterial();
+        public abstract Material GetFieldMaterial();
         public abstract float GetCursorTickRate();
 
         public abstract Material GetTextAreaMaterial();
 
-        public abstract Material GetPanelFillMaterial();
+        public abstract Material GetPanelMaterial();
         public abstract Material GetSeperatorMaterial();
 
         public abstract Material GetWindowBackgroundMaterial();
         public abstract Material GetWindowBorderMaterial();
+
+
+        public abstract Material GetChoiceBoxMaterial();
+
         public abstract Material GetWindowTopBarMaterial();
-        public abstract Material GetTabFillMaterial();
+        public abstract Material GetTabMaterial();
 
         public abstract Material GetTabActiveMaterial();
         public abstract Material GetTabHoveredMaterial();
@@ -42,14 +46,14 @@ namespace GUILib.GUI
 
         public abstract Material GetScrollPaneBorderMaterial();
 
-        public abstract Material GetTableFillMaterial();
+        public abstract Material GetTableMaterial();
         public abstract Material GetSliderMaterial();
         public abstract Material GetSliderQuadMaterial();
 
         public abstract Material GetTableSeperatorMaterial();
 
-        public abstract Material GetMouseInfoFillMaterial();
-        public abstract Material GetScrollPaneFillMaterial();
+        public abstract Material GetMouseInfoMaterial();
+        public abstract Material GetScrollPaneMaterial();
         public abstract Material GetScrollPaneScrollBarBackgroundMaterial();
         public abstract Material GetScrollPaneScrollBarMaterial();
 

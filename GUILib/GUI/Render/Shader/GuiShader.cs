@@ -37,13 +37,11 @@ namespace GUILib.GUI.Render.Shader
         private static readonly string
             renderModeUniform = "u_renderMode",
 
-            fillTextureUniform = "u_filltexture",
+            fillTextureUniform = "u_fillTexture",
             fillColorUniform = "u_fillColor",
 
-            borderTextureUniform = "u_borderTexture",
             borderColorUniform = "u_borderColor",
 
-            absoluteScaleUniform = "u_absScale",
             normalizedScaleUniform = "u_normScale",
             windowScaleUniform = "u_windowScale",
 
@@ -54,13 +52,21 @@ namespace GUILib.GUI.Render.Shader
             gradientFalloffUniform = "u_gradientFalloff",
             gradientRadiusUniform = "u_gradientRadius",
             gradientOpacityUniform = "u_gradientOpacity",
+            inverseGradientUniform = "inverseGradient",
+            upUniform = "u_up",
+            downUniform = "u_down",
+            leftUniform = "u_left",
+            rightUniform = "u_right",
 
             borderUniform = "u_border",
             borderWidthUniform = "u_borderWidth",
 
-            positionOffsetUniform = "u_positionOffset";
+            positionOffsetUniform = "u_positionOffset",
 
-            
+            widthUniform = "width";
+
+
+
 
         private int quadVao;
 
@@ -73,10 +79,8 @@ namespace GUILib.GUI.Render.Shader
             CreateUniform(fillTextureUniform);
             CreateUniform(fillColorUniform);
             
-            CreateUniform(borderTextureUniform);
             CreateUniform(borderColorUniform);
 
-            CreateUniform(absoluteScaleUniform);
             CreateUniform(normalizedScaleUniform);
             CreateUniform(windowScaleUniform);
 
@@ -86,7 +90,13 @@ namespace GUILib.GUI.Render.Shader
             CreateUniform(gradientUniform);
             CreateUniform(gradientFalloffUniform);
             CreateUniform(gradientRadiusUniform);
-            CreateUniform(gradientOpacityUniform);
+            CreateUniform(gradientOpacityUniform); 
+            CreateUniform(inverseGradientUniform); 
+            CreateUniform(upUniform);
+            CreateUniform(downUniform);
+            CreateUniform(leftUniform);
+            CreateUniform(rightUniform);
+            CreateUniform(widthUniform);
 
             CreateUniform(borderUniform);
             CreateUniform(borderWidthUniform);
@@ -96,8 +106,12 @@ namespace GUILib.GUI.Render.Shader
 
             Start();
             SetUniform(fillTextureUniform, 0);
-            SetUniform(borderTextureUniform, 0);
             Stop();
+        }
+
+        public void SetFontWidth(float width)
+        {
+            SetUniform(widthUniform, width);
         }
 
         internal void SetUseRoundEdges(bool roundEdges)
@@ -127,8 +141,20 @@ namespace GUILib.GUI.Render.Shader
 
         internal void SetGradientRadius(float radius)
         {
-            
             SetUniform(gradientRadiusUniform, radius);
+        }
+
+        internal void SetGradientInverse(bool inverse)
+        {
+            SetUniform(inverseGradientUniform, inverse);
+        }
+
+        internal void SetGradientDirection(bool up, bool down, bool left, bool right)
+        {
+            SetUniform(upUniform, up);
+            SetUniform(downUniform, down);
+            SetUniform(leftUniform, left);
+            SetUniform(rightUniform, right);
         }
 
         //Influence of Gradient: The higher the opacity, the lower the alpha value in the center of the gradient effect.
@@ -186,7 +212,6 @@ namespace GUILib.GUI.Render.Shader
             offset = new Vector2(((offset.X / GameSettings.Width) * 2) - 1 + winScale.X, ((offset.Y / GameSettings.Height) * 2) - 1 + winScale.Y);
             SetUniform(positionOffsetUniform, offset);
             SetUniform(windowScaleUniform, winScale);
-            SetUniform(absoluteScaleUniform, scale);
             SetUniform(normalizedScaleUniform, normScale);
 
         }

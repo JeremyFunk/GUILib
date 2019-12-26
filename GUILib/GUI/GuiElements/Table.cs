@@ -46,7 +46,7 @@ namespace GUILib.GUI.GuiElements
 
         public Table(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material pFillMaterial = null, Material pEdgeMaterial = null, float zIndex = 0, int pEdgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-            fillMaterial = pFillMaterial == null ? Theme.defaultTheme.GetTableFillMaterial() : pFillMaterial;
+            fillMaterial = pFillMaterial == null ? Theme.defaultTheme.GetTableMaterial() : pFillMaterial;
             seperatorMaterial = pEdgeMaterial == null ? Theme.defaultTheme.GetTableSeperatorMaterial() : pEdgeMaterial;
 
             edgeSize = fillMaterial.GetBorderSize();

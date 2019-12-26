@@ -114,6 +114,9 @@
     <Compile Include="GUI\Theme\Theme.cs" />
     <Compile Include="Logger\ALogger.cs" />
     <Compile Include="Logger\ConsoleLogger.cs" />
+    <Compile Include="FirstMenu.cs" />
+    <Compile Include="ModernMenu.cs" />
+    <Compile Include="Modern\UnderlinedButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\GameInput.cs" />
@@ -124,9 +127,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Resource\Fonts\Arial.fnt" />
+    <None Include="Resource\Fonts\ArialBlack.fnt" />
+    <None Include="Resource\Fonts\CourierNew.fnt" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Resource\Fonts\Candara.fnt" />
+    <None Include="Resource\Fonts\Consolas.fnt" />
     <None Include="Resource\Fonts\TimesNewRoman.fnt" />
     <None Include="Resource\Shaders\gui.fs" />
     <None Include="Resource\Shaders\gui.vs" />
@@ -136,12 +143,24 @@
     <Content Include="Resource\Icons\CloseClick.png" />
     <Content Include="Resource\Icons\CloseHover.png" />
     <Content Include="Resource\Textures\badge.png" />
+    <Content Include="Resource\Textures\Crystal.png" />
     <Content Include="Resource\Textures\Delete.png" />
     <Content Include="Resource\Textures\DeleteClick.png" />
     <Content Include="Resource\Textures\DeleteHover.png" />
     <Content Include="Resource\Textures\DownArrow.png" />
+    <Content Include="Resource\Textures\EP.png" />
+    <Content Include="Resource\Textures\EPGold.png" />
+    <Content Include="Resource\Textures\Fonts\Arial.png" />
+    <Content Include="Resource\Textures\Fonts\ArialBlack.png" />
+    <Content Include="Resource\Textures\Fonts\Consolas.png" />
+    <Content Include="Resource\Textures\Fonts\CourierNew.png" />
+    <Content Include="Resource\Textures\Friends.png" />
     <Content Include="Resource\Textures\LeftArrow.png" />
+    <Content Include="Resource\Textures\LevelTexture.png" />
+    <Content Include="Resource\Textures\ModernBackground.jpg" />
+    <Content Include="Resource\Textures\Refresh.png" />
     <Content Include="Resource\Textures\RightArrow.png" />
+    <Content Include="Resource\Textures\Settings.png" />
     <Content Include="Resource\Textures\TickBoxClicked.png" />
     <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />
@@ -149,6 +168,7 @@
     <Content Include="Resource\Textures\Fonts\Candara.png" />
     <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />
     <Content Include="Resource\Textures\UpArrow.png" />
+    <Content Include="Resource\Textures\XP.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

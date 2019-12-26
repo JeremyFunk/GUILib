@@ -59,7 +59,7 @@ namespace GUILib.GUI.Render.Fonts
                     Character character = font.GetCharacter(c);
                     if(character != null)
                     {
-                        thisWordSize += character.xAdvance * 0.8f;
+                        thisWordSize += character.xAdvance * font.xAdvance;
                         charCounter++;
                     }
                 }
@@ -74,7 +74,7 @@ namespace GUILib.GUI.Render.Fonts
 
 
                 charCounter++;
-                cursorPos += spaceBarAdvance * 0.8f;
+                cursorPos += spaceBarAdvance * font.xAdvance;
             }
 
             text = text.Replace("\n", "");
@@ -131,7 +131,7 @@ namespace GUILib.GUI.Render.Fonts
                     texCoords.Add(character.xLowScreen);
                     texCoords.Add(character.yHighScreen);
 
-                    cursorPos += character.xAdvance * 0.8f;
+                    cursorPos += character.xAdvance * font.xAdvance;
 
                     charCounter++;
                 }

@@ -23,7 +23,7 @@ namespace GUILib.GUI
 
         public static void Init(GuiScene scene)
         {
-            quad = new Quad(0, 0, 0, 0, Theme.defaultTheme.GetMouseInfoFillMaterial(), float.MaxValue - 1);
+            quad = new Quad(0, 0, 0, 0, Theme.defaultTheme.GetMouseInfoMaterial(), float.MaxValue - 1);
             quad.debugIdentifier = "Z";
             quad.visible = false;
             scene.AddParent(quad);

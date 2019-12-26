@@ -31,7 +31,7 @@ namespace GUILib.GUI.GuiElements
         {
             this.padding = padding;
             quad = new Quad(0, 0, 1f, height, Theme.defaultTheme.GetButtonFillMaterial());
-            dropDown = new Quad(0, 0, 1f, 0, Theme.defaultTheme.GetButtonFillMaterial());
+            dropDown = new Quad(0, 0, 1f, 0, Theme.defaultTheme.GetChoiceBoxMaterial());
             dropDown.visible = false;
 
             quad.mouseButtonReleasedEvent = QuadClicked;

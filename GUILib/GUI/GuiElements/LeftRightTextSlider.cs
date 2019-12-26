@@ -29,7 +29,7 @@ namespace GUILib.GUI.GuiElements
             this.options = options; 
 
             if (fillMaterial == null)
-                fillMaterial = Theme.defaultTheme.GetLeftRightTextSliderFillMaterial();
+                fillMaterial = Theme.defaultTheme.GetLeftRightTextSliderMaterial();
             if (fontSize < 0)
                 fontSize = 0.8f;
 
@@ -48,11 +48,11 @@ namespace GUILib.GUI.GuiElements
             this.text.yConstraints.Add(new CenterConstraint());
             AddChild(this.text);
 
-            Quad leftQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetLeftArrowEdgeMaterial());
+            Quad leftQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetLeftArrowMaterial());
             leftQuad.yConstraints.Add(new CenterConstraint());
             leftQuad.mouseButtonReleasedEvent = LeftClick;
 
-            Quad rightQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetRightArrowEdgeMaterial());
+            Quad rightQuad = new Quad(10, 0, 20, 20, Theme.defaultTheme.GetRightArrowMaterial());
             rightQuad.yConstraints.Add(new CenterConstraint());
             rightQuad.xConstraints.Add(new MarginConstraint(10));
             rightQuad.mouseButtonReleasedEvent = RightClick;

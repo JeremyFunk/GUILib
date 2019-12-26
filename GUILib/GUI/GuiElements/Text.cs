@@ -22,6 +22,7 @@ namespace GUILib.GUI.GuiElements
         private float fontSize;
         public TextData data;
         private float maxSize;
+        public float fontWidth = 0.42f;
 
         public Text(APixelConstraint x, APixelConstraint y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
         {
@@ -45,6 +46,7 @@ namespace GUILib.GUI.GuiElements
             shader.ResetVAO();
 
             shader.SetTransform(trans, new Vector2(1f));
+            shader.SetFontWidth(fontWidth);
             font.Render(text, shader, color, this);
         }
 

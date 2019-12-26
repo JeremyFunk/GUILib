@@ -16,11 +16,12 @@ namespace GUILib.GUI.Animations
         SwingBack, Normal, PauseOnEnd
     }
 
-    public struct AnimationKeyframe
+    struct AnimationKeyframe
     {
         public int x, y, width, height;
         public float opacity;
         public float keyframeTime;
+        public Material material;
 
         public AnimationKeyframe(float keyframeTime)
         {
@@ -28,10 +29,11 @@ namespace GUILib.GUI.Animations
 
             x = y = width = height = 0;
             opacity = 0;
+            material = null;
         }
     }
 
-    public class AnimationClass
+    class AnimationClass
     {
         public AnimationKeyframe[] animationKeyframes;
 
@@ -87,7 +89,7 @@ namespace GUILib.GUI.Animations
         }
     }
 
-    public class AnimationState
+    class AnimationState
     {
         public AnimationStateEnum state;
         public float timer = 0;
