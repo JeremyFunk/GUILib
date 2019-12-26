@@ -62,6 +62,8 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> hoverEvent;
         public Action<MouseEvent, GuiElement> endHoverEvent;
 
+        public Action<KeyEvent, GuiElement> keyEvent;
+
         private string startHoverAnimationName;
         private string endHoverAnimationName;
         private string leftMouseButtonReleasedAnimationName;
@@ -291,9 +293,19 @@ namespace GUILib.GUI.GuiElements
 
             bool canHit = true;
 
-            if (e.mousePositionLocal.X > curWidth || e.mousePositionLocal.Y > curHeight || e.mousePositionLocal.X < 0 || e.mousePositionLocal.Y < 0 || e.canHit == false)
+            if (!IsAnimationRunning())
             {
-                canHit = false;
+                if (e.mousePositionLocal.X > curWidth + animationOffsetWidth || e.mousePositionLocal.Y > curHeight + animationOffsetHeight || e.mousePositionLocal.X < 0 || e.mousePositionLocal.Y < 0 || e.canHit == false)
+                {
+                    canHit = false;
+                }
+            }
+            else
+            {
+                if (e.mousePositionLocal.X > curWidth || e.mousePositionLocal.Y > curHeight || e.mousePositionLocal.X < 0 || e.mousePositionLocal.Y < 0 || e.canHit == false)
+                {
+                    canHit = false;
+                }
             }
 
             if (!e.covered)
@@ -349,6 +361,8 @@ namespace GUILib.GUI.GuiElements
 
         public  void KeyEvent(KeyEvent e) 
         {
+            keyEvent?.Invoke(e, this);
+
             KeyEventElement(e);
 
             foreach (GuiElement element in childElements)

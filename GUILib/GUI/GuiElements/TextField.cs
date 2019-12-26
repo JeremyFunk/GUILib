@@ -24,7 +24,6 @@ namespace GUILib.GUI.GuiElements
 
         public TextField(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
-
             quad = new Quad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldMaterial() : fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
@@ -109,6 +108,22 @@ namespace GUILib.GUI.GuiElements
                     defaultText.visible = true;
                 }
             }
+        }
+
+        public bool IsSelected()
+        {
+            return selected;
+        }
+
+        public void SetText(string text)
+        {
+            textElement.SetText(text);
+            textElementCursor.SetText(text);
+        }
+
+        public string GetText()
+        {
+            return textElement.GetText();
         }
     }
 }

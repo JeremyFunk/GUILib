@@ -27,8 +27,9 @@ namespace GUILib.GUI.GuiElements
         private bool scrollable = false;
 
         private int yOffset = 0;
+        public int overScroll = 30;
 
-        public ScrollPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fill = null, Material edge = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public ScrollPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fill = null, Material edge = null, int sliderWidth = -1, Material sliderBackground = null, Material sliderMaterial = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             useStencilBuffer = true;
 
@@ -42,13 +43,13 @@ namespace GUILib.GUI.GuiElements
             Border border = new Border(edge == null ? Theme.defaultTheme.GetScrollPaneBorderMaterial() : edge, 1f, 1f, 1);
             border.generalConstraint = new FillConstraintGeneral();
 
-            Quad scrollBarBackground = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial());
+            Quad scrollBarBackground = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, sliderBackground == null ? Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial() : sliderBackground);
             scrollBarBackground.xConstraints.Add(new MarginConstraint(0));
             base.AddChild(scrollBarBackground);
             base.AddChild(elementContainer);
             base.AddChild(border);
 
-            scrollBar = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, Theme.defaultTheme.GetScrollPaneScrollBarMaterial());
+            scrollBar = new Quad(0, 0, sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth, 1f, sliderMaterial == null ? Theme.defaultTheme.GetScrollPaneScrollBarMaterial() : sliderMaterial);
             scrollBar.xConstraints.Add(new MarginConstraint(0));
 
             scrollBar.mouseButtonPressedEvent = ScrollBarDragEvent;
@@ -66,8 +67,6 @@ namespace GUILib.GUI.GuiElements
         }
         bool firstUpdate = true;
         int lastHeight = 0;
-
-        int updateCounter = 0;
 
         private void UpdateContainer()
         {
@@ -146,7 +145,7 @@ namespace GUILib.GUI.GuiElements
 
                 scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
-                elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
+                elementContainer.SetY((int)((elementContainer.curHeight - curHeight + overScroll) * scroll) + yOffset);
 
 
                 scrollBar.SetY(newY);
@@ -172,7 +171,7 @@ namespace GUILib.GUI.GuiElements
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
-                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
+                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + overScroll) * scroll) + yOffset);
 
                     scrollBar.SetY(newY);
                     mouseDragY = e.mousePositionWorld.Y;
@@ -198,7 +197,7 @@ namespace GUILib.GUI.GuiElements
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
 
-                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + 30) * scroll) + yOffset);
+                    elementContainer.SetY((int)((elementContainer.curHeight - curHeight + overScroll) * scroll) + yOffset);
 
                     scrollBar.SetY(newY);
                     mouseDragY = e.mousePositionWorld.Y;

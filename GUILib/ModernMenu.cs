@@ -47,6 +47,19 @@ namespace GUILib
         private Quad minimizeQuad;
         private Button friendsButton;
         private Quad chat;
+        private ScrollPane textChat;
+        private Text userText;
+        private Quad userIcon;
+
+
+        private Dictionary<GuiElement, string> users = new Dictionary<GuiElement, string>();
+        private Dictionary<GuiElement, Material> userMats = new Dictionary<GuiElement, Material>();
+
+        private Random r = new Random(1);
+        private int textHeight = 375;
+
+        private Dictionary<Message, bool> messages = new Dictionary<Message, bool>();
+         
 
         private void LoadFriends()
         {
@@ -61,10 +74,9 @@ namespace GUILib
             friendsButton.AddChild(friendsIcon);
             scene.AddParent(friendsButton);
 
-            chat = new Quad(0, 5, 650, 500, new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new BorderData(new Vector4(0.6f, 0.6f, 0.6f, 0.95f), 1, true, 0.02f), new GradientData(1f, 0.01f, 0.3f)));
+            chat = new Quad(0, 5, 0, 0, new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new BorderData(new Vector4(0.6f, 0.6f, 0.6f, 0.95f), 1, true, 0.02f), new GradientData(1f, 0.01f, 0.3f)));
             chat.xConstraints.Add(new MarginConstraint(5));
             chat.ZIndex = 1;
-            chat.visible = false;
 
             Quad verticalSeperator = new Quad(250, 0, 1, 1f, new Material(new Vector4(0.6f, 0.6f, 0.6f, 0.7f)));
             chat.AddChild(verticalSeperator);
@@ -84,19 +96,27 @@ namespace GUILib
             chat.AddChild(leftTextQuad);
             chat.AddChild(leftTextQuad2);
 
-            CreateUser(45, "Username 1", chat);
-            CreateUser(115, "Username 2", chat);
-            CreateUser(185, "Username 3", chat);
-            CreateUser(255, "Username 4", chat);
-            CreateUser(325, "Username 5", chat);
-            CreateUser(395, "Username 6", chat);
-            CreateUser(465, "Username 7", chat, true);
+            ScrollPane users = new ScrollPane(0, 0, 250, 500 - 45, new Material(new Vector4(0)), new Material(new Vector4(0)), 5, new Material(new Vector4(0)), new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.8f), new BorderData(new Vector4(0), 0, true, 0.5f)));
+            users.overScroll = 0;
+            users.yConstraints.Add(new MarginConstraint(45));
+
+            CreateUser(0, "Username 1", users);
+            CreateUser(70, "Username 2", users);
+            CreateUser(140, "Username 3", users);
+            CreateUser(210, "Username 4", users);
+            CreateUser(280, "Username 5", users);
+            CreateUser(350, "Username 6", users);
+            CreateUser(420, "Username 7", users);
+            CreateUser(490, "Username 8", users);
+            CreateUser(560, "Username 9", users, true);
+
+            chat.AddChild(users);
 
 
-            Quad userIcon = new Quad(265, 0, 48, 48, new Material(new Vector4((float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, 1f), new BorderData(new Vector4(0.8f, 0.8f, 0.8f, 1f), 2, true, 0.5f)));
+            userIcon = new Quad(265, 0, 48, 48, new Material(new Vector4((float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, 1f), new BorderData(new Vector4(0.8f, 0.8f, 0.8f, 1f), 2, true, 0.5f)));
             userIcon.yConstraints.Add(new MarginConstraint(10));
 
-            Text userText = new Text(325, 32, "Username 1", 0.8f);
+            userText = new Text(325, 32, "Username 1", 0.8f);
             userText.yConstraints.Add(new MarginConstraint(20));
 
             Text userClanText = new Text(325 + userText.curWidth + 5, 32, "#ClanTag", 0.6f);
@@ -132,24 +152,165 @@ namespace GUILib
             minimizeButton.AddChild(minimizeQuad);
             chat.AddChild(minimizeButton);
 
+            TextField typeText = new TextField(255, 5, 390, 40, "Type here...", new Material(new Vector4(0.5f, 0.5f, 0.5f, 0.7f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 0.7f))));
+            typeText.keyEvent = TextFieldKeyPressed;
+
+            chat.AddChild(typeText);
+
+            textChat = new ScrollPane(255, 50, 390, 380, new Material(new Vector4(0)), new Material(new Vector4(0)), 5, new Material(new Vector4(0)), new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.8f), new BorderData(new Vector4(0), 0, true, 0.5f)));
+            AddMessage("hi", textChat);
+            AddMessage("Hi", textChat, true);
+            AddMessage("play a game?", textChat);
+            AddMessage("5 mins", textChat, true);
+            AddMessage("k", textChat);
+
+            chat.AddChild(textChat);
 
             scene.AddParent(chat);
+
+
+
+
+
+            AnimationKeyframe k1M = new AnimationKeyframe(0);
+            AnimationKeyframe k2M = new AnimationKeyframe(0.2f);
+
+            k1M.x = 0;
+            k2M.x = -80;
+            k2M.width = 54;
+            k2M.height = 54;
+
+            List<AnimationKeyframe> keyframesM = new List<AnimationKeyframe>();
+            keyframesM.Add(k1M);
+            keyframesM.Add(k2M);
+
+            AnimationKeyframe c1M = new AnimationKeyframe(0);
+            AnimationKeyframe c2M = new AnimationKeyframe(0.2f);
+
+            c1M.x = 0;
+            c2M.x = 80;
+            c2M.width = -54;
+            c2M.height = -54;
+
+            List<AnimationKeyframe> cKeyframesM = new List<AnimationKeyframe>();
+            cKeyframesM.Add(c1M);
+            cKeyframesM.Add(c2M);
+
+            AnimationClass animationStructM = new AnimationClass(AnimationType.PauseOnEnd, keyframesM, "PopUp");
+            AnimationClass cAnimationStructM = new AnimationClass(AnimationType.PauseOnEnd, cKeyframesM, "PopUpReverse");
+            animationStructM.transition = new SmoothstepTransition(3);
+            cAnimationStructM.transition = new SmoothstepTransition(3);
+
+            Animation aM = new Animation();
+            aM.AddAnimation(animationStructM);
+            aM.AddAnimation(cAnimationStructM);
+
+            friendsButton.animation = aM;
+
+
+
+
+            AnimationKeyframe k1 = new AnimationKeyframe(0);
+            AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
+
+            k1.x = 0;
+            k2.x = -650;
+            k2.width = 650;
+            k2.height = 500;
+
+            List<AnimationKeyframe> keyframes = new List<AnimationKeyframe>();
+            keyframes.Add(k1);
+            keyframes.Add(k2);
+
+            AnimationKeyframe c1 = new AnimationKeyframe(0);
+            AnimationKeyframe c2 = new AnimationKeyframe(0.2f);
+
+            c1.x = 0;
+            c2.x = 650;
+            c2.width = -650;
+            c2.height = -500;
+
+            List<AnimationKeyframe> cKeyframes = new List<AnimationKeyframe>();
+            cKeyframes.Add(c1);
+            cKeyframes.Add(c2);
+
+            AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes, "PopUp");
+            AnimationClass cAnimationStruct = new AnimationClass(AnimationType.PauseOnEnd, cKeyframes, "PopUpReverse");
+            animationStruct.transition = new SmoothstepTransition(3);
+            cAnimationStruct.transition = new SmoothstepTransition(3);
+
+
+            Animation a = new Animation();
+            a.AddAnimation(animationStruct);
+            a.AddAnimation(cAnimationStruct);
+
+            chat.animation = a;
+            chat.debugIdentifier = "Y";
+        }
+        
+        private void TextFieldKeyPressed(KeyEvent e, GuiElement el)
+        {
+            if (e.pressed.Contains(Key.Enter))
+            {
+                TextField field = ((TextField)el);
+
+                if (field.IsSelected())
+                {
+                    string newText = field.GetText();
+                    field.SetText("");
+                    AddMessage(newText, textChat, true);
+                }
+            }
         }
 
-        Random r = new Random(1);
+        class Message
+        {
+            public string msg;
+
+        }
+
+        private void AddMessage(string text, GuiElement chat, bool right = false)
+        {
+            messages.Add(new Message { msg = text }, right);
+
+            if (!right)
+            {
+                Quad textQuad = new Quad(0, textHeight - 40, 200, 35, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.7f), new BorderData(new Vector4(0.9f, 0.9f, 0.9f, 1f), 2, true, 0.2f)));
+                Text textE = new Text(5, 0, text, 0.7f);
+                textE.yConstraints.Add(new CenterConstraint());
+                textQuad.AddChild(textE);
+                chat.AddChild(textQuad);
+            }
+            else
+            {
+                Quad textQuad = new Quad(0, textHeight - 40, 200, 35, new Material(new Vector4(0.6f, 0.7f, 0.9f, 0.7f), new BorderData(new Vector4(0.9f, 0.9f, 0.9f, 1f), 2, true, 0.2f)));
+                textQuad.xConstraints.Add(new MarginConstraint(10));
+                Text textE = new Text(5, 0, text, 0.7f);
+                textE.yConstraints.Add(new CenterConstraint());
+                textQuad.AddChild(textE);
+                chat.AddChild(textQuad);
+            }
+            textHeight -= 45;
+        }
+
         private void CreateUser(int y, string user, GuiElement chat, bool last = false)
         {
             Button userQuad = new Button(0, y, 250, 70, "", false, 1, new Material(new Vector4(0)));
             userQuad.defaultMaterial = new Material(new Vector4(0));
             userQuad.hoverMaterial = new Material(new Vector4(1f, 1f, 1f, 0.2f), new BorderData(new Vector4(0f), 0, true, 0.19f));
             userQuad.clickMaterial = new Material(new Vector4(1f, 1f, 1f, 0.4f), new BorderData(new Vector4(0f), 0, true, 0.19f));
+            userQuad.mouseButtonReleasedEvent = UserClicked;
+
+            users.Add(userQuad, user);
 
             userQuad.yConstraints.Add(new MarginConstraint(y));
 
-            
+            Material userMaterial = new Material(new Vector4((float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, 1f), new BorderData(new Vector4(0.8f, 0.8f, 0.8f, 1f), 2, true, 0.5f));
 
-            Quad icon = new Quad(20, 0, 48, 48, new Material(new Vector4((float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, (float)r.NextDouble() / 2 + 0.2f, 1f), new BorderData(new Vector4(0.8f, 0.8f, 0.8f, 1f), 2, true, 0.5f)));
+            Quad icon = new Quad(20, 0, 48, 48, userMaterial);
             icon.yConstraints.Add(new CenterConstraint());
+
+            userMats.Add(userQuad, userMaterial);
 
             Text userText = new Text(100, 32, user, 0.8f);
             userText.xConstraints.Add(new CenterConstraint());
@@ -171,6 +332,12 @@ namespace GUILib
             }
 
             chat.AddChild(userQuad);
+        }
+
+        private void UserClicked(MouseEvent e, GuiElement el)
+        {
+            userText.SetText(users[el]);
+            userIcon.SetMaterial(userMats[el]);
         }
 
         private void LoadChallengeMenu()
@@ -690,29 +857,25 @@ namespace GUILib
         {
             minimizeQuad.SetMaterial(new Material(new Vector4(0.95f, 0.95f, 0.95f, 0.95f)));
         }
-
         private void EndHoverMinimize(MouseEvent arg1, GuiElement arg2)
         {
             minimizeQuad.SetMaterial(new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.6f)));
         }
-
         private void StartHoverMinimize(MouseEvent arg1, GuiElement arg2)
         {
             minimizeQuad.SetMaterial(new Material(new Vector4(0.85f, 0.85f, 0.85f, 0.85f)));
         }
         private void FriendButtonClicked(MouseEvent arg1, GuiElement arg2)
         {
-            chat.visible = true;
-            friendsButton.visible = false;
+            chat.StartAnimation("PopUp");
+            friendsButton.StartAnimation("PopUpReverse");
         }
         private void EndClickMinimize(MouseEvent e, GuiElement arg2)
         {
-            minimizeQuad.SetMaterial(new Material(new Vector4(0.85f, 0.85f, 0.85f, 0.85f)));
-
             if (e.leftButtonDown)
             {
-                chat.visible = false;
-                friendsButton.visible = true;
+                chat.StartAnimation("PopUpReverse");
+                friendsButton.StartAnimation("PopUp");
             }
         }
     }
