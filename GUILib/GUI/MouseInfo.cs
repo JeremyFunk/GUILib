@@ -62,7 +62,7 @@ namespace GUILib.GUI
 
             quad.SetX(x + 10);
             quad.SetY(y - 10);
-            quad.Update(GameSettings.Width, GameSettings.Height, 0.0001f);
+            quad.Update(GameSettings.Width, GameSettings.Height, 0.0001f, false);
         }
     }
 }

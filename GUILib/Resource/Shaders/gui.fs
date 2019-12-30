@@ -34,6 +34,8 @@ uniform float u_gradientOpacity;
 uniform bool u_border;
 uniform float u_borderWidth;
 
+uniform float u_opacity;
+
 out vec4 color;
 
 
@@ -339,4 +341,6 @@ void main()
     }else{
         color = vec4(0.5);
     }
+
+    color = vec4(color.r, color.g, color.b, color.a * u_opacity);
 }

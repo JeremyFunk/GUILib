@@ -62,6 +62,8 @@ namespace GUILib.GUI.GuiElements
         public Action<MouseEvent, GuiElement> hoverEvent;
         public Action<MouseEvent, GuiElement> endHoverEvent;
 
+        public Action<GuiElement, float> updateEvent;
+
         public Action<KeyEvent, GuiElement> keyEvent;
 
         private string startHoverAnimationName;
@@ -133,7 +135,7 @@ namespace GUILib.GUI.GuiElements
             OpenGLUtil.EndStencilDraw();
         }
 
-        public void Update(int width, int height, float delta)
+        public void Update(int width, int height, float delta, bool defaultCall = true)
         {
             if (hovered && usesHoverText)
             {
@@ -168,6 +170,9 @@ namespace GUILib.GUI.GuiElements
                 if (element.visible)
                     element.Update((int)realSize.X, (int)realSize.Y, delta);
             }
+
+            if(defaultCall)
+                updateEvent?.Invoke(this, delta);
         }
 
         public void FirstUpdate(int width, int height, float delta)
@@ -504,7 +509,7 @@ namespace GUILib.GUI.GuiElements
             this.width = new PixelConstraint(width);
             curWidth = width;
             if(parent != null)
-                Update(parent.curWidth, parent.curHeight, 0.001f);
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetHeight(int height)
@@ -512,7 +517,7 @@ namespace GUILib.GUI.GuiElements
             this.height = new PixelConstraint(height);
             curHeight = height;
             if (parent != null)
-                Update(parent.curWidth, parent.curHeight, 0.001f);
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetX(int x)
@@ -520,7 +525,7 @@ namespace GUILib.GUI.GuiElements
             this.x = new PixelConstraint(x);
             curX = x;
             if (parent != null)
-                Update(parent.curWidth, parent.curHeight, 0.001f);
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetY(int y)
@@ -528,7 +533,7 @@ namespace GUILib.GUI.GuiElements
             this.y = new PixelConstraint(y);
             curY = y;
             if (parent != null)
-                Update(parent.curWidth, parent.curHeight, 0.001f);
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetHoverDelay(float delay)
@@ -612,7 +617,7 @@ namespace GUILib.GUI.GuiElements
             this.parent = parent;
 
             if(parent != null)
-                Update(parent.curWidth, parent.curHeight, 0.001f);
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         private int GetCurX()

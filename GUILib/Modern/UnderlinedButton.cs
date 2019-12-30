@@ -21,8 +21,13 @@ namespace GUILib.Modern
         private Quad underline;
         private Text text;
 
+        private bool active;
+
         public Vector4 defaultTextColor = new Vector4(1);
         public Vector4 hoverTextColor = new Vector4(1);
+        public Vector4 activeDefaultTextColor = new Vector4(1);
+        public Vector4 activeHoverTextColor = new Vector4(1);
+
         public UnderlinedButton(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text = "", bool defaultBehaviour = false, float fontSize = 1f, Material material = null, Material hoverMaterial = null, Material clickMaterial = null, Material underlineMaterial = null, Material underlineHoverMaterial = null, Material underlineClickMaterial = null, int underlineHeight = 2, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
             curMaterial = material == null ? Theme.defaultTheme.GetButtonFillMaterial() : material;
@@ -67,13 +72,13 @@ namespace GUILib.Modern
         {
             SetMaterial(hoverMaterial);
             underline.SetMaterial(underline.hoverMaterial);
-            text.color = hoverTextColor;
+            text.color = active ? activeHoverTextColor : hoverTextColor;
         }
         private void HoverEnd(MouseEvent e, GuiElement el)
         {
             SetMaterial(defaultMaterial);
-            underline.SetMaterial(underline.defaultMaterial);
-            text.color = defaultTextColor;
+            underline.SetMaterial(active ? underline.hoverMaterial : underline.defaultMaterial);
+            text.color = active ? activeDefaultTextColor : defaultTextColor;
         }
         private void Click(MouseEvent e, GuiElement el)
         {
@@ -91,9 +96,18 @@ namespace GUILib.Modern
             quad.SetMaterial(curMaterial);
         }
 
-        internal void SetTextColor(Vector4 color)
+        public void Activate()
         {
-            text.color = color;
+            underline.SetMaterial(underline.hoverMaterial);
+            text.color = activeDefaultTextColor;
+            active = true;
+        }
+
+        public void Deactivate()
+        {
+            underline.SetMaterial(underline.defaultMaterial);
+            text.color = defaultTextColor;
+            active = false;
         }
     }
 }

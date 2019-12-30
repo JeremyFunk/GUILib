@@ -23,6 +23,7 @@ namespace GUILib.GUI.GuiElements
         public TextData data;
         private float maxSize;
         public float fontWidth = 0.42f;
+        private float xAdvanceMult = 1;
 
         public Text(APixelConstraint x, APixelConstraint y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
         {
@@ -53,11 +54,19 @@ namespace GUILib.GUI.GuiElements
         internal void SetText(string text)
         {
             if (maxSize != float.MaxValue)
-                font.Reconstruct(text, this, maxSize * 2, fontSize);
+                font.Reconstruct(text, this, maxSize * 2, fontSize, xAdvanceMult);
             else
-                font.Reconstruct(text, this, maxSize, fontSize);
+                font.Reconstruct(text, this, maxSize, fontSize, xAdvanceMult);
 
             this.text = text;
+        }
+        public void SetCharacterSpaceMultiplyer(float xAdvanceMult)
+        {
+            this.xAdvanceMult = xAdvanceMult;
+            if (maxSize != float.MaxValue)
+                font.Reconstruct(text, this, maxSize * 2, fontSize, xAdvanceMult);
+            else
+                font.Reconstruct(text, this, maxSize, fontSize, xAdvanceMult);
         }
 
         internal string GetText()
@@ -67,7 +76,7 @@ namespace GUILib.GUI.GuiElements
 
         public void SetMaxSize(int width)
         {
-            font.Reconstruct(text, this, maxSize * 2, fontSize);
+            font.Reconstruct(text, this, maxSize * 2, fontSize, xAdvanceMult);
         }
     }
 }

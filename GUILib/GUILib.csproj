@@ -116,6 +116,8 @@
     <Compile Include="Logger\ConsoleLogger.cs" />
     <Compile Include="FirstMenu.cs" />
     <Compile Include="ModernMenu.cs" />
+    <Compile Include="Modern\SliderSetting.cs" />
+    <Compile Include="Modern\UnderlinedText.cs" />
     <Compile Include="Modern\UnderlinedButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -158,9 +160,11 @@
     <Content Include="Resource\Textures\LeftArrow.png" />
     <Content Include="Resource\Textures\LevelTexture.png" />
     <Content Include="Resource\Textures\ModernBackground.jpg" />
+    <Content Include="Resource\Textures\QueueQuad.png" />
     <Content Include="Resource\Textures\Refresh.png" />
     <Content Include="Resource\Textures\RightArrow.png" />
     <Content Include="Resource\Textures\Settings.png" />
+    <Content Include="Resource\Textures\SmokeBackground.png" />
     <Content Include="Resource\Textures\TickBoxClicked.png" />
     <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />

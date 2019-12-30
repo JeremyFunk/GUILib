@@ -63,6 +63,8 @@ namespace GUILib.GUI.Render.Shader
 
             positionOffsetUniform = "u_positionOffset",
 
+            opacityUniform = "u_opacity",
+
             widthUniform = "width";
 
 
@@ -103,10 +105,17 @@ namespace GUILib.GUI.Render.Shader
 
             CreateUniform(positionOffsetUniform);
 
+            CreateUniform(opacityUniform);
+
 
             Start();
             SetUniform(fillTextureUniform, 0);
             Stop();
+        }
+
+        internal void SetOpacity(float opacity)
+        {
+            SetUniform(opacityUniform, opacity);
         }
 
         public void SetFontWidth(float width)

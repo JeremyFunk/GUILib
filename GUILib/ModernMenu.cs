@@ -21,12 +21,67 @@ using GUILib.GUI.Render.Fonts.Data;
 
 namespace GUILib
 {
+    enum ActiveScreen
+    {
+        Play, More
+    }
+
     class ModernMenu
     {
+        private GuiElement playScreen, moreScreen;
+        private GuiElement settingsScreen;
         private GuiScene scene;
+        private ActiveScreen screen;
         public ModernMenu(GuiScene scene)
         {
             this.scene = scene;
+            playScreen = new Container(0, 0, 1f, 1f);
+            moreScreen = new Container(9000, 0, 1f, 1f);
+            screen = ActiveScreen.Play;
+
+            settingsScreen = new Quad(0, 0, 1f, 1f, new Material(new Texture("SmokeBackground.png")));
+            settingsScreen.AddChild(new Quad(0, 0, 1f, 1f, new Material(new Vector4(0.2f, 0.2f, 0.2f, 1f), null, new GradientData(1, 0.5f, 0.6f))));
+            settingsScreen.ZIndex = 1;
+            settingsScreen.visible = false;
+
+            AnimationKeyframe k1 = new AnimationKeyframe(0);
+            AnimationKeyframe k2 = new AnimationKeyframe(0.5f);
+
+            k1.x = 0;
+            k2.x = -9000;
+
+            List<AnimationKeyframe> keyframes = new List<AnimationKeyframe>();
+            keyframes.Add(k1);
+            keyframes.Add(k2);
+
+            AnimationKeyframe c1 = new AnimationKeyframe(0);
+            AnimationKeyframe c2 = new AnimationKeyframe(0.5f);
+
+            c1.x = 0;
+            c2.x = 9000;
+
+            List<AnimationKeyframe> cKeyframes = new List<AnimationKeyframe>();
+            cKeyframes.Add(c1);
+            cKeyframes.Add(c2);
+
+            AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes, "Left");
+            AnimationClass cAnimationStruct = new AnimationClass(AnimationType.PauseOnEnd, cKeyframes, "Right");
+            animationStruct.transition = new SmoothstepTransition(1);
+            cAnimationStruct.transition = new SmoothstepTransition(1);
+
+
+            Animation a = new Animation();
+            a.AddAnimation(animationStruct);
+            a.AddAnimation(cAnimationStruct);
+
+            playScreen.animation = a;
+            moreScreen.animation = a;
+
+
+
+            scene.AddParent(playScreen);
+            scene.AddParent(moreScreen);
+            scene.AddParent(settingsScreen);
 
             Font.defaultFont = FontFileParser.LoadFont("Arial");
             Font.defaultFont.xAdvance = 0.69f;
@@ -36,31 +91,562 @@ namespace GUILib
 
         private void LoadMenu()
         {
+            //Play
             LoadBackground();
             LoadTopMenu();
+            LoadSettingsTopMenu();
             LoadLevelBar();
             LoadLeftMenu();
             LoadChallengeMenu();
             LoadFriends();
+            LoadQueue();
+            
+            //More
+            LoadMoreLeftBar();
+            LoadGraphicsSettings();
         }
 
-        private Quad minimizeQuad;
-        private Button friendsButton;
-        private Quad chat;
-        private ScrollPane textChat;
-        private Text userText;
-        private Quad userIcon;
+        private void LoadGraphicsSettings()
+        {
+            Container rightContainer = new Container(0.6f, 20, 0.4f, 1f);
+            rightContainer.widthConstraints.Add(new SubtractConstraint(100));
+            rightContainer.yConstraints.Add(new MarginConstraint(topBarHeight + 20));
+            rightContainer.heightConstraints.Add(new SubtractConstraint(topBarHeight + 20 + 20));
+            rightContainer.xConstraints.Add(new AddConstraint(100));
+            settingsScreen.AddChild(rightContainer);
+
+            Text rightTextTitle = new Text(0, 0, "TEXTURE RESOLUTION", 1f);
+            rightTextTitle.fontWidth = 0.45f;
+            rightTextTitle.xConstraints.Add(new CenterConstraint());
+            rightTextTitle.yConstraints.Add(new MarginConstraint(10));
+            rightContainer.AddChild(rightTextTitle);
+
+            Text rightTextSubTitle = new Text(0, 0, "This Setting changes the texture resolution. Higher Texture Resolutions have heavy impact on performance and VRAM usage. You might want to lower this setting on low spec systems.", 0.7f, null, 0, 500);
+            rightTextSubTitle.fontWidth = 0.39f;
+            rightTextSubTitle.xConstraints.Add(new CenterConstraint());
+            rightTextSubTitle.xConstraints.Add(new SubtractConstraint(50));
+            rightTextSubTitle.yConstraints.Add(new MarginConstraint(60));
+            rightContainer.AddChild(rightTextSubTitle);
+
+            ScrollPane graphicsScroll = new ScrollPane(100, 0, 0.6f, 1f, new Material(new Vector4(0)), new Material(new Vector4(0)), 15, new Material(new Vector4(0.6f, 0.6f, 0.6f, 0.3f)), new Material(new Vector4(0.9f, 0.9f, 0.9f, 1f)));
+            graphicsScroll.yConstraints.Add(new MarginConstraint(topBarHeight + 20));
+            graphicsScroll.heightConstraints.Add(new SubtractConstraint(topBarHeight + 20 + 20));
+            settingsScreen.AddChild(graphicsScroll);
+
+            Text detailsText = new Text(0, 0, "DETAILS & TEXTURES", 0.5f);
+            detailsText.SetCharacterSpaceMultiplyer(1.5f);
+            UnderlinedText detailsTitle = new UnderlinedText(0, 0, 0.986f, detailsText, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.7f)), 5);
+            detailsTitle.yConstraints.Add(new MarginConstraint(0));
+            graphicsScroll.AddChild(detailsTitle);
+
+            Material sliderBackgroundMaterial = new Material(new Vector4(0.35f, 0.35f, 0.35f, 0.4f));
+            Material sliderBackgroundHoverMaterial = new Material(new Vector4(0.5f, 0.5f, 0.5f, 0.4f));
+
+            SliderSetting textureRes = new SliderSetting(0, 0, 1f, 80, "Texture Resolution", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            textureRes.yConstraints.Add(new MarginConstraint(50));
+            textureRes.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(textureRes);
+
+            SliderSetting textureAnsio = new SliderSetting(0, 0, 1f, 80, "Texture Filter Anisotropic", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            textureAnsio.yConstraints.Add(new MarginConstraint(140));
+            textureAnsio.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(textureAnsio);
+
+            SliderSetting particleQual = new SliderSetting(0, 0, 1f, 80, "Particle Quality", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            particleQual.yConstraints.Add(new MarginConstraint(230));
+            particleQual.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(particleQual);
+
+            SliderSetting tessellation = new SliderSetting(0, 0, 1f, 80, "Tesselation", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            tessellation.yConstraints.Add(new MarginConstraint(320));
+            tessellation.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(tessellation);
+
+            Text shadowText = new Text(0, 0, "SHADOW & LIGHTING", 0.5f);
+            shadowText.SetCharacterSpaceMultiplyer(1.5f);
+            UnderlinedText shadowTitle = new UnderlinedText(0, 0, 0.98f, shadowText, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.7f)), 5);
+            shadowTitle.yConstraints.Add(new MarginConstraint(440));
+            graphicsScroll.AddChild(shadowTitle);
+
+            SliderSetting shadowMap = new SliderSetting(0, 0, 1f, 80, "Shadow Map Resolution", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            shadowMap.yConstraints.Add(new MarginConstraint(490));
+            shadowMap.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(shadowMap);
+
+            SliderSetting ambOc = new SliderSetting(0, 0, 1f, 80, "Ambient Occlusion", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            ambOc.yConstraints.Add(new MarginConstraint(580));
+            ambOc.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(ambOc);
+
+            SliderSetting particleLighting = new SliderSetting(0, 0, 1f, 80, "Particle Lighting", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            particleLighting.yConstraints.Add(new MarginConstraint(670));
+            particleLighting.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(particleLighting);
+
+            SliderSetting volumetricLighting = new SliderSetting(0, 0, 1f, 80, "Volumetric Lighting", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            volumetricLighting.yConstraints.Add(new MarginConstraint(760));
+            volumetricLighting.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(volumetricLighting);
+
+            SliderSetting sunShadows = new SliderSetting(0, 0, 1f, 80, "Sun Shadows", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            sunShadows.yConstraints.Add(new MarginConstraint(850));
+            sunShadows.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(sunShadows);
+
+            Text postProcText = new Text(0, 0, "Post Processing Effects", 0.5f);
+            postProcText.SetCharacterSpaceMultiplyer(1.5f);
+            UnderlinedText postProcTitle = new UnderlinedText(0, 0, 0.98f, postProcText, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.7f)), 5);
+            postProcTitle.yConstraints.Add(new MarginConstraint(980));
+            graphicsScroll.AddChild(postProcTitle);
+
+            SliderSetting antiAliasing = new SliderSetting(0, 0, 1f, 80, "Anti Aliasing", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            antiAliasing.yConstraints.Add(new MarginConstraint(1030));
+            antiAliasing.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(antiAliasing); 
+            
+            SliderSetting depthOfField = new SliderSetting(0, 0, 1f, 80, "Depth Of Field", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            depthOfField.yConstraints.Add(new MarginConstraint(1120));
+            depthOfField.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(depthOfField);
+
+            SliderSetting motionBlur = new SliderSetting(0, 0, 1f, 80, "Motion Blur", sliderBackgroundMaterial, sliderBackgroundHoverMaterial);
+            motionBlur.yConstraints.Add(new MarginConstraint(1210));
+            motionBlur.widthConstraints.Add(new SubtractConstraint(30));
+            graphicsScroll.AddChild(motionBlur);
+        }
+
+        private void LoadMoreLeftBar()
+        {
+            Material quadMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 0.3f), new BorderData(new Vector4(0.6f, 0.6f, 0.6f, 0.5f), 1, true, 0.05f), new GradientData(2f, 1f, 4f));
+
+            VerticalList menuList = new VerticalList(80, 0, 380, 0, 10);
+            menuList.yConstraints.Add(new CenterConstraint());
+
+            int height = 60;
+            Vector4 textColor = new Vector4(0.28f, 0.74f, 0.9f, 0.8f);
+            float fontWidth = 0.36f;
+            float fontSize = 0.9f;
+            Animation animation = GetLeftMenuAnimation();
+
+            Quad settingsQuad = new Quad(0, 0, 380, height, quadMaterial);
+            Text settingsText = new Text(20, 0, "SETTINGS", fontSize);
+            settingsText.color = textColor;
+            settingsText.yConstraints.Add(new CenterConstraint());
+            settingsText.fontWidth = fontWidth;
+            settingsQuad.AddChild(settingsText);
+            settingsQuad.mouseButtonDownEvent = SettingsClicked;
+
+            Quad creditsQuad = new Quad(0, 0, 380, height, quadMaterial);
+            Text creditsText = new Text(20, 0, "CREDITS", fontSize);
+            creditsText.color = textColor;
+            creditsText.yConstraints.Add(new CenterConstraint());
+            creditsText.fontWidth = fontWidth;
+            creditsQuad.AddChild(creditsText);
+
+            menuList.AddChild(settingsQuad);
+            menuList.AddChild(creditsQuad);
+
+            SetAnimation(settingsQuad, animation);
+            SetAnimation(creditsQuad, animation);
+
+            moreScreen.AddChild(menuList);
+        }
+
+        private Text multiplayerTitle;
+        private Quad multiplayerTitleUnderline, topButtonLine, topQuad;
+        private UnderlinedButton play, weapons, campaign, airplanes, store, more;
+        private void LoadTopMenu()
+        {
+            multiplayerTitle = new Text(80, 0, "MULTIPLAYER", 1.4f);
+            multiplayerTitle.color = new Vector4(0.3f, 0.8f, 1f, 1f);
+            multiplayerTitle.yConstraints.Add(new MarginConstraint(20));
+            multiplayerTitle.fontWidth = 0.38f;
+            multiplayerTitle.ZIndex = 1;
+
+            scene.AddParent(multiplayerTitle);
+
+            multiplayerTitleUnderline = new Quad(0, 0, 430, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 1f), null, new GradientData(1f, 1f, 430f, false, false, false, true, false)));
+            multiplayerTitleUnderline.yConstraints.Add(new MarginConstraint(64));
+            multiplayerTitleUnderline.ZIndex = 1;
+            scene.AddParent(multiplayerTitleUnderline);
+
+            topQuad = new Quad(0, 0, 1f, topBarHeight, new Material(new Vector4(0.1f, 0.1f, 0.1f, 0.6f), null, new GradientData(1f, 0.3f, 0.6f)));
+            topQuad.yConstraints.Add(new MarginConstraint(0));
+            scene.AddParent(topQuad);
+
+            topButtonLine = new Quad(0, 0, 1f, 2, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.4f), null, new GradientData(1f, 0.7f, GameSettings.Width / 2f, false, false, false, true, false)));
+            topButtonLine.yConstraints.Add(new MarginConstraint(topBarHeight));
+            scene.AddParent(topButtonLine);
+
+            Material topBarMenuDefaultMaterial = new Material(new Vector4(0));
+            Material topBarMenuHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.15f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.5f, 0.2f, true));
+            Material topBarMenuClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.25f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.6f, 0.2f, true));
+            Material underlineDefaultMaterial = new Material(new Vector4(0));
+            Material underlineHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.7f));
+            Material underlineClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.9f));
+
+            float fontSizeMenu = 0.6f;
+            Vector4 textColor = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+            Vector4 activeTextColor = new Vector4(0.3f, 0.8f, 1f, 1f);
+            Vector4 hoverTextColor = new Vector4(1f);
+            Vector4 activeHoverTextColor = new Vector4(0.3f, 0.8f, 1f, 1f);
+
+            play = new UnderlinedButton(100, 0, 150, 50, "PLAY", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            play.defaultTextColor = textColor;
+            play.hoverTextColor = hoverTextColor;
+            play.activeDefaultTextColor = activeTextColor;
+            play.activeHoverTextColor = activeHoverTextColor;
+            play.mouseButtonReleasedEvent = PlayClicked;
+            play.Activate();
+            weapons = new UnderlinedButton(260, 0, 150, 50, "WEAPONS", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            weapons.defaultTextColor = textColor;
+            weapons.hoverTextColor = hoverTextColor;
+            weapons.activeDefaultTextColor = activeTextColor;
+            weapons.activeHoverTextColor = activeHoverTextColor;
+            weapons.Deactivate();
+            campaign = new UnderlinedButton(420, 0, 150, 50, "CAMPAIGN", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            campaign.defaultTextColor = textColor;
+            campaign.hoverTextColor = hoverTextColor;
+            campaign.activeDefaultTextColor = activeTextColor;
+            campaign.activeHoverTextColor = activeHoverTextColor;
+            campaign.Deactivate();
+            airplanes = new UnderlinedButton(580, 0, 150, 50, "AIRPLANES", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            airplanes.defaultTextColor = textColor;
+            airplanes.hoverTextColor = hoverTextColor;
+            airplanes.activeDefaultTextColor = activeTextColor;
+            airplanes.activeHoverTextColor = activeHoverTextColor;
+            airplanes.Deactivate();
+            store = new UnderlinedButton(740, 0, 150, 50, "STORE", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            store.defaultTextColor = textColor;
+            store.hoverTextColor = hoverTextColor;
+            store.activeDefaultTextColor = activeTextColor;
+            store.activeHoverTextColor = activeHoverTextColor;
+            store.Deactivate();
+            more = new UnderlinedButton(900, 0, 150, 50, "MORE", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            more.defaultTextColor = textColor;
+            more.hoverTextColor = hoverTextColor;
+            more.activeDefaultTextColor = activeTextColor;
+            more.activeHoverTextColor = activeHoverTextColor;
+            more.Deactivate();
+            more.mouseButtonReleasedEvent = MoreClicked;
+
+            play.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            weapons.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            campaign.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            airplanes.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            store.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            more.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+
+            play.ZIndex = 1;
+            weapons.ZIndex = 1;
+            campaign.ZIndex = 1;
+            airplanes.ZIndex = 1;
+            store.ZIndex = 1;
+            more.ZIndex = 1;
+
+            scene.AddParent(play);
+            scene.AddParent(weapons);
+            scene.AddParent(campaign);
+            scene.AddParent(airplanes);
+            scene.AddParent(store);
+            scene.AddParent(more);
+        }
+
+        private Text settingsTitle;
+        private Quad settingsTitleUnderline, settingsTopButtonLine, settingsTopQuad;
+        private UnderlinedButton graphics, general, controls, audio;
+        private void LoadSettingsTopMenu()
+        {
+            settingsTitle = new Text(80, 0, "SETTINGS", 1.4f);
+            settingsTitle.color = new Vector4(0.3f, 0.8f, 1f, 1f);
+            settingsTitle.yConstraints.Add(new MarginConstraint(20));
+            settingsTitle.fontWidth = 0.38f;
+            settingsTitle.ZIndex = 1;
+
+            settingsScreen.AddChild(settingsTitle);
+
+            settingsTitleUnderline = new Quad(0, 0, 330, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 1f), null, new GradientData(1f, 1f, 330f, false, false, false, true, false)));
+            settingsTitleUnderline.yConstraints.Add(new MarginConstraint(64));
+            settingsTitleUnderline.ZIndex = 1;
+            settingsScreen.AddChild(settingsTitleUnderline);
+
+            settingsTopQuad = new Quad(0, 0, 1f, topBarHeight, new Material(new Vector4(0.1f, 0.1f, 0.1f, 0.6f), null, new GradientData(1f, 0.3f, 0.6f)));
+            settingsTopQuad.yConstraints.Add(new MarginConstraint(0));
+            settingsScreen.AddChild(settingsTopQuad);
+
+            settingsTopButtonLine = new Quad(0, 0, 1f, 2, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.4f), null, new GradientData(1f, 0.7f, GameSettings.Width / 2f, false, false, false, true, false)));
+            settingsTopButtonLine.yConstraints.Add(new MarginConstraint(topBarHeight));
+            settingsScreen.AddChild(settingsTopButtonLine);
+
+            Button back = new Button(10, 5, 40, 40, "<", false, 1, new Material(new Vector4(0)), new Material(new Vector4(0.3f), new BorderData(new Vector4(0), 2, true, 0.2f)), new Material(new Vector4(0.4f), new BorderData(new Vector4(0), 2, true, 0.2f)));
+            back.mouseButtonReleasedEvent = BackClicked;
+            settingsTopQuad.AddChild(back);
+
+            Material topBarMenuDefaultMaterial = new Material(new Vector4(0));
+            Material topBarMenuHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.15f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.5f, 0.2f, true));
+            Material topBarMenuClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.25f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.6f, 0.2f, true));
+            Material underlineDefaultMaterial = new Material(new Vector4(0));
+            Material underlineHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.7f));
+            Material underlineClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.9f));
+
+            float fontSizeMenu = 0.6f;
+            Vector4 textColor = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+            Vector4 activeTextColor = new Vector4(0.3f, 0.8f, 1f, 1f);
+            Vector4 hoverTextColor = new Vector4(1f);
+            Vector4 activeHoverTextColor = new Vector4(0.3f, 0.8f, 1f, 1f);
+
+            graphics = new UnderlinedButton(100, 0, 150, 50, "GRAPHICS", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            graphics.defaultTextColor = textColor;
+            graphics.hoverTextColor = hoverTextColor;
+            graphics.activeDefaultTextColor = activeTextColor;
+            graphics.activeHoverTextColor = activeHoverTextColor;
+            graphics.mouseButtonReleasedEvent = PlayClicked;
+            graphics.Activate();
+            general = new UnderlinedButton(260, 0, 150, 50, "GENERAL", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            general.defaultTextColor = textColor;
+            general.hoverTextColor = hoverTextColor;
+            general.activeDefaultTextColor = activeTextColor;
+            general.activeHoverTextColor = activeHoverTextColor;
+            general.Deactivate();
+            controls = new UnderlinedButton(420, 0, 150, 50, "CONTROLS", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            controls.defaultTextColor = textColor;
+            controls.hoverTextColor = hoverTextColor;
+            controls.activeDefaultTextColor = activeTextColor;
+            controls.activeHoverTextColor = activeHoverTextColor;
+            controls.Deactivate();
+            audio = new UnderlinedButton(580, 0, 150, 50, "AUDIO", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
+            audio.defaultTextColor = textColor;
+            audio.hoverTextColor = hoverTextColor;
+            audio.activeDefaultTextColor = activeTextColor;
+            audio.activeHoverTextColor = activeHoverTextColor;
+            audio.Deactivate();
+
+            graphics.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            general.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            controls.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+            audio.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
+
+            graphics.ZIndex = 1;
+            general.ZIndex = 1;
+            controls.ZIndex = 1;
+            audio.ZIndex = 1;
+
+            settingsScreen.AddChild(graphics);
+            settingsScreen.AddChild(general);
+            settingsScreen.AddChild(controls);
+            settingsScreen.AddChild(audio);
+        }
 
 
-        private Dictionary<GuiElement, string> users = new Dictionary<GuiElement, string>();
-        private Dictionary<GuiElement, Material> userMats = new Dictionary<GuiElement, Material>();
+        private void SetAlwaysOnVisibility(bool visible)
+        {
+            multiplayerTitle.visible = visible;
+            multiplayerTitleUnderline.visible = visible;
+            topButtonLine.visible = visible;
+            topQuad.visible = visible;
+            play.visible = visible;
+            weapons.visible = visible;
+            campaign.visible = visible;
+            airplanes.visible = visible;
+            store.visible = visible;
+            more.visible = visible;
+            crystalText.visible = visible;
+            epText.visible = visible;
+            crystalIcon.visible = visible;
+            epIcon.visible = visible;
+            levelQuad.visible = visible;
+            levelProgressBackgroundQuad.visible = visible;
+            levelProgressQuad.visible = visible;
+            friendsButton.visible = visible;
+            chat.visible = visible;
+            queueQuad.visible = visible;
+        }
 
-        private Random r = new Random(1);
-        private int textHeight = 375;
+        private void LoadBackground()
+        {
+            Quad background = new Quad(0, 0, 2560, 1440, new Material(new Texture("ModernBackground.jpg")));
+            background.ZIndex = -4;
+            background.xConstraints.Add(new CenterConstraint());
+            background.yConstraints.Add(new CenterConstraint());
+            Quad backgroundOverlay = new Quad(0, 0, 1f, 1f, new Material(new Vector4(0.1f, 0.17f, 0.19f, 0.7f), null, new GradientData(1f, 0.2f, 0.2f)));
+            backgroundOverlay.ZIndex = -3;
+            backgroundOverlay.xConstraints.Add(new CenterConstraint());
+            backgroundOverlay.yConstraints.Add(new CenterConstraint());
 
-        private Dictionary<Message, bool> messages = new Dictionary<Message, bool>();
-         
+            scene.AddParent(background);
+            scene.AddParent(backgroundOverlay);
+        }
 
+
+        int topBarHeight = 130;
+        int levelHeight = 49;
+
+        private Text crystalText, epText;
+        private Quad crystalIcon, epIcon, levelQuad, levelProgressBackgroundQuad, levelProgressQuad;
+
+        private void LoadLevelBar()
+        {
+            levelProgressBackgroundQuad = new Quad(0, 0, 200, 40, new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.19f, 0.69f, 0.83f, 1f)), new GradientData(1f, 0.2f, 0.5f)));
+            levelProgressBackgroundQuad.yConstraints.Add(new MarginConstraint(levelHeight));
+            levelProgressBackgroundQuad.xConstraints.Add(new MarginConstraint(90));
+
+            levelProgressQuad = new Quad(2, 2, 42, 38, new Material(new Vector4(0.19f, 0.69f, 0.83f, 0.8f), null, new GradientData(1f, 0.2f, 0.5f)));
+            levelProgressQuad.ZIndex = 1;
+            levelProgressQuad.yConstraints.Add(new MarginConstraint(levelHeight));
+            levelProgressQuad.xConstraints.Add(new MarginConstraint(90));
+
+            Text percentageQuad = new Text(0, 0, "21%", 0.6f);
+            percentageQuad.ZIndex = 2;
+            percentageQuad.xConstraints.Add(new CenterConstraint());
+            percentageQuad.yConstraints.Add(new CenterConstraint());
+
+            levelProgressBackgroundQuad.AddChild(percentageQuad);
+
+            scene.AddParent(levelProgressBackgroundQuad);
+            scene.AddParent(levelProgressQuad);
+
+            Text levelText = new Text(0, 0, "42", 0.8f);
+            levelText.xConstraints.Add(new CenterConstraint());
+            levelText.yConstraints.Add(new CenterConstraint());
+            levelText.yConstraints.Add(new SubtractConstraint(1));
+
+            levelQuad = new Quad(0, 0, 75, 75, new Material(new Texture("LevelTexture.png")));
+            levelQuad.ZIndex = 2;
+            levelQuad.yConstraints.Add(new MarginConstraint(levelHeight - 19));
+            levelQuad.xConstraints.Add(new MarginConstraint(50));
+
+            levelQuad.AddChild(levelText);
+
+            scene.AddParent(levelQuad);
+
+
+            Text username = new Text(0, 0, "Username", 0.7f);
+            username.yConstraints.Add(new MarginConstraint(levelHeight - 20));
+            username.xConstraints.Add(new MarginConstraint(200));
+            username.ZIndex = 1;
+            username.fontWidth = 0.4f;
+
+            //playScreen.AddChild(username);
+
+            /*Quad friendIcon = new Quad(0, 0, 40, 40, new Material(new Texture("Settings.png")));
+            friendIcon.yConstraints.Add(new MarginConstraint(levelHeight - 5));
+            friendIcon.xConstraints.Add(new MarginConstraint(20));
+            friendIcon.ZIndex = 1;
+            playScreen.AddChild(friendIcon);*/
+
+
+            epIcon = new Quad(0, 0, 35, 35, new Material(new Texture("EPGold.png")));
+            epIcon.yConstraints.Add(new MarginConstraint(levelHeight));
+            epIcon.xConstraints.Add(new MarginConstraint(440));
+            epIcon.ZIndex = 1;
+
+            epText = new Text(0, 0, "23196", 0.8f);
+            epText.yConstraints.Add(new MarginConstraint(levelHeight + 5));
+            epText.xConstraints.Add(new MarginConstraint(365));
+            epText.color = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+            epText.ZIndex = 1;
+
+            scene.AddParent(epIcon);
+            scene.AddParent(epText);
+
+
+            crystalIcon = new Quad(0, 0, 35, 35, new Material(new Texture("Crystal.png")));
+            crystalIcon.yConstraints.Add(new MarginConstraint(levelHeight));
+            crystalIcon.xConstraints.Add(new MarginConstraint(570));
+            crystalIcon.ZIndex = 1;
+
+            crystalText = new Text(0, 0, "120", 0.8f);
+            crystalText.yConstraints.Add(new MarginConstraint(levelHeight + 5));
+            crystalText.xConstraints.Add(new MarginConstraint(523));
+            crystalText.color = new Vector4(0.8f, 0.8f, 0.8f, 1f);
+            crystalText.ZIndex = 1;
+
+            scene.AddParent(crystalIcon);
+            scene.AddParent(crystalText);
+        }
+        private void LoadQueue()
+        {
+            queueQuad = new Quad(0, 0, 0, 80, new Material(new Texture("QueueQuad.png"), null, new GradientData(1f, 0.3f, 0.1f)));
+            queueQuad.useStencilBuffer = true;
+            queueQuad.yConstraints.Add(new MarginConstraint(-80));
+            queueQuad.xConstraints.Add(new CenterConstraint());
+
+            inQueue = new Text(0, 0, "In Queue for Ranked", 0.9f);
+            inQueue.color = new Vector4(0.3f, 0.8f, 1f, 0.7f);
+            inQueue.fontWidth = 0.36f;
+            inQueue.xConstraints.Add(new CenterConstraint());
+            inQueue.yConstraints.Add(new MarginConstraint(0));
+            queueQuad.AddChild(inQueue);
+
+            Quad leftTitleQuad = new Quad(13, 0, 237, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 0.7f), null, new GradientData(1f, 1f, 237, false, true, false, false, false)));
+            leftTitleQuad.yConstraints.Add(new MarginConstraint(27));
+            leftTitleQuad.ZIndex = 1;
+            queueQuad.AddChild(leftTitleQuad);
+
+            Quad rightTitleQuad = new Quad(250, 0, 237, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 0.7f), null, new GradientData(1f, 1f, 237, false, false, false, true, false)));
+            rightTitleQuad.yConstraints.Add(new MarginConstraint(27));
+            rightTitleQuad.ZIndex = 1;
+            queueQuad.AddChild(rightTitleQuad);
+
+
+            Material topBarMenuDefaultMaterial = new Material(new Vector4(0));
+            Material topBarMenuHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.15f), new BorderData(new Vector4(0), 0, true, 0.3f), new GradientData(1f, 0.5f, 0.2f, true));
+            Material topBarMenuClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.25f), new BorderData(new Vector4(0), 0, true, 0.3f), new GradientData(1f, 0.6f, 0.2f, true));
+
+            Text leaveQueueText = new Text(0, 0, "Leave Queue", 0.5f);
+            leaveQueueText.color = new Vector4(0.95f, 0.23f, 0.23f, 0.7f);
+            Button leaveQueue = new Button(0, 5, 100, 20, leaveQueueText, true, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial);
+            leaveQueue.xConstraints.Add(new CenterConstraint());
+            leaveQueue.mouseButtonReleasedEvent = LeaveQueue;
+            queueQuad.AddChild(leaveQueue);
+
+            timeAwait = new Text(0, 0, "0:00", 0.7f);
+            timeAwait.xConstraints.Add(new CenterConstraint());
+            timeAwait.yConstraints.Add(new MarginConstraint(33));
+            timeAwait.updateEvent = QueueTick;
+            queueQuad.AddChild(timeAwait);
+
+            AnimationKeyframe k1 = new AnimationKeyframe(0);
+            AnimationKeyframe k2 = new AnimationKeyframe(0.4f);
+
+            k1.y = 0;
+            k1.x = 0;
+            k1.width = 0;
+            k2.y = -(topBarHeight + 2 + 80);
+            k2.width = 500;
+            k2.x = -250;
+
+            AnimationKeyframe c1 = new AnimationKeyframe(0);
+            AnimationKeyframe c2 = new AnimationKeyframe(0.4f);
+
+            c1.y = 0;
+            c2.y = topBarHeight + 2 + 80;
+            c2.width = -500;
+            c2.x = 250;
+
+            List<AnimationKeyframe> keyframes = new List<AnimationKeyframe>();
+            keyframes.Add(k1);
+            keyframes.Add(k2);
+
+            List<AnimationKeyframe> cKeyframes = new List<AnimationKeyframe>();
+            cKeyframes.Add(c1);
+            cKeyframes.Add(c2);
+
+            AnimationClass animationStruct = new AnimationClass(AnimationType.PauseOnEnd, keyframes, "Down");
+            animationStruct.transition = new SmoothstepTransition(2);
+
+            AnimationClass cAnimationStruct = new AnimationClass(AnimationType.PauseOnEnd, cKeyframes, "Up");
+            cAnimationStruct.transition = new SmoothstepTransition(2);
+
+            Animation a = new Animation();
+            a.AddAnimation(animationStruct);
+            a.AddAnimation(cAnimationStruct);
+
+            queueQuad.animation = a;
+
+            scene.AddParent(queueQuad);
+        }
+        
         private void LoadFriends()
         {
             Quad friendsIcon = new Quad(0, 0, 48, 48, new Material(new Texture("Friends.png")));
@@ -77,6 +663,7 @@ namespace GUILib
             chat = new Quad(0, 5, 0, 0, new Material(new Vector4(0.4f, 0.4f, 0.4f, 0.95f), new BorderData(new Vector4(0.6f, 0.6f, 0.6f, 0.95f), 1, true, 0.02f), new GradientData(1f, 0.01f, 0.3f)));
             chat.xConstraints.Add(new MarginConstraint(5));
             chat.ZIndex = 1;
+            chat.opacity = 0;
 
             Quad verticalSeperator = new Quad(250, 0, 1, 1f, new Material(new Vector4(0.6f, 0.6f, 0.6f, 0.7f)));
             chat.AddChild(verticalSeperator);
@@ -214,7 +801,9 @@ namespace GUILib
             AnimationKeyframe k2 = new AnimationKeyframe(0.2f);
 
             k1.x = 0;
+            k1.opacity = 0;
             k2.x = -650;
+            k2.opacity = 1;
             k2.width = 650;
             k2.height = 500;
 
@@ -226,9 +815,11 @@ namespace GUILib
             AnimationKeyframe c2 = new AnimationKeyframe(0.2f);
 
             c1.x = 0;
+            c1.opacity = 0;
             c2.x = 650;
             c2.width = -650;
             c2.height = -500;
+            c2.opacity = -1;
 
             List<AnimationKeyframe> cKeyframes = new List<AnimationKeyframe>();
             cKeyframes.Add(c1);
@@ -247,6 +838,31 @@ namespace GUILib
             chat.animation = a;
             chat.debugIdentifier = "Y";
         }
+
+
+        #region PlayScreen
+        private Quad minimizeQuad;
+        private Button friendsButton;
+        private Quad chat;
+        private ScrollPane textChat;
+        private Text userText;
+        private Quad userIcon;
+
+
+        private Dictionary<GuiElement, string> users = new Dictionary<GuiElement, string>();
+        private Dictionary<GuiElement, Material> userMats = new Dictionary<GuiElement, Material>();
+
+        private Random r = new Random(1);
+        private int textHeight = 375;
+
+        private Dictionary<Message, bool> messages = new Dictionary<Message, bool>();
+
+        private Quad queueQuad;
+        private Text timeAwait, inQueue;
+
+
+
+        
         
         private void TextFieldKeyPressed(KeyEvent e, GuiElement el)
         {
@@ -349,7 +965,7 @@ namespace GUILib
             Quad challengeQuad = new Quad(0, 0, 380, 500, quadMaterial);
             challengeQuad.yConstraints.Add(new CenterConstraint());
             challengeQuad.xConstraints.Add(new MarginConstraint(110));
-            scene.AddParent(challengeQuad);
+            playScreen.AddChild(challengeQuad);
 
             Quad titleQuad = new Quad(0, 0, 250, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 0.7f), null, new GradientData(1f, 1f, 250, false, false, false, true, false)));
             titleQuad.yConstraints.Add(new MarginConstraint(45));
@@ -572,6 +1188,7 @@ namespace GUILib
             rankedText.yConstraints.Add(new CenterConstraint());
             rankedText.fontWidth = fontWidth;
             rankedQuad.AddChild(rankedText);
+            rankedQuad.mouseButtonReleasedEvent = RankedGameClicked;
 
             Quad normalGameQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text normalGameText = new Text(20, 0, "NORMAL GAME", fontSize);
@@ -579,6 +1196,7 @@ namespace GUILib
             normalGameText.yConstraints.Add(new CenterConstraint());
             normalGameText.fontWidth = fontWidth;
             normalGameQuad.AddChild(normalGameText);
+            normalGameQuad.mouseButtonReleasedEvent = NormalGameClicked;
 
             Quad gunfightQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text gunfightText = new Text(20, 0, "GUNFIGHT", fontSize);
@@ -586,6 +1204,7 @@ namespace GUILib
             gunfightText.yConstraints.Add(new CenterConstraint());
             gunfightText.fontWidth = fontWidth;
             gunfightQuad.AddChild(gunfightText);
+            gunfightQuad.mouseButtonReleasedEvent = GunfightClicked;
 
             Quad deathmatchQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text deathmatchText = new Text(20, 0, "DEATHMATCH", fontSize);
@@ -593,6 +1212,7 @@ namespace GUILib
             deathmatchText.yConstraints.Add(new CenterConstraint());
             deathmatchText.fontWidth = fontWidth;
             deathmatchQuad.AddChild(deathmatchText);
+            deathmatchQuad.mouseButtonReleasedEvent = DeathmatchClicked;
 
             Quad freeForAllQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text freeForAllText = new Text(20, 0, "FREE FOR ALL", fontSize);
@@ -600,6 +1220,7 @@ namespace GUILib
             freeForAllText.yConstraints.Add(new CenterConstraint());
             freeForAllText.fontWidth = fontWidth;
             freeForAllQuad.AddChild(freeForAllText);
+            freeForAllQuad.mouseButtonReleasedEvent = FreeForAllClicked;
 
             Quad futureFightQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text futureFightText = new Text(20, 0, "FUTURE FIGHT", fontSize);
@@ -607,6 +1228,7 @@ namespace GUILib
             futureFightText.yConstraints.Add(new CenterConstraint());
             futureFightText.fontWidth = fontWidth;
             futureFightQuad.AddChild(futureFightText);
+            futureFightQuad.mouseButtonReleasedEvent = FutureFightClicked;
 
             menuList.AddChild(rankedQuad);
             menuList.AddChild(normalGameQuad);
@@ -622,7 +1244,7 @@ namespace GUILib
             SetAnimation(freeForAllQuad, animation);
             SetAnimation(futureFightQuad, animation);
 
-            scene.AddParent(menuList);
+            playScreen.AddChild(menuList);
         }
 
         private void SetAnimation(Quad quad, Animation a)
@@ -674,184 +1296,10 @@ namespace GUILib
             return a;
         }
 
-        int topBarHeight = 130;
-        int levelHeight = 49;
+        
 
-        private void LoadLevelBar()
-        {
-            Quad levelProgressBackgroundQuad = new Quad(0, 0, 200, 40, new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.19f, 0.69f, 0.83f, 1f)), new GradientData(1f, 0.2f, 0.5f)));
-            levelProgressBackgroundQuad.yConstraints.Add(new MarginConstraint(levelHeight));
-            levelProgressBackgroundQuad.xConstraints.Add(new MarginConstraint(90));
-
-            Quad levelProgressQuad = new Quad(2, 2, 42, 38, new Material(new Vector4(0.19f, 0.69f, 0.83f, 0.8f), null, new GradientData(1f, 0.2f, 0.5f)));
-            levelProgressQuad.ZIndex = 1;
-            levelProgressQuad.yConstraints.Add(new MarginConstraint(levelHeight));
-            levelProgressQuad.xConstraints.Add(new MarginConstraint(90));
-
-            Text percentageQuad = new Text(0, 0, "21%", 0.6f);
-            percentageQuad.ZIndex = 2;
-            percentageQuad.xConstraints.Add(new CenterConstraint());
-            percentageQuad.yConstraints.Add(new CenterConstraint());
-
-            levelProgressBackgroundQuad.AddChild(percentageQuad);
-
-            scene.AddParent(levelProgressBackgroundQuad);
-            scene.AddParent(levelProgressQuad);
-
-            Text levelText = new Text(0, 0, "42", 0.8f);
-            levelText.xConstraints.Add(new CenterConstraint());
-            levelText.yConstraints.Add(new CenterConstraint());
-            levelText.yConstraints.Add(new SubtractConstraint(1));
-
-            Quad levelQuad = new Quad(0, 0, 75, 75, new Material(new Texture("LevelTexture.png")));
-            levelQuad.ZIndex = 2;
-            levelQuad.yConstraints.Add(new MarginConstraint(levelHeight - 19));
-            levelQuad.xConstraints.Add(new MarginConstraint(50));
-
-            levelQuad.AddChild(levelText);
-
-            scene.AddParent(levelQuad);
-
-
-            Text username = new Text(0, 0, "Username", 0.7f);
-            username.yConstraints.Add(new MarginConstraint(levelHeight - 20));
-            username.xConstraints.Add(new MarginConstraint(200));
-            username.ZIndex = 1;
-            username.fontWidth = 0.4f;
-
-            //scene.AddParent(username);
-
-            /*Quad friendIcon = new Quad(0, 0, 40, 40, new Material(new Texture("Settings.png")));
-            friendIcon.yConstraints.Add(new MarginConstraint(levelHeight - 5));
-            friendIcon.xConstraints.Add(new MarginConstraint(20));
-            friendIcon.ZIndex = 1;
-            scene.AddParent(friendIcon);*/
-
-
-            Quad epIcon = new Quad(0, 0, 35, 35, new Material(new Texture("EPGold.png")));
-            epIcon.yConstraints.Add(new MarginConstraint(levelHeight));
-            epIcon.xConstraints.Add(new MarginConstraint(440));
-            epIcon.ZIndex = 1;
-
-            Text epText = new Text(0, 0, "23196", 0.8f);
-            epText.yConstraints.Add(new MarginConstraint(levelHeight + 5));
-            epText.xConstraints.Add(new MarginConstraint(365));
-            epText.color = new Vector4(0.8f, 0.8f, 0.8f, 1f);
-            epText.ZIndex = 1;
-
-            scene.AddParent(epIcon);
-            scene.AddParent(epText);
-
-
-            Quad crystalIcon = new Quad(0, 0, 35, 35, new Material(new Texture("Crystal.png")));
-            crystalIcon.yConstraints.Add(new MarginConstraint(levelHeight));
-            crystalIcon.xConstraints.Add(new MarginConstraint(570));
-            crystalIcon.ZIndex = 1;
-
-            Text crystalText = new Text(0, 0, "120", 0.8f);
-            crystalText.yConstraints.Add(new MarginConstraint(levelHeight + 5));
-            crystalText.xConstraints.Add(new MarginConstraint(523));
-            crystalText.color = new Vector4(0.8f, 0.8f, 0.8f, 1f);
-            crystalText.ZIndex = 1;
-
-            scene.AddParent(crystalIcon);
-            scene.AddParent(crystalText);
-        }
-
-        private void LoadTopMenu()
-        {
-            Text title = new Text(80, 0, "MULTIPLAYER", 1.4f);
-            title.color = new Vector4(0.3f, 0.8f, 1f, 1f);
-            title.yConstraints.Add(new MarginConstraint(20));
-            title.fontWidth = 0.38f;
-            title.ZIndex = 1;
-
-            scene.AddParent(title);
-
-            Quad titleQuad = new Quad(0, 0, 430, 1, new Material(new Vector4(0.3f, 0.8f, 1f, 1f), null, new GradientData(1f, 1f, 430f, false, false, false, true, false)));
-            titleQuad.yConstraints.Add(new MarginConstraint(64));
-            titleQuad.ZIndex = 1;
-            scene.AddParent(titleQuad);
-
-            Quad topQuad = new Quad(0, 0, 1f, topBarHeight, new Material(new Vector4(0.1f, 0.1f, 0.1f, 0.6f), null, new GradientData(1f, 0.3f, 0.6f)));
-            topQuad.yConstraints.Add(new MarginConstraint(0));
-            scene.AddParent(topQuad);
-
-            Quad topTextHighlighter = new Quad(0, 0, 1f, 2, new Material(new Vector4(0.7f, 0.7f, 0.7f, 0.4f), null, new GradientData(1f, 0.7f, GameSettings.Width / 2f, false, false, false, true, false)));
-            topTextHighlighter.yConstraints.Add(new MarginConstraint(topBarHeight));
-            scene.AddParent(topTextHighlighter);
-
-            Material topBarMenuDefaultMaterial = new Material(new Vector4(0));
-            Material topBarMenuHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.15f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.5f, 0.2f, true));
-            Material topBarMenuClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.25f), new BorderData(new Vector4(0), 0, true, 0.1f), new GradientData(1f, 0.6f, 0.2f, true));
-            Material underlineDefaultMaterial = new Material(new Vector4(0));
-            Material underlineHoverMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.7f));
-            Material underlineClickMaterial = new Material(new Vector4(0.8f, 0.8f, 0.8f, 0.9f));
-
-            float fontSizeMenu = 0.6f;
-            Vector4 texColor = new Vector4(0.8f, 0.8f, 0.8f, 1f);
-
-            UnderlinedButton play = new UnderlinedButton(100, 0, 150, 50, "PLAY", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineHoverMaterial, underlineHoverMaterial, underlineClickMaterial);
-            play.SetTextColor(new Vector4(0.3f, 0.8f, 1f, 1f));
-            play.defaultTextColor = new Vector4(0.3f, 0.8f, 1f, 1f);
-            play.hoverTextColor  = new Vector4(0.3f, 0.8f, 1f, 1f);
-            UnderlinedButton weapons = new UnderlinedButton(260, 0, 150, 50, "WEAPONS", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
-            weapons.SetTextColor(texColor);
-            weapons.defaultTextColor = texColor;
-            UnderlinedButton campaign = new UnderlinedButton(420, 0, 150, 50, "CAMPAIGN", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
-            campaign.SetTextColor(texColor);
-            campaign.defaultTextColor = texColor;
-            UnderlinedButton airplanes = new UnderlinedButton(580, 0, 150, 50, "AIRPLANES", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
-            airplanes.SetTextColor(texColor);
-            airplanes.defaultTextColor = texColor;
-            UnderlinedButton store = new UnderlinedButton(740, 0, 150, 50, "STORE", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
-            store.SetTextColor(texColor);
-            store.defaultTextColor = texColor;
-            UnderlinedButton more = new UnderlinedButton(900, 0, 150, 50, "MORE", true, fontSizeMenu, topBarMenuDefaultMaterial, topBarMenuHoverMaterial, topBarMenuClickMaterial, underlineDefaultMaterial, underlineHoverMaterial, underlineClickMaterial);
-            more.SetTextColor(texColor);
-            more.defaultTextColor = texColor;
-
-            play.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-            weapons.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-            campaign.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-            airplanes.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-            store.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-            more.yConstraints.Add(new MarginConstraint(topBarHeight - 48));
-
-            play.ZIndex = 1;
-            weapons.ZIndex = 1;
-            campaign.ZIndex = 1;
-            airplanes.ZIndex = 1;
-            store.ZIndex = 1;
-            more.ZIndex = 1;
-
-            scene.AddParent(play);
-            scene.AddParent(weapons);
-            scene.AddParent(campaign);
-            scene.AddParent(airplanes);
-            scene.AddParent(store);
-            scene.AddParent(more);
-        }
-
-        private void LoadBackground()
-        {
-            Quad background = new Quad(0, 0, 2560, 1440, new Material(new Texture("ModernBackground.jpg")));
-            background.ZIndex = -4;
-            background.xConstraints.Add(new CenterConstraint());
-            background.yConstraints.Add(new CenterConstraint());
-            Quad backgroundOverlay = new Quad(0, 0, 1f, 1f, new Material(new Vector4(0.1f, 0.17f, 0.19f, 0.7f), null, new GradientData(1f, 0.2f, 0.2f)));
-            backgroundOverlay.ZIndex = -3;
-            backgroundOverlay.xConstraints.Add(new CenterConstraint());
-            backgroundOverlay.yConstraints.Add(new CenterConstraint());
-
-            scene.AddParent(background);
-            scene.AddParent(backgroundOverlay);
-        }
-
-
-
-
-
+        float queueTimer = 0;
+        bool queueRunning = false;
 
         private void StartClickMinimize(MouseEvent arg1, GuiElement arg2)
         {
@@ -876,6 +1324,126 @@ namespace GUILib
             {
                 chat.StartAnimation("PopUpReverse");
                 friendsButton.StartAnimation("PopUp");
+            }
+        }
+        private void RankedGameClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Ranked Game");
+            }
+        }
+        private void NormalGameClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Normal Game");
+            }
+        }
+        private void DeathmatchClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Deathmatch");
+            }
+        }
+        private void GunfightClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Gunfight");
+            }
+        }
+        private void FutureFightClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Future Fight");
+            }
+        }
+        private void FreeForAllClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && !queueRunning)
+            {
+                queueRunning = true;
+                queueQuad.StartAnimation("Down");
+                inQueue.SetText("In Queue for Free For All");
+            }
+        }
+        private void LeaveQueue(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && queueRunning)
+            {
+                queueRunning = false;
+                queueTimer = 0;
+                queueQuad.StartAnimation("Up");
+                timeAwait.SetText("0:00");
+            }
+        }
+        private void QueueTick(GuiElement e, float del)
+        {
+            if (queueRunning)
+            {
+                queueTimer += del;
+
+                if (queueTimer - (queueTimer % 1) < queueTimer - ((queueTimer + del) % 1))
+                {
+                    float min = (queueTimer - queueTimer % 60) / 60;
+                    float sec = (queueTimer - queueTimer % 1) - min * 60;
+                    timeAwait.SetText(min + ":" + (sec < 10 ? "0" + sec : sec + "") + "");
+                    timeAwait.SetX(0);
+                }
+            }
+        }
+
+        #endregion
+
+        private void MoreClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && screen == ActiveScreen.Play)
+            {
+                playScreen.StartAnimation("Left");
+                moreScreen.StartAnimation("Left");
+                screen = ActiveScreen.More;
+                more.Activate();
+                play.Deactivate();
+            }
+        }
+        private void PlayClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && screen == ActiveScreen.More)
+            {
+                playScreen.StartAnimation("Right");
+                moreScreen.StartAnimation("Right");
+                screen = ActiveScreen.Play;
+                play.Activate();
+                more.Deactivate();
+            }
+        }
+        private void SettingsClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && screen == ActiveScreen.More)
+            {
+                SetAlwaysOnVisibility(false);
+                settingsScreen.visible = true;
+            }
+        }
+        private void BackClicked(MouseEvent e, GuiElement arg2)
+        {
+            if (e.leftButtonDown && screen == ActiveScreen.More)
+            {
+                SetAlwaysOnVisibility(true);
+                settingsScreen.visible = false;
             }
         }
     }

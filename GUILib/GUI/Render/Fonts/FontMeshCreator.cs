@@ -10,7 +10,7 @@ namespace GUILib.GUI.Render.Fonts
 {
     class FontMeshCreator
     {
-        public static TextData CreateMesh(Font font, string text, float maxSize, float fontSize, out float width, out float height)
+        public static TextData CreateMesh(Font font, string text, float maxSize, float fontSize, out float width, out float height, float xAdvanceMult)
         {
             maxSize = maxSize * (1 / fontSize);
 
@@ -59,7 +59,7 @@ namespace GUILib.GUI.Render.Fonts
                     Character character = font.GetCharacter(c);
                     if(character != null)
                     {
-                        thisWordSize += character.xAdvance * font.xAdvance;
+                        thisWordSize += character.xAdvance * font.xAdvance * xAdvanceMult;
                         charCounter++;
                     }
                 }
@@ -74,7 +74,7 @@ namespace GUILib.GUI.Render.Fonts
 
 
                 charCounter++;
-                cursorPos += spaceBarAdvance * font.xAdvance;
+                cursorPos += spaceBarAdvance * font.xAdvance * xAdvanceMult;
             }
 
             text = text.Replace("\n", "");
@@ -131,7 +131,7 @@ namespace GUILib.GUI.Render.Fonts
                     texCoords.Add(character.xLowScreen);
                     texCoords.Add(character.yHighScreen);
 
-                    cursorPos += character.xAdvance * font.xAdvance;
+                    cursorPos += character.xAdvance * font.xAdvance * xAdvanceMult;
 
                     charCounter++;
                 }

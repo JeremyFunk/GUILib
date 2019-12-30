@@ -95,11 +95,11 @@ namespace GUILib.GUI
 
         public void PrepareRender(GuiShader shader, float opacity, Vector2 offset, Vector2 scale)
         {
-            Vector4 color = new Vector4(this.color.X, this.color.Y, this.color.Z, this.color.W * opacity);
+            Vector4 color = new Vector4(this.color.X, this.color.Y, this.color.Z, this.color.W);
 
             shader.SetTransform(offset, scale);
-
             shader.SetBorderVisibility(usesBorder);
+            shader.SetOpacity(opacity);
 
             if (usesBorder)
             {

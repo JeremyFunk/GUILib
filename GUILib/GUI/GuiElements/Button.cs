@@ -47,6 +47,34 @@ namespace GUILib.GUI.GuiElements
             this.hoverMaterial = hoverMaterial == null ? Theme.defaultTheme.GetButtonHoverMaterial() : hoverMaterial;
         }
 
+        public Button(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Text text, bool defaultBehaviour = false, Material material = null, Material hoverMaterial = null, Material clickMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        {
+            curMaterial = material == null ? Theme.defaultTheme.GetButtonFillMaterial() : material;
+
+            quad = new Quad(0, 0, width, height, curMaterial);
+            quad.generalConstraint = new FillConstraintGeneral();
+
+            AddChild(quad);
+
+            this.text = text;
+            this.text.xConstraints.Add(new CenterConstraint());
+            this.text.yConstraints.Add(new CenterConstraint());
+            AddChild(this.text);
+
+            if (defaultBehaviour)
+            {
+                startHoverEvent = HoverStart;
+                endHoverEvent = HoverEnd;
+                mouseButtonPressedEvent = Click;
+                mouseButtonReleasedEvent = HoverStart;
+            }
+
+            defaultMaterial = curMaterial;
+            this.clickMaterial = clickMaterial == null ? Theme.defaultTheme.GetButtonClickMaterial() : clickMaterial;
+            this.hoverMaterial = hoverMaterial == null ? Theme.defaultTheme.GetButtonHoverMaterial() : hoverMaterial;
+        }
+
+
         private void HoverStart(MouseEvent e, GuiElement el)
         {
             SetMaterial(hoverMaterial);

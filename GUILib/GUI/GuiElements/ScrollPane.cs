@@ -43,7 +43,7 @@ namespace GUILib.GUI.GuiElements
             Border border = new Border(edge == null ? Theme.defaultTheme.GetScrollPaneBorderMaterial() : edge, 1f, 1f, 1);
             border.generalConstraint = new FillConstraintGeneral();
 
-            Quad scrollBarBackground = new Quad(0, 0, Theme.defaultTheme.GetScrollPaneScrollBarWidth(), 1f, sliderBackground == null ? Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial() : sliderBackground);
+            Quad scrollBarBackground = new Quad(0, 0, sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth, 1f, sliderBackground == null ? Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial() : sliderBackground);
             scrollBarBackground.xConstraints.Add(new MarginConstraint(0));
             base.AddChild(scrollBarBackground);
             base.AddChild(elementContainer);

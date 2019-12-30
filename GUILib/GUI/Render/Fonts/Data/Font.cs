@@ -44,11 +44,11 @@ namespace GUILib.GUI.Render.Fonts.Data
             GL.DrawArrays(PrimitiveType.Quads, 0, textElement.data.vertexCount);
         }
 
-        private TextData CreateText(string text, Text textElement, float maxSize, float fontSize)
+        private TextData CreateText(string text, Text textElement, float maxSize, float fontSize, float xAdvanceMult)
         {
             float width;
             float height;
-            TextData data = FontMeshCreator.CreateMesh(this, text, maxSize, fontSize, out width, out height);
+            TextData data = FontMeshCreator.CreateMesh(this, text, maxSize, fontSize, out width, out height, xAdvanceMult);
 
             textElement.SetWidth((int)Math.Round(width));
             textElement.SetHeight((int)Math.Round(height));
@@ -56,12 +56,12 @@ namespace GUILib.GUI.Render.Fonts.Data
             return data;
         }
 
-        internal void Reconstruct(string text, Text textElement, float maxSize, float fontSize)
+        internal void Reconstruct(string text, Text textElement, float maxSize, float fontSize, float xAdvanceMult = 1f)
         {
             if (textElement.data != null)
                 GL.DeleteVertexArray(textElement.data.vaoID);
 
-            TextData data = CreateText(text, textElement, maxSize, fontSize);
+            TextData data = CreateText(text, textElement, maxSize, fontSize, xAdvanceMult);
             textElement.data = data;
         }
     }

@@ -20,7 +20,7 @@ namespace GUILib.GUI.GuiElements
 
         public Container(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex) 
         {
-            //Quad q = new Quad(new Material(new Vector4((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble())), 0, 0, 0, 0); q.generalConstraint = new FillConstraintGeneral(); AddChild(q);
+            //Quad q = new Quad(0, 0, 0, 0, new Material(new Vector4((float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble(), (float)r.NextDouble()))); q.generalConstraint = new FillConstraintGeneral(); AddChild(q);
             //q.hoverEvent = Hover;
         }
 
