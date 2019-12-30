@@ -117,7 +117,7 @@ namespace GUILib.GUI.GuiElements
             if (!scrollable)
                 return;
 
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 mouseDragY = e.mousePositionWorld.Y;
                 drag = true;
@@ -158,7 +158,7 @@ namespace GUILib.GUI.GuiElements
             if (!scrollable)
                 return;
 
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 if (drag)
                 {

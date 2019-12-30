@@ -53,9 +53,9 @@ namespace GUILib.GUI.GuiElements
             if (e.hit)
             {
                 MouseInfo.SetMouseInfo(Math.Round(number) + "");
-                if (e.leftButtonDown)
+                if (e.leftMouseButtonType != MouseButtonType.None)
                 {
-                    if(e.mouseButtonType == MouseButtonType.Pressed)
+                    if(e.leftMouseButtonType == MouseButtonType.Pressed)
                     {
                         if (e.mousePositionLocal.X > curWidth - 3)
                             return;

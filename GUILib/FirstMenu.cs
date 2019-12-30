@@ -19,6 +19,9 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib
 {
+    /**
+     * This class is an example class of what is possible with the GUI
+     */
     class FirstMenu
     {
         GuiScene scene;
@@ -161,7 +164,7 @@ namespace GUILib
 
         private void LoadGame(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
                 loadGameWindow.visible = true;
         }
 
@@ -755,7 +758,7 @@ namespace GUILib
 
         private void NewGame(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
                 newGameWindow.visible = true;
         }
 

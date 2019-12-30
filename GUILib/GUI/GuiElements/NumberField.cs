@@ -90,7 +90,7 @@ namespace GUILib.GUI.GuiElements
 
         private void Click(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
             {
                 selected = true;
                 defaultText.visible = false;
@@ -99,7 +99,7 @@ namespace GUILib.GUI.GuiElements
 
         private void ClickMissed(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
             {
                 selected = false;
 

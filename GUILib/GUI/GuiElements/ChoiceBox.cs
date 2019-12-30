@@ -54,7 +54,7 @@ namespace GUILib.GUI.GuiElements
 
         private void QuadClicked(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 newSelected = !selected;
             }
@@ -122,7 +122,7 @@ namespace GUILib.GUI.GuiElements
 
         private void ElementClicked(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 TextSelectable selectable = (TextSelectable)el;
 

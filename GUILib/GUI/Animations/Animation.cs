@@ -10,18 +10,23 @@ using GUILib.GUI.Animations.Transitions;
 
 namespace GUILib.GUI.Animations
 {
+    /// <summary>
+    /// This animation type has three possible values: <c>SwingBack</c>, <c>Normal</c>, <c>PauseOnEnd</c>
+    /// </summary>
     public enum AnimationType
     {
         //swingBack = when animation stops it takes the exact same amount of time to return back to the start state. 
         SwingBack, Normal, PauseOnEnd
     }
 
+    /// <summary>
+    /// This struct is used as a keyframe for animations.
+    /// </summary>
     struct AnimationKeyframe
     {
         public int x, y, width, height;
         public float opacity;
         public float keyframeTime;
-        public Material material;
 
         public AnimationKeyframe(float keyframeTime)
         {
@@ -29,10 +34,12 @@ namespace GUILib.GUI.Animations
 
             x = y = width = height = 0;
             opacity = 0;
-            material = null;
         }
     }
 
+    /// <summary>
+    /// This class contains every needed data of an animation.
+    /// </summary>
     class AnimationClass
     {
         public AnimationKeyframe[] animationKeyframes;
@@ -89,14 +96,29 @@ namespace GUILib.GUI.Animations
         }
     }
 
+    /// <summary>
+    /// This class contains every needed data to determine the state of an animation.
+    /// </summary>
     class AnimationState
     {
+        /// <summary>
+        /// The current state of the animation.
+        /// </summary>
         public AnimationStateEnum state;
+        /// <summary>
+        /// The time the animation is currently in.
+        /// </summary>
         public float timer = 0;
 
+        /// <summary>
+        /// The animation class this state refers to.
+        /// </summary>
         public AnimationClass animation;
 
-        public int x, y, width, height;
+        public int x;
+        public int y;
+        public int width;
+        public int height;
         public float opacity;
 
         public AnimationState(AnimationStateEnum state, AnimationClass animation)
@@ -251,7 +273,12 @@ namespace GUILib.GUI.Animations
             }
         }
 
-        internal bool IsAnimationRunning(GuiElement element)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element">The Gui Element that is checked.</param>
+        /// <returns>True if <c>element</c> has a running animation</returns>
+        public bool IsAnimationRunning(GuiElement element)
         {
             if (animationStates.ContainsKey(element))
             {
@@ -265,6 +292,11 @@ namespace GUILib.GUI.Animations
             return false;
         }
 
+        /// <summary>
+        /// Executes an animation.
+        /// </summary>
+        /// <param name="element">The GuiElement that the animation is executed on</param>
+        /// <param name="animationName">The name of the animation</param>
         public void RunAnimation(GuiElement element, string animationName)
         {
             if (!animations.ContainsKey(animationName))
@@ -299,6 +331,9 @@ namespace GUILib.GUI.Animations
             animationStates[element].Add(new AnimationState(AnimationStateEnum.Run, animation));
         }
 
+        /// <summary>
+        /// Stops all animations on on GuiElement.
+        /// </summary>
         public void StopAllAnimation(GuiElement element)
         {
             if (animationStates.ContainsKey(element))
@@ -326,7 +361,9 @@ namespace GUILib.GUI.Animations
             }
                 
         }
-
+        /// <summary>
+        /// Swings one animation. Swinging playing the animation backwards from the position it is currently in.
+        /// </summary>
         public void SwingAnimation(GuiElement element, string animationName)
         {
             if (!animationStates.ContainsKey(element))

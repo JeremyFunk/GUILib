@@ -64,9 +64,9 @@ namespace GUILib.GUI.GuiElements
         {
             if (e.hit)
             {
-                if (e.leftButtonDown)
+                if (e.leftMouseButtonType != MouseButtonType.None)
                 {
-                    if (e.mouseButtonType == MouseButtonType.Released)
+                    if (e.leftMouseButtonType == MouseButtonType.Released)
                     {
                         clicked = !clicked;
 

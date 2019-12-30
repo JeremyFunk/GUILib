@@ -15,6 +15,9 @@ using GUILib.Util;
 
 namespace GUILib.GUI
 {
+    /// <summary>
+    /// This class can create hover mouse information.
+    /// </summary>
     class MouseInfo
     {
         private static Quad quad;

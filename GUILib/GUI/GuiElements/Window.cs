@@ -67,13 +67,13 @@ namespace GUILib.GUI.GuiElements
 
         private void CloseClicked(MouseEvent e, GuiElement el)
         {
-            if(e.leftButtonDown)
+            if(e.leftMouseButtonType == MouseButtonType.Released)
                 this.visible = false;
         }
 
         private void TopBarDownEvent(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
             {
                 mouseDragX = e.mousePositionWorld.X;
                 mouseDragY = e.mousePositionWorld.Y;
@@ -93,7 +93,7 @@ namespace GUILib.GUI.GuiElements
 
         private void TopBarDragEvent(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 if (drag)
                 {

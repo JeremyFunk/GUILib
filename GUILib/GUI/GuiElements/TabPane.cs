@@ -106,7 +106,7 @@ namespace GUILib.GUI.GuiElements
 
         private void TabClicked(MouseEvent e, GuiElement el)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
             {
                 activeTab.Deactivate();
                 tabContent[activeTab].Deactivate();

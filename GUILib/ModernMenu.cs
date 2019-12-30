@@ -26,6 +26,9 @@ namespace GUILib
         Play, More
     }
 
+    /**
+     * This class is an example class of what is possible with the GUI
+     */
     class ModernMenu
     {
         private GuiElement playScreen, moreScreen;
@@ -234,7 +237,7 @@ namespace GUILib
             settingsText.yConstraints.Add(new CenterConstraint());
             settingsText.fontWidth = fontWidth;
             settingsQuad.AddChild(settingsText);
-            settingsQuad.mouseButtonDownEvent = SettingsClicked;
+            settingsQuad.mouseButtonReleasedEvent = SettingsClicked;
 
             Quad creditsQuad = new Quad(0, 0, 380, height, quadMaterial);
             Text creditsText = new Text(20, 0, "CREDITS", fontSize);
@@ -1320,7 +1323,7 @@ namespace GUILib
         }
         private void EndClickMinimize(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown)
+            if (e.leftMouseButtonType == MouseButtonType.Released)
             {
                 chat.StartAnimation("PopUpReverse");
                 friendsButton.StartAnimation("PopUp");
@@ -1328,7 +1331,7 @@ namespace GUILib
         }
         private void RankedGameClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1337,7 +1340,7 @@ namespace GUILib
         }
         private void NormalGameClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1346,7 +1349,7 @@ namespace GUILib
         }
         private void DeathmatchClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1355,7 +1358,7 @@ namespace GUILib
         }
         private void GunfightClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1364,7 +1367,7 @@ namespace GUILib
         }
         private void FutureFightClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1373,7 +1376,7 @@ namespace GUILib
         }
         private void FreeForAllClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && !queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && !queueRunning)
             {
                 queueRunning = true;
                 queueQuad.StartAnimation("Down");
@@ -1382,7 +1385,7 @@ namespace GUILib
         }
         private void LeaveQueue(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && queueRunning)
+            if (e.leftMouseButtonType == MouseButtonType.Released && queueRunning)
             {
                 queueRunning = false;
                 queueTimer = 0;
@@ -1410,7 +1413,7 @@ namespace GUILib
 
         private void MoreClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && screen == ActiveScreen.Play)
+            if (e.leftMouseButtonType == MouseButtonType.Released && screen == ActiveScreen.Play)
             {
                 playScreen.StartAnimation("Left");
                 moreScreen.StartAnimation("Left");
@@ -1421,7 +1424,7 @@ namespace GUILib
         }
         private void PlayClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && screen == ActiveScreen.More)
+            if (e.leftMouseButtonType == MouseButtonType.Released && screen == ActiveScreen.More)
             {
                 playScreen.StartAnimation("Right");
                 moreScreen.StartAnimation("Right");
@@ -1432,7 +1435,7 @@ namespace GUILib
         }
         private void SettingsClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && screen == ActiveScreen.More)
+            if (e.leftMouseButtonType == MouseButtonType.Released && screen == ActiveScreen.More)
             {
                 SetAlwaysOnVisibility(false);
                 settingsScreen.visible = true;
@@ -1440,7 +1443,7 @@ namespace GUILib
         }
         private void BackClicked(MouseEvent e, GuiElement arg2)
         {
-            if (e.leftButtonDown && screen == ActiveScreen.More)
+            if (e.leftMouseButtonType == MouseButtonType.Released && screen == ActiveScreen.More)
             {
                 SetAlwaysOnVisibility(true);
                 settingsScreen.visible = false;

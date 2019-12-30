@@ -61,7 +61,7 @@ namespace GUILib.GUI.GuiElements
 
         private void MousePressed(MouseEvent e, GuiElement el)
         {
-            if(e.leftButtonDown)
+            if(e.leftMouseButtonType == MouseButtonType.Pressed)
                 tabQuad.SetMaterial(Theme.defaultTheme.GetTabClickedMaterial());
         }
 

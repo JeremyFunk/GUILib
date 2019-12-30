@@ -10,14 +10,14 @@ namespace GUILib.GUI.Animations.Transitions
     {
         int amount;
 
+        ///<summary>
+        ///amount is a number between 1 and 3. 1 Indicates the smallest smoothing effect, while 3 indicates the greatest.
+        /// </summary>
         public SmoothstepTransition(int amount)
         {
             this.amount = amount;
         }
 
-        /**
-         * amount is a number between 1 and 3. 1 Indicates the smallest smoothing effect, while 3 indicates the greatest.
-         */
         public override float GetCalculatedResult(float t)
         {
             if(amount == 1)

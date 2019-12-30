@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GUILib.GUI.Animations.Transitions
 {
 
-    //https://sol.gfxile.net/interpolation/#s5 for information on what this means
+    ///<summary>Implements the Catmull-Rom-Spline function.</summary>
     class CatmullRomSplineTransition : Transition
     {
         private float p0, p3;

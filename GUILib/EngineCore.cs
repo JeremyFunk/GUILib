@@ -26,7 +26,7 @@ namespace GUILib
 
         public EngineCore(int widthP, int heightP, string title) : base(widthP, heightP, new OpenTK.Graphics.GraphicsMode(new OpenTK.Graphics.ColorFormat(8, 8, 8, 8), 24, 8, 4))
         {
-
+            
         }
 
         protected override void OnLoad(EventArgs e)
@@ -37,8 +37,8 @@ namespace GUILib
             guiRenderer = new GuiRenderer();
             scene = new GuiScene();
 
-            //FirstMenu m = new FirstMenu(scene);
-            ModernMenu m = new ModernMenu(scene);
+            FirstMenu m = new FirstMenu(scene);
+            //ModernMenu m = new ModernMenu(scene);
 
             GameInput.Initialize();
 

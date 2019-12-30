@@ -233,9 +233,9 @@ namespace GUILib.GUI.GuiElements
                     hoverEvent?.Invoke(e, this);
                 }
 
-                if (e.mouseButtonType == MouseButtonType.Down)
+                if (e.leftMouseButtonType == MouseButtonType.Down)
                 {
-                    if (leftMouseButtonDownAnimationName != null && e.leftButtonDown) 
+                    if (leftMouseButtonDownAnimationName != null) 
                     { 
                         if(leftMouseButtonDownAnimationType == AnimationRunType.Run)
                             animation.RunAnimation(this, leftMouseButtonDownAnimationName);
@@ -243,15 +243,15 @@ namespace GUILib.GUI.GuiElements
                             animation.SwingAnimation(this, leftMouseButtonDownAnimationName);
                     }
                     mouseButtonDownEvent?.Invoke(e, this);
-                } else if (e.mouseButtonType == MouseButtonType.Pressed)
+                } else if (e.leftMouseButtonType == MouseButtonType.Pressed || e.rightMouseButtonType == MouseButtonType.Pressed)
                 {
                     mouseButtonPressedEvent?.Invoke(e, this);
                     if (clickMaterial != null)
                         curMaterial = clickMaterial;
 
-                } else if (e.mouseButtonType == MouseButtonType.Released)
+                } else if (e.leftMouseButtonType == MouseButtonType.Released)
                 {
-                    if (leftMouseButtonReleasedAnimationName != null && e.leftButtonDown)
+                    if (leftMouseButtonReleasedAnimationName != null)
                     {
                         if (leftMouseButtonReleasedAnimationType == AnimationRunType.Run)
                             animation.RunAnimation(this, leftMouseButtonReleasedAnimationName);
@@ -266,10 +266,10 @@ namespace GUILib.GUI.GuiElements
             }
             else
             { 
-                if (e.mouseButtonType == MouseButtonType.Released)
+                if (e.leftMouseButtonType == MouseButtonType.Released || e.rightMouseButtonType == MouseButtonType.Released)
                 {
                     mouseButtonReleasedMissedEvent?.Invoke(e, this);
-                }else if(e.mouseButtonType == MouseButtonType.Pressed)
+                }else if(e.leftMouseButtonType == MouseButtonType.Pressed || e.rightMouseButtonType == MouseButtonType.Pressed)
                 {
                     mouseButtonPressedMissedEvent?.Invoke(e, this);
                 }

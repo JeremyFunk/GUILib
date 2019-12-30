@@ -52,8 +52,33 @@ namespace GUILib.GUI
                 el.Update(GameSettings.Width, GameSettings.Height, delta);
             }
 
-            bool leftMousePressed = GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Left);
-            bool rightMousePressed = GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Right);
+            MouseButtonType leftMouseButtonType = MouseButtonType.None;
+            if (GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Left))
+            {
+                leftMouseButtonType = MouseButtonType.Down;
+            }
+            else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Left))
+            {
+                leftMouseButtonType = MouseButtonType.Pressed;
+            }
+            else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Left))
+            {
+                leftMouseButtonType = MouseButtonType.Released;
+            }
+
+            MouseButtonType rightMouseButtonType = MouseButtonType.None;
+            if (GameInput.IsMouseButtonPressed(OpenTK.Input.MouseButton.Right))
+            {
+                rightMouseButtonType = MouseButtonType.Down;
+            }
+            else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Right))
+            {
+                rightMouseButtonType = MouseButtonType.Pressed;
+            }
+            else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Right))
+            {
+                rightMouseButtonType = MouseButtonType.Released;
+            }
 
             int mouseWheel = GameInput.mouseWheel;
 
@@ -85,65 +110,11 @@ namespace GUILib.GUI
                 {
                     zIndex = parent.ZIndex;
 
-                    if (leftMousePressed)
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Down, true, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Left))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Pressed, true, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Left))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Released, true, covered, mouseWheel));
-                    }
-                    else if (rightMousePressed)
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Down, true, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Right))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Pressed, true, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Right))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Released, true, covered, mouseWheel));
-                    }
-                    else
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Hover, mousePos, localPos, false, false, MouseButtonType.None, true, covered, mouseWheel));
-                    }
+                    parent.MouseEvent(new MouseEvent(mousePos, localPos, leftMouseButtonType, rightMouseButtonType, true, covered, mouseWheel));
                 }
                 else
                 {
-                    if (leftMousePressed)
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Down, false, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Left))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Pressed, false, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Left))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, true, false, MouseButtonType.Released, false, covered, mouseWheel));
-                    }
-                    else if (rightMousePressed)
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Down, false, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonDown(OpenTK.Input.MouseButton.Right))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Pressed, false, covered, mouseWheel));
-                    }
-                    else if (GameInput.IsMouseButtonReleased(OpenTK.Input.MouseButton.Right))
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Click, mousePos, localPos, false, true, MouseButtonType.Released, false, covered, mouseWheel));
-                    }
-                    else
-                    {
-                        parent.MouseEvent(new MouseEvent(MouseEventType.Hover, mousePos, localPos, false, false, MouseButtonType.None, false, covered, mouseWheel));
-                    }
+                    parent.MouseEvent(new MouseEvent(mousePos, localPos, leftMouseButtonType, rightMouseButtonType, false, covered, mouseWheel));
                 }
             }
         }

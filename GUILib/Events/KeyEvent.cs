@@ -7,12 +7,19 @@ using OpenTK.Input;
 
 namespace GUILib.Events
 {
+    ///<summary>Class <c>KeyEvent</c> will be passed to every visible GUI Element every update, if one or more key events occured.</summary>
     class KeyEvent
     {
         private const char nullChar = '`';
 
-        public List<Key> down, pressed;
-        public Dictionary<Key, char> keyCharsDown = new Dictionary<Key, char>(), keyCharsPressed = new Dictionary<Key, char>();
+        ///<summary>The list <c>down</c> contains every Key that is pressed at the creation of this KeyEvent.</summary>
+        public List<Key> down;
+        ///<summary>The list <c>pressed</c> contains every Key that is pressed at the creation of this KeyEvent, if it was not pressed on the previous update.</summary>
+        public List<Key> pressed;
+        ///<summary>The dictionary <c>keyCharsDown</c> contains the same values as keys as <c>down</c>. The value of each key is the character that corresponds to that key.</summary>
+        public Dictionary<Key, char> keyCharsDown = new Dictionary<Key, char>();
+        ///<summary>The dictionary <c>keyCharsPressed</c> contains the same values as keys as <c>pressed</c>. The value of each key is the character that corresponds to that key.</summary>
+        public Dictionary<Key, char> keyCharsPressed = new Dictionary<Key, char>();
 
         public KeyEvent(List<Key> down, List<Key> pressed)
         {
