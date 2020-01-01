@@ -37,8 +37,8 @@ namespace GUILib
             guiRenderer = new GuiRenderer();
             scene = new GuiScene();
 
-            FirstMenu m = new FirstMenu(scene);
-            //ModernMenu m = new ModernMenu(scene);
+            //FirstMenu m = new FirstMenu(scene);
+            ModernMenu m = new ModernMenu(scene);
 
             GameInput.Initialize();
 
