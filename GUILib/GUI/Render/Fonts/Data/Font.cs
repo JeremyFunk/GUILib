@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GUILib.GUI.GuiElements;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace GUILib.GUI.Render.Fonts.Data
 {
-    class Font
+    public class Font
     {
         public static Font defaultFont = FontFileParser.LoadFont("Candara");
 
@@ -33,7 +33,7 @@ namespace GUILib.GUI.Render.Fonts.Data
             return null;
         }
 
-        public void Render(string text, GuiShader shader, Vector4 color, Text textElement)
+        public void Render(string text, DefaultShader shader, Vector4 color, Text textElement)
         {
             shader.SetRenderMode(RenderMode.DistanceFieldFonts);
             shader.SetFillColor(color);
@@ -56,7 +56,7 @@ namespace GUILib.GUI.Render.Fonts.Data
             return data;
         }
 
-        internal void Reconstruct(string text, Text textElement, float maxSize, float fontSize, float xAdvanceMult = 1f)
+        public void Reconstruct(string text, Text textElement, float maxSize, float fontSize, float xAdvanceMult = 1f)
         {
             if (textElement.data != null)
                 GL.DeleteVertexArray(textElement.data.vaoID);

@@ -24,8 +24,9 @@ uniform bool u_right;
 uniform bool u_up;
 uniform bool u_down;
 
-uniform bool inverseGradient;
-
+uniform bool u_inverseGradient;
+uniform bool u_usesGradientColor;
+uniform vec4 u_gradientColor;
 
 uniform float u_gradientFalloff;
 uniform float u_gradientRadius;
@@ -38,13 +39,12 @@ uniform float u_opacity;
 
 out vec4 color;
 
-
-uniform float width;
-const float edge = 0.19;
+uniform float u_width;
+uniform float u_edge;
 
 //---------------------------------------
 
-//Utilitie Methodes
+//Utility Methods
 vec2 normalize(vec2 coord, vec2 scale)
 {
     return vec2(coord.x*scale.x,coord.y*scale.y);
@@ -202,9 +202,9 @@ float gradientQuad(vec2 coord, vec2 scale, float falloff, float radius)
 {
     //coord is normalized
     float up = gradientDirection(coord, falloff,scale, 1,radius);
-    float left = gradientDirection(coord, falloff,scale, 2,radius);
+    float left = gradientDirection(coord, falloff,scale, 4,radius);
     float down = gradientDirection(coord, falloff,scale, 3,radius);
-    float right = gradientDirection(coord, falloff,scale, 4,radius);
+    float right = gradientDirection(coord, falloff,scale, 2,radius);
 
     if(u_up == false && u_down == false){
         if(u_left == false){
@@ -254,7 +254,7 @@ float gradientQuad(vec2 coord, vec2 scale, float falloff,float radius, float off
     {
         return 0;
     }
-    if(inverseGradient)
+    if(u_inverseGradient)
         return 1f - gradientQuad(newCoord,scale,falloff,radius);
 	return gradientQuad(newCoord,scale,falloff,radius);
 }
@@ -294,22 +294,24 @@ vec4 borderMixer(vec2 coord,vec4 fillColor, vec4 borderColor)
 
 vec4 solidColor()
 {
-    vec2 coord = normalize(f_texCoords,u_normScale);
-    float gradiant=1;
+    vec2 coord = normalize(f_texCoords, u_normScale);
+    float gradient = 1;
     if(u_gradient)
     {
-        gradiant=1-u_gradientOpacity+u_gradientOpacity*gradientQuad(coord,u_normScale, u_gradientFalloff,u_gradientRadius, u_borderWidth);
+        gradient=1 - u_gradientOpacity + u_gradientOpacity * gradientQuad(coord,u_normScale, u_gradientFalloff,u_gradientRadius, u_borderWidth);
 
     }
-    return borderMixer(coord,vec4(u_fillColor.xyz,u_fillColor.w*gradiant),u_borderColor);
+    if(u_usesGradientColor)
+        return borderMixer(coord, u_fillColor * gradient + u_gradientColor * (1 - gradient), u_borderColor);
+    return borderMixer(coord, vec4(u_fillColor.xyz, u_fillColor.w * gradient), u_borderColor);
 }
 
 vec4 fontColor()
 {
     float distance = 1.0 - texture2D(u_fillTexture, f_texCoords).a;
-    float alpha = 1.0 - smoothstep(width, width + edge, distance);
+    float alpha = 1.0 - smoothstep(u_width, u_width + u_edge, distance);
         
-    return vec4(u_fillColor.xyz, alpha);
+    return vec4(u_fillColor.xyz, alpha * u_fillColor.w);
 }
 
 vec4 textureColor()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class SubtractConstraint : Constraint
+    public class SubtractConstraint : Constraint
     {
         private int value;
         public SubtractConstraint(int value)

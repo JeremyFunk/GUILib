@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ using GUILib.Util;
 
 namespace GUILib.GUI.GuiElements
 {
-    class ScrollPane : GuiElement
+    public class ScrollPane : GuiElement
     {
         private Container elementContainer;
         private Quad scrollBar;
@@ -29,8 +29,12 @@ namespace GUILib.GUI.GuiElements
         private int yOffset = 0;
         public int overScroll = 30;
 
+        private int borderSize, scrollBarWidth;
+
         public ScrollPane(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material fill = null, Material edge = null, int sliderWidth = -1, Material sliderBackground = null, Material sliderMaterial = null, int edgeSize = -1, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
+            borderSize = 1;
+
             useStencilBuffer = true;
 
             Quad q = new Quad(0, 0, 0, 0, fill == null ? Theme.defaultTheme.GetScrollPaneMaterial() : fill); 
@@ -43,14 +47,19 @@ namespace GUILib.GUI.GuiElements
             Border border = new Border(edge == null ? Theme.defaultTheme.GetScrollPaneBorderMaterial() : edge, 1f, 1f, 1);
             border.generalConstraint = new FillConstraintGeneral();
 
-            Quad scrollBarBackground = new Quad(0, 0, sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth, 1f, sliderBackground == null ? Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial() : sliderBackground);
+            scrollBarWidth = sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth;
+
+            Quad scrollBarBackground = new Quad(borderSize, borderSize, scrollBarWidth, 1f, sliderBackground == null ? Theme.defaultTheme.GetScrollPaneScrollBarBackgroundMaterial() : sliderBackground);
+            scrollBarBackground.widthConstraints.Add(new SubtractConstraint(borderSize * 2));
+            scrollBarBackground.heightConstraints.Add(new SubtractConstraint(borderSize * 2));
             scrollBarBackground.xConstraints.Add(new MarginConstraint(0));
             base.AddChild(scrollBarBackground);
             base.AddChild(elementContainer);
             base.AddChild(border);
 
-            scrollBar = new Quad(0, 0, sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth, 1f, sliderMaterial == null ? Theme.defaultTheme.GetScrollPaneScrollBarMaterial() : sliderMaterial);
-            scrollBar.xConstraints.Add(new MarginConstraint(0));
+            scrollBar = new Quad(borderSize, borderSize, sliderWidth == -1 ? Theme.defaultTheme.GetScrollPaneScrollBarWidth() : sliderWidth, 1f, sliderMaterial == null ? Theme.defaultTheme.GetScrollPaneScrollBarMaterial() : sliderMaterial);
+            scrollBar.heightConstraints.Add(new SubtractConstraint(borderSize * 2));
+            scrollBar.xConstraints.Add(new MarginConstraint(borderSize * 2));
 
             scrollBar.mouseButtonPressedEvent = ScrollBarDragEvent;
             scrollBar.mouseButtonPressedMissedEvent = ScrollBarDragEvent;
@@ -100,14 +109,15 @@ namespace GUILib.GUI.GuiElements
                 if (firstUpdate)
                 {
                     firstUpdate = false;
-                    scrollBar.SetY(curHeight - scrollBar.curHeight);
+                    int resY = curHeight - scrollBar.curHeight;
+                    scrollBar.SetY(resY < borderSize ? borderSize : resY);
                 }
             }
             else if(elementContainer.curHeight - lowestY < curHeight)
             {
                 scrollable = false;
                 scrollBar.SetHeight(curHeight);
-                scrollBar.SetY(0);
+                scrollBar.SetY(borderSize);
                 elementContainer.SetY(curHeight - elementContainer.curHeight);
             }
         }
@@ -140,8 +150,8 @@ namespace GUILib.GUI.GuiElements
 
                 if (newY > curHeight - scrollBar.curHeight)
                     newY = curHeight - scrollBar.curHeight;
-                else if (newY < 0)
-                    newY = 0;
+                else if (newY < borderSize)
+                    newY = borderSize;
 
                 scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
@@ -166,8 +176,8 @@ namespace GUILib.GUI.GuiElements
 
                     if (newY > curHeight - scrollBar.curHeight)
                         newY = curHeight - scrollBar.curHeight;
-                    else if (newY < 0)
-                        newY = 0;
+                    else if (newY < borderSize)
+                        newY = borderSize;
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 
@@ -191,8 +201,8 @@ namespace GUILib.GUI.GuiElements
 
                     if (newY > curHeight - scrollBar.curHeight)
                         newY = curHeight - scrollBar.curHeight;
-                    else if (newY < 0)
-                        newY = 0;
+                    else if (newY < borderSize)
+                        newY = borderSize;
 
                     scroll = 1f - newY / ((float)curHeight - scrollBar.curHeight);
 

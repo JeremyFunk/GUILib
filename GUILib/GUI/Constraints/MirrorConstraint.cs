@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class MirrorConstraint : Constraint
+    public class MirrorConstraint : Constraint
     {
         public MirrorConstraint()
         {

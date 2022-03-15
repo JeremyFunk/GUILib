@@ -11,7 +11,7 @@ namespace GUILib.Logger
         Info, Warning, Error, FatalError
     }
 
-    abstract class ALogger
+    public abstract class ALogger
     {
         public static readonly ALogger defaultLogger = new ConsoleLogger(LogLevel.Info);
 

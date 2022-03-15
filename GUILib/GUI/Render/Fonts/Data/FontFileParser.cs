@@ -8,7 +8,7 @@ using GUILib.Util;
 
 namespace GUILib.GUI.Render.Fonts.Data
 {
-    class FontFileParser
+    public class FontFileParser
     {
         public static Font LoadFont(string fontName)
         {
@@ -38,7 +38,7 @@ namespace GUILib.GUI.Render.Fonts.Data
                 }
             }
 
-            return new Font(characters, new Texture(@"Fonts\" + fontName + ".png"));
+            return new Font(characters, new Texture(@"Fonts\" + fontName + ".png", true));
         }
     }
 }

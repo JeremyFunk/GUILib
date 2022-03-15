@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.PixelConstraints
 {
-    class CombinedSubtractConstraint : APixelConstraint
+    public class CombinedSubtractConstraint : APixelConstraint
     {
         APixelConstraint c1, c2;
 

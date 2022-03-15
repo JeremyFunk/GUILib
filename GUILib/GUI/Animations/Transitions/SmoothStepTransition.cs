@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Animations.Transitions
 {
-    class SmoothstepTransition : Transition
+    public class SmoothstepTransition : Transition
     {
         int amount;
 

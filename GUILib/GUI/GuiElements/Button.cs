@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Button : GuiElement
+    public class Button : GuiElement
     {
         private Quad quad;
         private Text text;
@@ -74,7 +74,18 @@ namespace GUILib.GUI.GuiElements
             this.hoverMaterial = hoverMaterial == null ? Theme.defaultTheme.GetButtonHoverMaterial() : hoverMaterial;
         }
 
-
+        public Text GetTextElement()
+        {
+            return text;
+        }
+        public string GetText()
+        {
+            return text.GetText();
+        }
+        public void SetText(string textS)
+        {
+            text.SetText(textS);
+        }
         private void HoverStart(MouseEvent e, GuiElement el)
         {
             SetMaterial(hoverMaterial);

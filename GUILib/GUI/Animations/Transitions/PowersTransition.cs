@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Animations.Transitions
 {
-    class PowersTransition : Transition
+    public class PowersTransition : Transition
     {
         private int amount;
 

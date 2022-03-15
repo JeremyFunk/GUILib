@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class TabContent : GuiElement
+    public class TabContent : GuiElement
     {
         private List<GuiElement> dataChilds = new List<GuiElement>();
 

@@ -7,7 +7,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace GUILib.Util
 {
-    class OpenGLUtil
+    public class OpenGLUtil
     {
         public static void StartStencilDraw()
         {

@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{63E155C8-B717-4949-B432-2AA6C84DE564}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>GUILib</RootNamespace>
     <AssemblyName>GUILib</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK, Version=3.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.3.1.0\lib\net20\OpenTK.dll</HintPath>
@@ -48,9 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EngineCore.cs" />
     <Compile Include="Events\KeyEvent.cs" />
     <Compile Include="Events\MouseEvent.cs" />
+    <Compile Include="GuiCore.cs" />
+    <Compile Include="GuiRenederer.cs" />
     <Compile Include="GUI\Animations\Animation.cs" />
     <Compile Include="GUI\Animations\Transitions\CatmullRomSplineTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\InvertPowersTransition.cs" />
@@ -61,6 +65,9 @@
     <Compile Include="GUI\Animations\Transitions\SmoothstepTransition.cs" />
     <Compile Include="GUI\Animations\Transitions\Transition.cs" />
     <Compile Include="GUI\GuiElements\LeftRightTextSlider.cs" />
+    <Compile Include="GUI\GuiElements\NumberFieldFloat.cs" />
+    <Compile Include="GUI\GuiElements\NumberFieldFloatSlider.cs" />
+    <Compile Include="GUI\GuiElements\NumberFieldSlider.cs" />
     <Compile Include="GUI\GuiElements\TickBox.cs" />
     <Compile Include="GUI\GuiElements\ScrollPane.cs" />
     <Compile Include="GUI\MouseInfo.cs" />
@@ -107,19 +114,15 @@
     <Compile Include="GUI\Render\Fonts\Data\TextData.cs" />
     <Compile Include="GUI\Render\Fonts\FontMeshCreator.cs" />
     <Compile Include="GUI\Render\GuiRenderer.cs" />
-    <Compile Include="GUI\Render\Shader\GuiShader.cs" />
-    <Compile Include="GUI\Render\Shader\ShaderProgram.cs" />
+    <Compile Include="GUI\Render\DefaultRenderer.cs" />
+    <Compile Include="GUI\Render\Shaders\DefaultShader.cs" />
+    <Compile Include="GUI\Render\Shaders\GuiShader.cs" />
+    <Compile Include="GUI\Render\Shaders\Shader.cs" />
     <Compile Include="GUI\Texture.cs" />
     <Compile Include="GUI\Theme\DarkTheme.cs" />
     <Compile Include="GUI\Theme\Theme.cs" />
     <Compile Include="Logger\ALogger.cs" />
     <Compile Include="Logger\ConsoleLogger.cs" />
-    <Compile Include="FirstMenu.cs" />
-    <Compile Include="ModernMenu.cs" />
-    <Compile Include="Modern\SliderSetting.cs" />
-    <Compile Include="Modern\UnderlinedText.cs" />
-    <Compile Include="Modern\UnderlinedButton.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\GameInput.cs" />
     <Compile Include="Util\Loader.cs" />
@@ -129,49 +132,48 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Resource\Fonts\Arial.fnt" />
-    <None Include="Resource\Fonts\ArialBlack.fnt" />
-    <None Include="Resource\Fonts\CourierNew.fnt" />
+    <EmbeddedResource Include="Resource\Fonts\Arial.fnt" />
+    <EmbeddedResource Include="Resource\Fonts\ArialBlack.fnt" />
+    <EmbeddedResource Include="Resource\Fonts\CourierNew.fnt" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
-    <None Include="Resource\Fonts\Candara.fnt" />
-    <None Include="Resource\Fonts\Consolas.fnt" />
-    <None Include="Resource\Fonts\TimesNewRoman.fnt" />
-    <None Include="Resource\Shaders\gui.fs" />
-    <None Include="Resource\Shaders\gui.vs" />
+    <EmbeddedResource Include="Resource\Fonts\Candara.fnt" />
+    <EmbeddedResource Include="Resource\Fonts\Consolas.fnt" />
+    <EmbeddedResource Include="Resource\Fonts\TimesNewRoman.fnt" />
+    <EmbeddedResource Include="Resource\Shaders\gui.fs" />
+    <EmbeddedResource Include="Resource\Shaders\gui.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resource\Icons\Close.png" />
-    <Content Include="Resource\Icons\CloseClick.png" />
-    <Content Include="Resource\Icons\CloseHover.png" />
-    <Content Include="Resource\Textures\badge.png" />
     <Content Include="Resource\Textures\Crystal.png" />
     <Content Include="Resource\Textures\Delete.png" />
     <Content Include="Resource\Textures\DeleteClick.png" />
     <Content Include="Resource\Textures\DeleteHover.png" />
-    <Content Include="Resource\Textures\DownArrow.png" />
+    <EmbeddedResource Include="Resource\Textures\DownArrow.png" />
     <Content Include="Resource\Textures\EP.png" />
     <Content Include="Resource\Textures\EPGold.png" />
-    <Content Include="Resource\Textures\Fonts\Arial.png" />
-    <Content Include="Resource\Textures\Fonts\ArialBlack.png" />
-    <Content Include="Resource\Textures\Fonts\Consolas.png" />
-    <Content Include="Resource\Textures\Fonts\CourierNew.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\Arial.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\ArialBlack.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\Consolas.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\CourierNew.png" />
     <Content Include="Resource\Textures\Friends.png" />
-    <Content Include="Resource\Textures\LeftArrow.png" />
+    <EmbeddedResource Include="Resource\Textures\Icons\Close.png" />
+    <EmbeddedResource Include="Resource\Textures\Icons\CloseClick.png" />
+    <EmbeddedResource Include="Resource\Textures\Icons\CloseHover.png" />
+    <EmbeddedResource Include="Resource\Textures\LeftArrow.png" />
     <Content Include="Resource\Textures\LevelTexture.png" />
     <Content Include="Resource\Textures\ModernBackground.jpg" />
     <Content Include="Resource\Textures\QueueQuad.png" />
     <Content Include="Resource\Textures\Refresh.png" />
-    <Content Include="Resource\Textures\RightArrow.png" />
+    <EmbeddedResource Include="Resource\Textures\RightArrow.png" />
     <Content Include="Resource\Textures\Settings.png" />
     <Content Include="Resource\Textures\SmokeBackground.png" />
-    <Content Include="Resource\Textures\TickBoxClicked.png" />
+    <EmbeddedResource Include="Resource\Textures\TickBoxClicked.png" />
     <Content Include="Resource\Textures\Loop.png" />
     <Content Include="Resource\Textures\Map.png" />
     <Content Include="Resource\Textures\Background.jpg" />
-    <Content Include="Resource\Textures\Fonts\Candara.png" />
-    <Content Include="Resource\Textures\Fonts\TimesNewRoman.png" />
-    <Content Include="Resource\Textures\UpArrow.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\Candara.png" />
+    <EmbeddedResource Include="Resource\Textures\Fonts\TimesNewRoman.png" />
+    <EmbeddedResource Include="Resource\Textures\UpArrow.png" />
     <Content Include="Resource\Textures\XP.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

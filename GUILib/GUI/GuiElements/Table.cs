@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace GUILib.GUI.GuiElements
         }
     }
 
-    class Table : GuiElement
+    public class Table : GuiElement
     {
         private Quad quad;
 
@@ -187,7 +187,7 @@ namespace GUILib.GUI.GuiElements
             }
         }
 
-        internal void DisableCell(int column, int row)
+        public void DisableCell(int column, int row)
         {
             Vector2i key = new Vector2i(row, column);
 
@@ -198,7 +198,7 @@ namespace GUILib.GUI.GuiElements
             disabledCells[key].visible = true;
         }
 
-        internal void EnableCell(int column, int row)
+        public void EnableCell(int column, int row)
         {
             Vector2i key = new Vector2i(row, column);
 

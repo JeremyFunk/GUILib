@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI
 {
-    abstract class Theme
+    public abstract class Theme
     {
-        public static readonly Theme defaultTheme = new DarkTheme();
+        public static Theme defaultTheme = new DarkTheme();
 
         public abstract Material GetButtonFillMaterial();
         public abstract Material GetButtonHoverMaterial();

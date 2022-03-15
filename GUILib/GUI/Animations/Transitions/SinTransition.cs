@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Animations.Transitions
 {
-    class SinTransition : Transition
+    public class SinTransition : Transition
     {
         public override float GetCalculatedResult(float factor)
         {

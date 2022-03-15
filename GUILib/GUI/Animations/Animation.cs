@@ -22,7 +22,7 @@ namespace GUILib.GUI.Animations
     /// <summary>
     /// This struct is used as a keyframe for animations.
     /// </summary>
-    struct AnimationKeyframe
+    public struct AnimationKeyframe
     {
         public int x, y, width, height;
         public float opacity;
@@ -40,7 +40,7 @@ namespace GUILib.GUI.Animations
     /// <summary>
     /// This class contains every needed data of an animation.
     /// </summary>
-    class AnimationClass
+    public class AnimationClass
     {
         public AnimationKeyframe[] animationKeyframes;
 
@@ -99,7 +99,7 @@ namespace GUILib.GUI.Animations
     /// <summary>
     /// This class contains every needed data to determine the state of an animation.
     /// </summary>
-    class AnimationState
+    public class AnimationState
     {
         /// <summary>
         /// The current state of the animation.
@@ -127,7 +127,7 @@ namespace GUILib.GUI.Animations
             this.animation = animation;
         }
 
-        internal void ResetValues()
+        public void ResetValues()
         {
             x = y = width = height = 0;
             opacity = 0;
@@ -139,7 +139,7 @@ namespace GUILib.GUI.Animations
         Run, Reverse, Pause
     }
 
-    class Animation
+    public class Animation
     {
         private Dictionary<string, AnimationClass> animations;
         private Dictionary<GuiElement, List<AnimationState>> animationStates   = new Dictionary<GuiElement, List<AnimationState>>();

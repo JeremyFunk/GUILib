@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class FixConstraint : Constraint
+    public class FixConstraint : Constraint
     {
         private int pixels;
 

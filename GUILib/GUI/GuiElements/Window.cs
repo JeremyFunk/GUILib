@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Window : GuiElement
+    public class Window : GuiElement
     {
         float mouseDragX, mouseDragY;
         bool drag = false;
@@ -34,9 +34,9 @@ namespace GUILib.GUI.GuiElements
             Border border = new Border(Theme.defaultTheme.GetWindowBorderMaterial(), width, height, Theme.defaultTheme.GetWindowBorderMaterial().GetBorderSize());
             border.generalConstraint = new FillConstraintGeneral();
 
-            Material close = new Material(new Texture("Icons/Close.png"));
-            Material closeHovered = new Material(new Texture("Icons/CloseHover.png"));
-            Material closeClicked = new Material(new Texture("Icons/CloseClick.png"));
+            Material close = new Material(new Texture("Icons/Close.png", true));
+            Material closeHovered = new Material(new Texture("Icons/CloseHover.png", true));
+            Material closeClicked = new Material(new Texture("Icons/CloseClick.png", true));
 
             Button closeButton = new Button(0, 0, 28, 28, "", false, 1, close);
             closeButton.xConstraints.Add(new MarginConstraint(9));
@@ -73,7 +73,7 @@ namespace GUILib.GUI.GuiElements
 
         private void TopBarDownEvent(MouseEvent e, GuiElement el)
         {
-            if (e.leftMouseButtonType == MouseButtonType.Released)
+            if (e.leftMouseButtonType != MouseButtonType.None)
             {
                 mouseDragX = e.mousePositionWorld.X;
                 mouseDragY = e.mousePositionWorld.Y;
@@ -110,7 +110,7 @@ namespace GUILib.GUI.GuiElements
 
         public override void KeyEventElement(KeyEvent events){ }
 
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity){ }
+        protected override void RenderElement(DefaultShader shader, Vector2 trans, Vector2 scale, float opacity){ }
 
         public override void UpdateElement(float delta){ }
 

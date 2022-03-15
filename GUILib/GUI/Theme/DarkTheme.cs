@@ -7,7 +7,7 @@ using OpenTK;
 
 namespace GUILib.GUI
 {
-    class DarkTheme : Theme
+    public class DarkTheme : Theme
     {
         private readonly int windowTopBarSize = 35, tabHeight = 35, tabWidth = 130;
         private readonly int scrollBarWidth = 20;
@@ -60,13 +60,13 @@ namespace GUILib.GUI
             tickBoxDefaultMaterial = GetDefaultMaterial(new Vector4(0.3f, 0.3f, 0.3f, 0.5f), true), 
             tickBoxHoverMaterial = GetDefaultMaterial(new Vector4(0.6f, 0.6f, 0.6f, 0.7f), true), 
             tickBoxClickMaterial = GetDefaultMaterial(new Vector4(0.8f, 0.8f, 0.8f, 0.9f), true),
-            tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png"));
+            tickBoxClickedMaterial = new Material(new Texture("TickBoxClicked.png", true));
 
         private readonly Material
             leftRightSliderFillMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f), new BorderData(new Vector4(0.7f, 0.7f, 0.7f, 1f), 2, true, 0.2f), new GradientData(1f, 0.2f));
 
-        private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png")), rightArrowMaterial = new Material(new Texture("RightArrow.png")), downArrowMaterial = new Material(new Texture("DownArrow.png")),
-            upArrowMaterial = new Material(new Texture("UpArrow.png"));
+        private readonly Material leftArrowMaterial = new Material(new Texture("LeftArrow.png", true)), rightArrowMaterial = new Material(new Texture("RightArrow.png", true)), downArrowMaterial = new Material(new Texture("DownArrow.png", true)),
+            upArrowMaterial = new Material(new Texture("UpArrow.png", true));
 
         private readonly Material seperatorMaterial = new Material(new Vector4(0.3f, 0.3f, 0.3f, 1f));
         

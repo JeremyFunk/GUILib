@@ -7,7 +7,7 @@ using GUILib.Util;
 
 namespace GUILib.GUI.PixelConstraints
 {
-    class PixelSizeConstraint : APixelConstraint
+    public class PixelSizeConstraint : APixelConstraint
     {
         private float size;
 
@@ -19,6 +19,11 @@ namespace GUILib.GUI.PixelConstraints
         public override int GetPixelValue(int size)
         {
             return (int)Math.Round(size * this.size);
+        }
+
+        public float GetPixel()
+        {
+            return size;
         }
     }
 }

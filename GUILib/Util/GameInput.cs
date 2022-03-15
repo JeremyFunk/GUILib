@@ -8,7 +8,7 @@ using OpenTK.Input;
 
 namespace GUILib.Util
 {
-    static class GameSettings
+    static public class GameSettings
     {
         public static int Width, Height;
         public const int UPS = 60;
@@ -17,7 +17,7 @@ namespace GUILib.Util
         public const float ScrollSpeed = 20f;
     }
 
-    static class GameInput
+    static public class GameInput
     {
         public static void Initialize()
         {
@@ -29,7 +29,7 @@ namespace GUILib.Util
         private static Dictionary<Key, bool> keys = new Dictionary<Key, bool>();
         private static List<Key> keysPressed = new List<Key>(), keysBlocked = new List<Key>();
 
-        public static bool isKeyDown(Key key)
+        public static bool IsKeyDown(Key key)
         {
             lock (keys)
                 return keys[key];

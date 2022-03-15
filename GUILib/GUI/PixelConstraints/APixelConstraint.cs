@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.PixelConstraints
 {
-    abstract class APixelConstraint
+    public abstract class APixelConstraint
     {
         //Size will be the width or height of the parent element 
         public abstract int GetPixelValue(int size);

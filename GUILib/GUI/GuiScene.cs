@@ -11,7 +11,7 @@ using GUILib.Events;
 
 namespace GUILib.GUI
 {
-    class GuiScene
+    public class GuiScene
     {
         private List<GuiElement> parents;
 
@@ -103,6 +103,9 @@ namespace GUILib.GUI
                     localPos = new Vector2(GameInput.mouseX - parent.curX - parent.animationOffsetX, GameSettings.Height - GameInput.mouseY - parent.curY - parent.animationOffsetY);
                 else
                     localPos = new Vector2(GameInput.mouseX - parent.curX, GameSettings.Height - GameInput.mouseY - parent.curY);
+
+                localPos.X = parent.curX + (localPos.X - parent.curX) * (1 / parent.absoluteScale);
+                localPos.Y = parent.curY + (localPos.Y - parent.curY) * (1 / parent.absoluteScale);
 
                 bool covered = parent.ZIndex < zIndex;
 

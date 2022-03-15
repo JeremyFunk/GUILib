@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class MinConstraint : Constraint
+    public class MinConstraint : Constraint
     {
         private int minPixels;
 

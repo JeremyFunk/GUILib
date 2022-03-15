@@ -7,9 +7,9 @@ using OpenTK.Graphics.OpenGL;
 using GUILib.Util;
 using OpenTK;
 
-namespace GUILib.GUI.Render.Shader
+namespace GUILib.GUI.Render.Shaders
 {
-    class GuiShader : ShaderProgram
+    public class GuiShader : DefaultShader
     {
         /*
          * 
@@ -52,7 +52,9 @@ namespace GUILib.GUI.Render.Shader
             gradientFalloffUniform = "u_gradientFalloff",
             gradientRadiusUniform = "u_gradientRadius",
             gradientOpacityUniform = "u_gradientOpacity",
-            inverseGradientUniform = "inverseGradient",
+            inverseGradientUniform = "u_inverseGradient",
+            usesGradientColor = "u_usesGradientColor",
+            gradientColor = "u_gradientColor",
             upUniform = "u_up",
             downUniform = "u_down",
             leftUniform = "u_left",
@@ -65,7 +67,10 @@ namespace GUILib.GUI.Render.Shader
 
             opacityUniform = "u_opacity",
 
-            widthUniform = "width";
+            absoluteScaleUniform = "u_absoluteScale",
+
+            widthUniform = "u_width",
+            edgeUniform = "u_edge";
 
 
 
@@ -93,7 +98,9 @@ namespace GUILib.GUI.Render.Shader
             CreateUniform(gradientFalloffUniform);
             CreateUniform(gradientRadiusUniform);
             CreateUniform(gradientOpacityUniform); 
-            CreateUniform(inverseGradientUniform); 
+            CreateUniform(inverseGradientUniform);
+            CreateUniform(usesGradientColor);
+            CreateUniform(gradientColor);
             CreateUniform(upUniform);
             CreateUniform(downUniform);
             CreateUniform(leftUniform);
@@ -107,58 +114,61 @@ namespace GUILib.GUI.Render.Shader
 
             CreateUniform(opacityUniform);
 
+            CreateUniform(edgeUniform);
+
+            CreateUniform(absoluteScaleUniform);
 
             Start();
             SetUniform(fillTextureUniform, 0);
             Stop();
         }
 
-        internal void SetOpacity(float opacity)
+        public override void SetOpacity(float opacity)
         {
             SetUniform(opacityUniform, opacity);
         }
 
-        public void SetFontWidth(float width)
+        public override void SetFontWidth(float width)
         {
             SetUniform(widthUniform, width);
         }
 
-        internal void SetUseRoundEdges(bool roundEdges)
+        public override void SetUseRoundEdges(bool roundEdges)
         {
             SetUniform(roundEdgesUniform, roundEdges);
         }
 
-        internal void SetEdgeRadius(float radius)
+        public override void SetEdgeRadius(float radius)
         {
             SetUniform(edgeRadiusUniform, radius);
         }
 
-        internal void SetBorderVisibility(bool border)
+        public override void SetBorderVisibility(bool border)
         {
             SetUniform(borderUniform, border);
         }
 
-        internal void SetGradient(bool gradient)
+        public override void SetGradient(bool gradient)
         {
             SetUniform(gradientUniform, gradient);
         }
 
-        internal void SetGradientFalloff(float falloff)
+        public override void SetGradientFalloff(float falloff)
         {
             SetUniform(gradientFalloffUniform, falloff);
         }
 
-        internal void SetGradientRadius(float radius)
+        public override void SetGradientRadius(float radius)
         {
             SetUniform(gradientRadiusUniform, radius);
         }
 
-        internal void SetGradientInverse(bool inverse)
+        public override void SetGradientInverse(bool inverse)
         {
             SetUniform(inverseGradientUniform, inverse);
         }
 
-        internal void SetGradientDirection(bool up, bool down, bool left, bool right)
+        public override void SetGradientDirection(bool up, bool down, bool left, bool right)
         {
             SetUniform(upUniform, up);
             SetUniform(downUniform, down);
@@ -167,12 +177,22 @@ namespace GUILib.GUI.Render.Shader
         }
 
         //Influence of Gradient: The higher the opacity, the lower the alpha value in the center of the gradient effect.
-        internal void SetGradientOpacity(float opacity)
+        public override void SetGradientOpacity(float opacity)
         {
             SetUniform(gradientOpacityUniform, opacity);
         }
 
-        internal void SetBorderWidth(int edgeWidth, Vector2 scale)
+        public override void SetGradientColor(Vector4 color)
+        {
+            SetUniform(gradientColor, color);
+        }
+
+        public override void SetUseGradientColor(bool uses)
+        {
+            SetUniform(usesGradientColor, uses);
+        }
+
+        public override void SetBorderWidth(int edgeWidth, Vector2 scale)
         {
             float scaler;
             if (scale[0] > scale[1])
@@ -186,7 +206,7 @@ namespace GUILib.GUI.Render.Shader
             SetUniform(borderWidthUniform, edgeWidth/scaler);
         }
 
-        public void SetRenderMode(RenderMode renderMode)
+        public override void SetRenderMode(RenderMode renderMode)
         {
             if (renderMode == RenderMode.Texture)
             {
@@ -202,17 +222,17 @@ namespace GUILib.GUI.Render.Shader
             }
         }
 
-        public void SetFillColor(Vector4 color)
+        public override void SetFillColor(Vector4 color)
         {
             SetUniform(fillColorUniform, color);
         }
 
-        public void SetBorderColor(Vector4 color)
+        public override void SetBorderColor(Vector4 color)
         {
             SetUniform(borderColorUniform, color);
         }
         
-        public void SetTransform(Vector2 offset, Vector2 scale)
+        public override void SetTransform(Vector2 offset, Vector2 scale)
         {
             
             Vector2 normScale = NormalizeScale(scale);
@@ -227,7 +247,7 @@ namespace GUILib.GUI.Render.Shader
         
        
         private int currentVaoID = 0;
-        public void SetRenderVAO(int vaoID)
+        public override void SetRenderVAO(int vaoID)
         {
             if (vaoID != currentVaoID)
             {
@@ -238,7 +258,7 @@ namespace GUILib.GUI.Render.Shader
             }
         }
 
-        public void ResetVAO()
+        public override void ResetVAO()
         {
             if (quadVao != currentVaoID)
             {
@@ -272,5 +292,14 @@ namespace GUILib.GUI.Render.Shader
             return new Vector2(scale.X / GameSettings.Width, scale.Y / GameSettings.Height);
         }
 
+        public override void SetFontEdge(float edge)
+        {
+            SetUniform(edgeUniform, edge);
+        }
+
+        public override void SetAbsoluteScale(float scale)
+        {
+            SetUniform(absoluteScaleUniform, scale);
+        }
     }
 }

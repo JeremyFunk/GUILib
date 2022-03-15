@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using GUILib.Events;
 using GUILib.GUI.Constraints;
 using GUILib.Util;
@@ -19,9 +19,11 @@ namespace GUILib.GUI.GuiElements
         Run, Swing
     }
 
-    abstract class GuiElement
+    public abstract class GuiElement
     {
         public string debugIdentifier = "";
+
+        public bool canClickThrough = true;
 
         private string hoverText = "";
         private float hoverDelay = 0, hoverCounter = 0;
@@ -42,6 +44,7 @@ namespace GUILib.GUI.GuiElements
         public APixelConstraint width, height, x, y;
         public int curX, curY, curWidth, curHeight;
         public float opacity;
+        public float absoluteScale = 1;
         protected float curOpacity;
         
         public bool visible;
@@ -84,9 +87,11 @@ namespace GUILib.GUI.GuiElements
 
         public bool useStencilBuffer = false;
 
+        private bool recalculateListOnUpdate;
+
         private float zIndex;
         //The bigger the zIndex, the later gets this element rendered.
-        public float ZIndex { get { return zIndex; } set { zIndex = value; childElements = Utility.GetZIndexSorted(childElements); } }
+        public float ZIndex { get { return zIndex; } set { zIndex = value; if (parent != null) parent.recalculateListOnUpdate = true; } }
 
         public GuiElement(APixelConstraint width, APixelConstraint height, APixelConstraint x, APixelConstraint y, bool visible, float zIndex)
         {
@@ -103,11 +108,12 @@ namespace GUILib.GUI.GuiElements
             curOpacity = opacity;
             this.zIndex = zIndex;
         }
-        public void Render(GuiShader shader, Vector2 offset, float opacity)
+        public void Render(DefaultShader shader, Vector2 offset, float opacity, float absoluteScale = 1)
         {
             Vector2 actualOffset = GetScreenOffset();
             actualOffset = new Vector2(actualOffset.X + offset.X, actualOffset.Y + offset.Y);
 
+            shader.SetAbsoluteScale(this.absoluteScale * absoluteScale);
 
             if (useStencilBuffer) 
                 DrawThisElementToStencil(shader, actualOffset);
@@ -117,14 +123,14 @@ namespace GUILib.GUI.GuiElements
             foreach(GuiElement element in childElements)
             {
                 if(element.visible)
-                    element.Render(shader, actualOffset, opacity * curOpacity);
+                    element.Render(shader, actualOffset, opacity * curOpacity, absoluteScale * this.absoluteScale);
             }
 
             if (useStencilBuffer)
                 OpenGLUtil.EndStencil();
         }
 
-        public void DrawThisElementToStencil(GuiShader shader, Vector2 offset)
+        public void DrawThisElementToStencil(DefaultShader shader, Vector2 offset)
         {
             OpenGLUtil.StartStencilDraw();
 
@@ -137,6 +143,12 @@ namespace GUILib.GUI.GuiElements
 
         public void Update(int width, int height, float delta, bool defaultCall = true)
         {
+            if (recalculateListOnUpdate)
+            {
+                recalculateListOnUpdate = false;
+                childElements = Utility.GetZIndexSorted(childElements);
+            }
+
             if (hovered && usesHoverText)
             {
                 hoverCounter += delta;
@@ -200,13 +212,14 @@ namespace GUILib.GUI.GuiElements
                 element.FirstUpdate((int)realSize.X, (int)realSize.Y, delta);
         }
 
-        protected virtual void RenderElement(GuiShader shader, Vector2 offset, Vector2 scale, float opacity) { }
+        protected virtual void RenderElement(DefaultShader shader, Vector2 offset, Vector2 scale, float opacity) { }
 
         public virtual void UpdateElement(float delta) { }
 
         public void MouseEvent(MouseEvent e)
         {
             bool hoverResult = false;
+
             if (e.hit)
             {
                 if(e.mouseWheel != 0)
@@ -313,10 +326,14 @@ namespace GUILib.GUI.GuiElements
                 }
             }
 
+            float highestIndex = float.MinValue;
+
             if (!e.covered)
             {
-                foreach (GuiElement element in childElements)
+                for (int i = childElements.Count - 1; i >= 0; i--)
                 {
+                    GuiElement element = childElements[i];
+
                     if (!element.visible)
                         continue;
                     MouseEvent newE = new MouseEvent(e);
@@ -325,6 +342,11 @@ namespace GUILib.GUI.GuiElements
                         newE.mousePositionLocal = new Vector2(e.mousePositionLocal.X - element.curX - element.animationOffsetX, e.mousePositionLocal.Y - element.curY - element.animationOffsetY);
                     else
                         newE.mousePositionLocal = new Vector2(e.mousePositionLocal.X - element.curX, e.mousePositionLocal.Y - element.curY);
+
+                    newE.mousePositionLocal.X = element.curX + (newE.mousePositionLocal.X - element.curX) * (1 / element.absoluteScale);
+                    newE.mousePositionLocal.Y = element.curY + (newE.mousePositionLocal.Y - element.curY) * (1 / element.absoluteScale);
+
+                    //Vector2 localMouse = new Vector2(element.curX + (e.mousePositionLocal.X - element.curX) * (1 / element.absoluteScale), element.curY + (e.mousePositionLocal.Y - element.curY) * (1 / element.absoluteScale));
 
                     newE.canHit = canHit;
 
@@ -344,17 +366,34 @@ namespace GUILib.GUI.GuiElements
                         newE.hit = false;
                     }
 
+                    if (newE.hit && !element.canClickThrough && element.visible && element.zIndex >= highestIndex)
+                    {
+                        highestIndex = element.zIndex;
+                    }else if(element.zIndex < highestIndex)
+                    {
+                        newE.covered = true;
+                        newE.hit = false;
+                    }
+
                     element.MouseEvent(newE);
                 }
             }
             else
             {
-                foreach (GuiElement element in childElements)
+                for (int i = childElements.Count - 1; i >= 0; i--)
                 {
+                    GuiElement element = childElements[i];
+
                     if (!element.visible)
                         continue;
-                    e.hit = false;
-                    element.MouseEvent(e);
+
+                    MouseEvent newE = new MouseEvent(e);
+
+                    newE.mousePositionLocal.X = element.curX + (newE.mousePositionLocal.X - element.curX) * (1 / element.absoluteScale);
+                    newE.mousePositionLocal.Y = element.curY + (newE.mousePositionLocal.Y - element.curY) * (1 / element.absoluteScale);
+
+                    newE.hit = false;
+                    element.MouseEvent(newE);
                 }
             }
         }
@@ -503,35 +542,73 @@ namespace GUILib.GUI.GuiElements
         {
             return animation != null ? animation.IsAnimationRunning(this) : false;
         }
-
         public void SetWidth(int width)
         {
-            this.width = new PixelConstraint(width);
+            this.width = width;
             curWidth = width;
-            if(parent != null)
+
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
+        }
+        public void SetWidth(float width)
+        {
+            this.width = width;
+            curWidth = (int)(width * parent.curWidth);
+
+            if (parent != null)
                 Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetHeight(int height)
         {
-            this.height = new PixelConstraint(height);
+            this.height = height;
             curHeight = height;
+
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
+        }
+
+        public void SetHeight(float height)
+        {
+            this.height = height;
+            curHeight = (int)(height * parent.curHeight);
+
             if (parent != null)
                 Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetX(int x)
         {
-            this.x = new PixelConstraint(x);
+            this.x = x;
             curX = x;
+
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
+        }
+
+        public void SetX(float x)
+        {
+            this.x = x;
+            curX = (int)(x * parent.curWidth);
+
             if (parent != null)
                 Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
 
         public void SetY(int y)
         {
-            this.y = new PixelConstraint(y);
+            this.y = y;
             curY = y;
+
+            if (parent != null)
+                Update(parent.curWidth, parent.curHeight, 0.001f, false);
+        }
+
+        public void SetY(float y)
+        {
+            this.y = y;
+            curY = (int)(y * parent.curHeight);
+
             if (parent != null)
                 Update(parent.curWidth, parent.curHeight, 0.001f, false);
         }
@@ -604,7 +681,6 @@ namespace GUILib.GUI.GuiElements
         {
             childElements.Clear();
         }
-
 
         public void RemoveChild(GuiElement child)
         {

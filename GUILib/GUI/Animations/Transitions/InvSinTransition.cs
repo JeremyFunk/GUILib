@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Animations.Transitions
 {
-    class InvSinTransition : Transition
+    public class InvSinTransition : Transition
     {
         public override float GetCalculatedResult(float factor)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class CenterConstraint : Constraint
+    public class CenterConstraint : Constraint
     {
         public int ExecuteConstraint(int size, int parentSize)
         {

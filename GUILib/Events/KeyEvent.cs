@@ -8,7 +8,7 @@ using OpenTK.Input;
 namespace GUILib.Events
 {
     ///<summary>Class <c>KeyEvent</c> will be passed to every visible GUI Element every update, if one or more key events occured.</summary>
-    class KeyEvent
+    public class KeyEvent
     {
         private const char nullChar = '`';
 

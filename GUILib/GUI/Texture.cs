@@ -7,13 +7,16 @@ using GUILib.Util;
 
 namespace GUILib.GUI
 {
-    class Texture
+    public class Texture
     {
         public int textureID;
 
-        public Texture(string path)
+        public Texture(string path, bool texturePathInternal = false)
         {
-            textureID = OpenGLLoader.LoadTexture(path, true, true);
+            if(!texturePathInternal)
+                textureID = OpenGLLoader.LoadTexture(path, true, true);
+            else
+                textureID = OpenGLLoader.LoadTextureInternal(path, true, true);
         }
     }
 }

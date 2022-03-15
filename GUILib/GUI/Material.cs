@@ -5,21 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using GUILib.GUI.GuiElements;
 
 namespace GUILib.GUI
 {
-    enum RenderMode
+    public enum RenderMode
     {
         Texture, Color, DistanceFieldFonts
     }
 
-    class GradientData
+    public class GradientData
     {
         public bool left, up, right, down;
         public bool inverseGradient;
         public float gradientFalloff, gradientOpacity, gradientRadius;
+        public Vector4 gradientColor;
+        public bool usesColor = false;
 
         public GradientData(float gradientFalloff, float gradientOpacity, float gradientRadius = 0.5f, bool inverseGradient = false, bool left = true, bool up = true, bool right = true, bool down = true)
         {
@@ -33,9 +35,38 @@ namespace GUILib.GUI
             this.right = right;
             this.down = down;
         }
+
+        public GradientData(Vector4 gradientColor, float gradientFalloff, float gradientOpacity, float gradientRadius = 0.5f, bool inverseGradient = false, bool left = true, bool up = true, bool right = true, bool down = true)
+        {
+            this.gradientColor = gradientColor;
+            this.gradientFalloff = gradientFalloff;
+            this.gradientOpacity = gradientOpacity;
+            this.gradientRadius = gradientRadius;
+            this.inverseGradient = inverseGradient;
+
+            usesColor = true;
+
+            this.left = left;
+            this.up = up;
+            this.right = right;
+            this.down = down;
+        }
+
+        public GradientData(GradientData g)
+        {
+            this.left = g.left;
+            this.up = g.up;
+            this.right = g.right;
+            this.down = g.down;
+            this.inverseGradient = g.inverseGradient;
+            this.gradientFalloff = g.gradientFalloff;
+            this.gradientOpacity = g.gradientOpacity;
+            this.gradientRadius = g.gradientRadius;
+            this.gradientColor = g.gradientColor;
+        }
     }
 
-    class BorderData
+    public class BorderData
     {
         public Vector4 borderColor;
         public int borderSize;
@@ -49,16 +80,37 @@ namespace GUILib.GUI
             this.roundEdges = roundEdges;
             this.radius = radius;
         }
+
+        public BorderData(BorderData b)
+        {
+            this.borderColor = b.borderColor;
+            this.borderSize = b.borderSize;
+            this.roundEdges = b.roundEdges;
+            this.radius = b.radius;
+        }
     }
 
-    class Material
+    public class Material
     {
-        private Vector4 color;
-        private Texture texture;
-        private RenderMode renderMode;
-        private bool usesBorder, usesGradient;
-        private GradientData gradient;
-        private BorderData border;
+        public Vector4 color;
+        public Texture texture;
+        public RenderMode renderMode;
+        public bool usesBorder, usesGradient;
+        public GradientData gradient;
+        public BorderData border;
+
+        public Material(Material m)
+        {
+            color = m.color;
+            renderMode = m.renderMode;
+            usesBorder = m.usesBorder;
+            usesGradient = m.usesGradient;
+            if(m.gradient != null)
+                gradient = new GradientData(m.gradient);
+            if(m.border != null)
+                border = new BorderData(m.border);
+            texture = m.texture;
+        }
 
         public Material(Vector4 color, BorderData border = null, GradientData gradient = null)
         {
@@ -93,7 +145,7 @@ namespace GUILib.GUI
             this.color = color;
         }
 
-        public void PrepareRender(GuiShader shader, float opacity, Vector2 offset, Vector2 scale)
+        public void PrepareRender(DefaultShader shader, float opacity, Vector2 offset, Vector2 scale)
         {
             Vector4 color = new Vector4(this.color.X, this.color.Y, this.color.Z, this.color.W);
 
@@ -122,9 +174,12 @@ namespace GUILib.GUI
             {
                 shader.SetGradientFalloff(gradient.gradientFalloff);
                 shader.SetGradientOpacity(gradient.gradientOpacity);
-                shader.SetGradientRadius(gradient.gradientRadius);
+                shader.SetGradientRadius(gradient.gradientRadius * (scale.X / scale.Y));
                 shader.SetGradientDirection(gradient.up, gradient.down, gradient.left, gradient.right);
                 shader.SetGradientInverse(gradient.inverseGradient);
+                shader.SetUseGradientColor(gradient.usesColor);
+                if (gradient.usesColor)
+                    shader.SetGradientColor(gradient.gradientColor);
             }else
             {
                 shader.SetGradientFalloff(0);

@@ -8,7 +8,7 @@ namespace GUILib.GUI.Animations.Transitions
 {
 
     ///<summary>Implements the Catmull-Rom-Spline function.</summary>
-    class CatmullRomSplineTransition : Transition
+    public class CatmullRomSplineTransition : Transition
     {
         private float p0, p3;
 

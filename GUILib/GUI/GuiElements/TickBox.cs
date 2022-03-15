@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +13,11 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class TickBox : GuiElement
+    public class TickBox : GuiElement
     {
         private Material fillMaterialClick, fillMaterialHover, fillMaterialDefault;
 
-        private Action<TickBox> tickBoxChangedEvent;
+        public Action<TickBox> tickBoxChangedEvent;
 
         private Quad clickQuad, quad;
 

@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Text : GuiElement
+    public class Text : GuiElement
     {
         private string text;
         private Font font;
@@ -22,7 +22,7 @@ namespace GUILib.GUI.GuiElements
         private float fontSize;
         public TextData data;
         private float maxSize;
-        public float fontWidth = 0.42f;
+        public float fontWidth = 0.42f, fontEdge = 0.19f;
         private float xAdvanceMult = 1;
 
         public Text(APixelConstraint x, APixelConstraint y, string text, float fontSize, Font font = null, float zIndex = 0, float maxSize = 100000, bool visible = true) : base(0, 0, x, y, visible, zIndex)
@@ -42,16 +42,25 @@ namespace GUILib.GUI.GuiElements
                 font.Reconstruct(text, this, maxSize, fontSize);
         }
 
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
+        protected override void RenderElement(DefaultShader shader, Vector2 trans, Vector2 scale, float opacity)
         {
             shader.ResetVAO();
 
             shader.SetTransform(trans, new Vector2(1f));
             shader.SetFontWidth(fontWidth);
+            shader.SetFontEdge(fontEdge);
             font.Render(text, shader, color, this);
         }
-
-        internal void SetText(string text)
+        public float GetFontSize()
+        {
+            return fontSize;
+        }
+        public void SetFontSize(float fontSize)
+        {
+            this.fontSize = fontSize;
+            SetText(text);
+        }
+        public void SetText(string text)
         {
             if (maxSize != float.MaxValue)
                 font.Reconstruct(text, this, maxSize * 2, fontSize, xAdvanceMult);
@@ -68,15 +77,24 @@ namespace GUILib.GUI.GuiElements
             else
                 font.Reconstruct(text, this, maxSize, fontSize, xAdvanceMult);
         }
+        public float GetCharacterSpaceMultiplyer()
+        {
+            return xAdvanceMult;
+        }
 
-        internal string GetText()
+        public string GetText()
         {
             return text;
         }
 
-        public void SetMaxSize(int width)
+        public void SetMaxSize(float width)
         {
+            this.maxSize = width;
             font.Reconstruct(text, this, maxSize * 2, fontSize, xAdvanceMult);
+        }
+        public float GetMaxSize()
+        {
+            return maxSize;
         }
     }
 }

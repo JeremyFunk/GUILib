@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class FillConstraint : Constraint
+    public class FillConstraint : Constraint
     {
         public int ExecuteConstraint(int size)
         {

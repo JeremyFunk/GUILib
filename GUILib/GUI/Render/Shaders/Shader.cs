@@ -8,15 +8,15 @@ using OpenTK;
 using GUILib.Logger;
 using GUILib.Util;
 
-namespace GUILib.GUI.Render.Shader
+namespace GUILib.GUI.Render.Shaders
 {
-    abstract class ShaderProgram
+    public abstract class Shader
     {
         private readonly int programID, vertexShaderID, fragmentShaderID;
 
         private Dictionary<string, int> uniforms = new Dictionary<string, int>();
 
-        public ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
+        public Shader(string vertexShaderPath, string fragmentShaderPath)
         {
             programID = GL.CreateProgram();
 

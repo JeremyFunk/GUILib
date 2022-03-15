@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    abstract class Constraint
+    public abstract class Constraint
     {
     }
 }

@@ -11,7 +11,7 @@ namespace GUILib.Events
     /// This enum has four possible values: <c>Down</c>, <c>Pressed</c>, <c>Released</c> and <c>None</c>.
     /// This enum is used in the class <c>GUILib.Events.MouseEvent</c>.
     /// </summary>
-    enum MouseButtonType
+    public enum MouseButtonType
     {
         Down, Pressed, Released, None
     }
@@ -20,7 +20,7 @@ namespace GUILib.Events
     ///Struct <c>MouseEvent</c> will be passed to every visible GUI Element every update.
     ///<c>MouseEvent</c> contains information about clicked mouse buttons and the mouse position.
     ///</summary>
-    struct MouseEvent
+    public struct MouseEvent
     {
         /// <summary>
         /// <c>mousePositionWorld</c> contains the mouse position in the window.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Render.Fonts.Data
 {
-    class Character
+    public class Character
     {
         public float xLow, yLow, width, height, xHigh, yHigh;
         public float xLowScreen, yLowScreen, widthScreen, heightScreen, xHighScreen, yHighScreen;

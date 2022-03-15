@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Render.Fonts.Data
 {
-    class TextData
+    public class TextData
     {
         public readonly int vaoID, vertexCount;
 

@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Quad : GuiElement
+    public class Quad : GuiElement
     {
         private Material material;
         public Quad(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, Material material, float zIndex = 0, bool visible = true) : base(width, height, x, y, visible, zIndex)
@@ -23,7 +23,7 @@ namespace GUILib.GUI.GuiElements
             this.material = material;
         }
 
-        protected override void RenderElement(GuiShader shader, Vector2 trans, Vector2 scale, float opacity)
+        protected override void RenderElement(DefaultShader shader, Vector2 trans, Vector2 scale, float opacity)
         {
             shader.ResetVAO();
 
@@ -31,10 +31,14 @@ namespace GUILib.GUI.GuiElements
             GL.DrawArrays(PrimitiveType.Quads, 0, 4);
         }
 
-        internal void SetMaterial(Material material)
+        public void SetMaterial(Material material)
         {
-
             this.material = material;
+        }
+
+        public Material GetMaterial()
+        {
+            return material;
         }
     }
 }

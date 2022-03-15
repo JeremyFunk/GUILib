@@ -5,6 +5,11 @@ VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUILib", "GUILib\GUILib.csproj", "{63E155C8-B717-4949-B432-2AA6C84DE564}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{37B55393-0763-45DE-B1A1-BE83028420BB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{63E155C8-B717-4949-B432-2AA6C84DE564} = {63E155C8-B717-4949-B432-2AA6C84DE564}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{63E155C8-B717-4949-B432-2AA6C84DE564}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63E155C8-B717-4949-B432-2AA6C84DE564}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63E155C8-B717-4949-B432-2AA6C84DE564}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37B55393-0763-45DE-B1A1-BE83028420BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37B55393-0763-45DE-B1A1-BE83028420BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37B55393-0763-45DE-B1A1-BE83028420BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37B55393-0763-45DE-B1A1-BE83028420BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

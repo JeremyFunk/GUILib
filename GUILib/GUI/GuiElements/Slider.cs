@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +14,19 @@ using GUILib.Logger;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Slider : GuiElement
+    public class Slider : GuiElement
     {
         private Quad quad;
         private float number = 0, lowerValue, higherValue;
+        private bool mouseInfo;
 
-        public Slider(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float lowerValue, float higherValue, float startValue, Material material = null, string text = "", float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        public int decimalPlaces = 3;
+
+        public Action<float> numberChangedEvent;
+
+        public Slider(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float lowerValue, float higherValue, float startValue, Material material = null, Material left = null, Material right = null, bool mouseInfo = true, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
+            this.mouseInfo = mouseInfo;
             this.lowerValue = lowerValue;
             this.higherValue = higherValue;
             number = startValue;
@@ -31,10 +37,10 @@ namespace GUILib.GUI.GuiElements
             Quad centerQuad = new Quad(0, 0, 1f, 4, curMaterial);
             centerQuad.yConstraints.Add(new CenterConstraint());
 
-            Quad leftQuad = new Quad(0, 0, 4, 1f, curMaterial);
+            Quad leftQuad = new Quad(0, 0, 4, 1f, left == null ? curMaterial : left);
             leftQuad.yConstraints.Add(new CenterConstraint());
 
-            Quad rightQuad = new Quad(0, 0, 4, 1f, curMaterial);
+            Quad rightQuad = new Quad(0, 0, 4, 1f, right == null ? curMaterial : right);
             rightQuad.yConstraints.Add(new CenterConstraint());
             rightQuad.xConstraints.Add(new MarginConstraint(0));
 
@@ -52,7 +58,8 @@ namespace GUILib.GUI.GuiElements
         {
             if (e.hit)
             {
-                MouseInfo.SetMouseInfo(Math.Round(number) + "");
+                if(mouseInfo)
+                    MouseInfo.SetMouseInfo(Math.Round(number) + "");
                 if (e.leftMouseButtonType != MouseButtonType.None)
                 {
                     if(e.leftMouseButtonType == MouseButtonType.Pressed)
@@ -63,6 +70,8 @@ namespace GUILib.GUI.GuiElements
                         quad.SetX((int)e.mousePositionLocal.X);
 
                         number = lowerValue + (higherValue * (e.mousePositionLocal.X / (curWidth - 3)));
+
+                        numberChangedEvent?.Invoke(GetValue());
                     }
                 }
             }
@@ -70,7 +79,13 @@ namespace GUILib.GUI.GuiElements
 
         public float GetValue()
         {
-            return number;
+            return (float)Math.Round(number, decimalPlaces);
+        }
+
+        public void SetValue(float val)
+        {
+            float resultFactor = val <= lowerValue ? 0f : val >= higherValue ? 1f : (val - lowerValue) / (higherValue - lowerValue);
+            quad.SetX(resultFactor);
         }
     }
 }

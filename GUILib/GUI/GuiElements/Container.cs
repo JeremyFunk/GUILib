@@ -1,6 +1,6 @@
 ﻿using System;
 using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ using GUILib.Logger;
 
 namespace GUILib.GUI.GuiElements
 {
-    class Container : GuiElement
+    public class Container : GuiElement
     {
         private static Random r = new Random();
 

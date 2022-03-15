@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class MaxConstraint : Constraint
+    public class MaxConstraint : Constraint
     {
         private int maxPixels;
 

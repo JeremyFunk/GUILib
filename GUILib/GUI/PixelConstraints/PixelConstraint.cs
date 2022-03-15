@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.PixelConstraints
 {
-    class PixelConstraint : APixelConstraint
+    public class PixelConstraint : APixelConstraint
     {
         private int pixel;
 
@@ -16,6 +16,11 @@ namespace GUILib.GUI.PixelConstraints
         }
 
         public override int GetPixelValue(int size)
+        {
+            return pixel;
+        }
+
+        public int GetPixel()
         {
             return pixel;
         }

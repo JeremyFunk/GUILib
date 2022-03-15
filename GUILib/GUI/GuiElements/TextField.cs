@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +14,15 @@ using OpenTK.Input;
 
 namespace GUILib.GUI.GuiElements
 {
-    class TextField : GuiElement
+    public class TextField : GuiElement
     {
         private Quad quad;
         private Text defaultText, textElement, textElementCursor;
         private float timer;
 
         private bool selected, renderCursor;
+
+        public Action<string> textChangedEvent;
 
         public TextField(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, string text, Material fillMaterial = null, Material edgeMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
@@ -37,10 +39,10 @@ namespace GUILib.GUI.GuiElements
             this.defaultText.yConstraints.Add(new CenterConstraint());
 
             textElement = new Text(5, 0, "", 0.8f);
-            textElement.yConstraints.Add(new CenterConstraint());
+            //textElement.yConstraints.Add(new CenterConstraint());
 
             textElementCursor = new Text(5, 0, "|", 0.8f);
-            textElementCursor.yConstraints.Add(new CenterConstraint());
+            //textElementCursor.yConstraints.Add(new CenterConstraint());
             textElementCursor.visible = false;
 
             AddChild(this.defaultText);
@@ -107,6 +109,8 @@ namespace GUILib.GUI.GuiElements
                 {
                     defaultText.visible = true;
                 }
+
+                textChangedEvent?.Invoke(textElement.GetText());
             }
         }
 

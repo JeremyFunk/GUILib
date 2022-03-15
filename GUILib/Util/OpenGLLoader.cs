@@ -7,10 +7,12 @@ using System.Drawing.Imaging;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Logger;
+using System.IO;
+using System.Reflection;
 
 namespace GUILib.Util
 {
-    class OpenGLLoader
+    public class OpenGLLoader
     {
         private static readonly string absoluteDir = System.IO.Directory.GetParent(System.Environment.CurrentDirectory).Parent.FullName + @"\Resource\Textures\";
 
@@ -69,6 +71,62 @@ namespace GUILib.Util
             ALogger.defaultLogger.Log("Loading texture: " + path, LogLevel.Info);
 
             Bitmap bitmap = new Bitmap(absoluteDir + path);
+
+            if (bitmap == null)
+            {
+                ALogger.defaultLogger.Log("Could not load texture \"" + path + "\". Make sure the texture exists at the specified directory!", LogLevel.Info);
+                return -1;
+            }
+
+            int tex;
+            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+
+            GL.GenTextures(1, out tex);
+
+            GL.BindTexture(TextureTarget.Texture2D, tex);
+
+            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            bitmap.UnlockBits(data);
+
+            if (scale)
+            {
+
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            }
+            else
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
+            }
+
+            if (clampToEdge)
+            {
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+            }
+
+            if (true)//anisotropic
+            {
+                float maxAniso;
+                GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAniso);
+                GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAniso);
+            }
+
+            return tex;
+        }
+
+
+
+
+        internal static int LoadTextureInternal(string path, bool scale, bool clampToEdge)
+        {
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("GUILib.Resource.Textures." + path.Replace(@"\", ".").Replace("/", "."));
+            Bitmap bitmap = new Bitmap(stream);
 
             if (bitmap == null)
             {

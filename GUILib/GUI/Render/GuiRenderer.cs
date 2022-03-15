@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using GUILib.Util;
@@ -12,7 +12,7 @@ using GUILib.Logger;
 
 namespace GUILib.GUI.Render
 {
-    class GuiRenderer
+    public class GuiRenderer : DefaultRenderer
     {
         private GuiShader shader;
         private int vaoID;
@@ -40,7 +40,7 @@ namespace GUILib.GUI.Render
             shader = new GuiShader(vaoID);
         }
 
-        public void Render(GuiScene scene)
+        public override void Render(GuiScene scene)
         {
             shader.Start();
 
@@ -62,17 +62,17 @@ namespace GUILib.GUI.Render
             shader.Stop();
         }
 
-        public GuiShader GetShader()
+        public override DefaultShader GetShader()
         {
             return shader;
         }
 
-        internal void CleanUp()
+        public override void CleanUp()
         {
             shader.CleanUp();
         }
 
-        internal void PrepareRender()
+        public override void PrepareRender()
         {
             GL.Disable(EnableCap.ScissorTest);
             GL.Disable(EnableCap.StencilTest);

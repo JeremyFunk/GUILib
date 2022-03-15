@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUILib.GUI.Constraints
 {
-    class MarginConstraintGeneral : GeneralConstraint
+    public class MarginConstraintGeneral : GeneralConstraint
     {
         private readonly int mX, mY, mW, mH;
         public MarginConstraintGeneral(int mX, int mY, int mW, int mH)

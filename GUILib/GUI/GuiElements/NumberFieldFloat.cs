@@ -14,7 +14,7 @@ using OpenTK.Input;
 
 namespace GUILib.GUI.GuiElements
 {
-    public class NumberField : GuiElement
+    public class NumberFieldFloat : GuiElement
     {
         private Quad quad;
         private Text defaultText, textElement, textElementCursor;
@@ -22,10 +22,14 @@ namespace GUILib.GUI.GuiElements
 
         private bool selected, renderCursor;
 
-        public Action<int> numberChangeEvent;
+        public Action<float> numberChangeEvent;
 
-        public NumberField(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, int number, Material fillMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
+        private float number;
+
+        public NumberFieldFloat(APixelConstraint x, APixelConstraint y, APixelConstraint width, APixelConstraint height, float number, Material fillMaterial = null, float zIndex = 0, int edgeSize = -1, bool visible = true) : base(width, height, x, y, visible, zIndex)
         {
+            this.number = number;
+
             quad = new Quad(0, 0, width, height, fillMaterial == null ? Theme.defaultTheme.GetFieldMaterial() : fillMaterial);
             quad.generalConstraint = new FillConstraintGeneral();
 
@@ -97,8 +101,16 @@ namespace GUILib.GUI.GuiElements
                         {
                             textElement.SetText("-" + textElement.GetText());
                         }
+                    }else if(key == Key.Period || key == Key.KeypadPeriod || key == Key.Comma)
+                    {
+                        if (!textElement.GetText().Contains("."))
+                        {
+                            textElement.SetText(textElement.GetText() + ".");
+                        }
                     }
                 }
+
+                number = GetNumber();
 
                 textElementCursor.SetText(textElement.GetText() + "|");
             }
@@ -115,47 +127,54 @@ namespace GUILib.GUI.GuiElements
 
         private void ClickMissed(MouseEvent e, GuiElement el)
         {
-            if (e.leftMouseButtonType == MouseButtonType.Released)
+            if (selected)
             {
-                selected = false;
-
-                textElementCursor.visible = false;
-                textElement.visible = true;
-                timer = 0;
-                renderCursor = false;
-
-                if (textElement.GetText() == "")
+                if (e.leftMouseButtonType == MouseButtonType.Released)
                 {
-                    defaultText.visible = true;
-                }else if (textElement.GetText() == "-")
-                {
-                    textElement.SetText("");
-                    defaultText.visible = true;
+                    selected = false;
+
+                    textElementCursor.visible = false;
+                    textElement.visible = true;
+                    timer = 0;
+                    renderCursor = false;
+
+                    if (textElement.GetText() == "")
+                    {
+                        defaultText.visible = true;
+                        number = 0;
+                    }
+                    else if (textElement.GetText() == "-" || textElement.GetText() == ".")
+                    {
+                        textElement.SetText("");
+                        defaultText.visible = true;
+                    }
                 }
-            }
 
-            if(numberChangeEvent != null)
+                number = GetNumber();
+                numberChangeEvent?.Invoke(number);
+            }
+        }
+
+        public float GetNumber()
+        {
+            if (textElement.GetText() == "" || textElement.GetText() == "-" || textElement.GetText() == ".")
             {
-                int number = 0;
-                if (!int.TryParse(textElement.GetText(), out number))
-                    number = 0;
+                return 0;
+            }
 
-                numberChangeEvent.Invoke(number);
+            try
+            {
+                return float.Parse(textElement.GetText(), System.Globalization.CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
             }
         }
 
-        public int GetNumber()
+        public void SetNumber(float number, bool triggerChangeEvent = false)
         {
-            int number = 0;
-            if (!int.TryParse(textElement.GetText(), out number))
-                number = 0;
-
-            return number;
-        }
-
-        public void SetNumber(int number, bool triggerChangeEvent = false)
-        {
-            textElement.SetText(number + "");
+            textElement.SetText(number.ToString(System.Globalization.CultureInfo.InvariantCulture));
             textElementCursor.SetText(textElement.GetText() + "|");
 
             defaultText.visible = false;

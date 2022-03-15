@@ -1,5 +1,5 @@
 ﻿using OpenTK;
-using GUILib.GUI.Render.Shader;
+using GUILib.GUI.Render.Shaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace GUILib.GUI
     /// <summary>
     /// This class can create hover mouse information.
     /// </summary>
-    class MouseInfo
+    public class MouseInfo
     {
         private static Quad quad;
         private static string newInfo = "";

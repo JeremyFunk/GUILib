@@ -3,33 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GUILib.GUI.PixelConstraints;
 
 namespace GUILib.GUI.Constraints
 {
-    class MarginConstraint : Constraint
+    public class MarginConstraint : Constraint
     {
-        private int pixels, minPixels;
-        private float pixelsF;
-        private bool useInt;
+        private APixelConstraint pixels, minPixels;
 
-        public MarginConstraint(int pixels)
+        public MarginConstraint(APixelConstraint pixels, APixelConstraint minPixels = null)
         {
             this.pixels = pixels;
-            useInt = true;
+            this.minPixels = minPixels;
         }
 
-        public MarginConstraint(float pixels, int minPixels = 0)
+        public void SetPixels(int pixels)
         {
-            this.pixelsF = pixels;
-            this.minPixels = minPixels;
-            useInt = false;
+            this.pixels = pixels;
+        }
+
+        public APixelConstraint GetPixels()
+        {
+            return pixels;
         }
 
         public int ExecuteConstraint(int parentSize, int selfSize)
         {
-            if(useInt)
-                return parentSize - pixels - selfSize;
-            return Math.Max((int)(parentSize - parentSize * pixelsF - selfSize), minPixels);
+            if(minPixels == null)
+                return parentSize - pixels.GetPixelValue(parentSize) - selfSize;
+            return Math.Max(parentSize - pixels.GetPixelValue(parentSize) - selfSize, minPixels.GetPixelValue(parentSize));
         }
     }
 }
