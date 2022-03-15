@@ -1,0 +1,19 @@
+Fonts:
+All fonts are windows standard fonts. This does not mean you are allowed to use them commercially. Please research which fonts you can use and which you cannot.
+
+Icons:
+Do with it whatever you want.
+
+Shaders:
+Do with it whatever you want.
+
+Textures:
+Do with it whatever you want, unless otherwhise specified.
+
+Fonts folder: contains Distance-Field-Fonts. Same rules as for Fonts.
+Background.jpg: from this https://wallpaperset.com/ website. Their terms of service state: "We, our licensors or other third parties own all right, title and interest, including all worldwide intellectual property rights in the Website, other than any content available through the Website. Subject to your compliance with these Terms, we give you a personal, worldwide, royalty-free, non-assignable and non-exclusive license to access and use the Website for your own personal non-commercial use. This license is for the sole purpose of enabling you to use and enjoy the benefits of the Website in the manner permitted by these Terms."
+Crystal.png: Crystal Icon from https://icons8.de/icons/set/crystal by https://icons8.de/ but was modified by me
+Friends.png: Friends Icon from https://icons8.de/icons/set/friends by https://icons8.de/
+ModernBackground.png: is a screenshot taken from a game called "WarThunder". I have strongly modified it. Source: https://wall.alphacoders.com/big.php?i=779409&lang=German 
+SmokeBackground.png: I have strongly modified it (multiple blur filters, scaling down and back up, zooming into it and color correction). I am not able to find the source image but it probably does not have much in common with it. Please do not use it to be on the safe side.
+

@@ -1,0 +1,14 @@
+C:\Users\Jerem\Desktop\GUILib\TestProject\obj\Debug\TestProject.csprojAssemblyReference.cache
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\TestProject.exe.config
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\TestProject.exe
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\TestProject.pdb
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\GUILib.dll
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\OpenTK.dll
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\GUILib.pdb
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\GUILib.dll.config
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\OpenTK.pdb
+C:\Users\Jerem\Desktop\GUILib\TestProject\bin\Debug\OpenTK.xml
+C:\Users\Jerem\Desktop\GUILib\TestProject\obj\Debug\TestProject.csproj.CopyComplete
+C:\Users\Jerem\Desktop\GUILib\TestProject\obj\Debug\TestProject.exe
+C:\Users\Jerem\Desktop\GUILib\TestProject\obj\Debug\TestProject.pdb
+C:\Users\Jerem\Desktop\GUILib\TestProject\obj\Debug\TestProject.csproj.CoreCompileInputs.cache
