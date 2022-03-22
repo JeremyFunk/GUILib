@@ -8,7 +8,7 @@ Project after project I implemented provisory GUI Systems that got permanent as 
 
 This project was meant to fix all these three key requirements while still remaining light weight and easy extensible.  
 
-**You can do what ever you want with the library. You can sell or modify it, use it privately or commercially. You can treat it as if this is your code.** The exception is the Resource folder. There are a few files in there that I have not created myself. If you want to use those please contact the original creators (listed in the creatorList.txt file). If you have made any useful extension to the library feel free to share it with everyone. Just get in contact with me via Email: GuiLib@outlook.de. You can send it to me for a merge or merge it yourself and create a merge request. 
+**You can do what ever you want with the library. You can sell or modify it, use it privately or commercially. You can treat it as if this is your code.** The exception is the Resource folder. There are a few files in there that I have not created myself. If you want to use those please contact the original creators (listed in the creatorList.txt file). If you have made any useful extension to the library feel free to share it with everyone. Just create a pull request or an issue.
 
 # Examples 
 
