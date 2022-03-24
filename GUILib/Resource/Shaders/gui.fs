@@ -44,7 +44,7 @@ uniform float u_edge;
 
 //---------------------------------------
 
-//Utility Methods
+//MathsUtil Methods
 vec2 normalize(vec2 coord, vec2 scale)
 {
     return vec2(coord.x*scale.x,coord.y*scale.y);

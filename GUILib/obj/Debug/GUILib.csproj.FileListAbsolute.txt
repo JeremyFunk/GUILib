@@ -19,3 +19,14 @@ C:\Users\Jerem\Desktop\GUILib\GUILib\bin\Debug\GUILib.dll
 C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.dll
 C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.csprojAssemblyReference.cache
 C:\Users\Jerem\Desktop\GUILib\GUILib\obj\Debug\GUILib.csproj.CoreCompileInputs.cache
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\GUILib.dll.config
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\GUILib.dll
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\GUILib.pdb
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\OpenTK.dll
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\OpenTK.pdb
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\bin\Debug\OpenTK.xml
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\obj\Debug\GUILib.csprojAssemblyReference.cache
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\obj\Debug\GUILib.csproj.CoreCompileInputs.cache
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\obj\Debug\GUILib.csproj.CopyComplete
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\obj\Debug\GUILib.dll
+C:\Users\Jerem\Documents\GitHub\RayMarchingEditor\GUILib\GUILib\obj\Debug\GUILib.pdb

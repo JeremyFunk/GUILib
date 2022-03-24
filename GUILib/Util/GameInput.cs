@@ -132,7 +132,7 @@ namespace GUILib.Util
         #endregion
 
         #region Mouse input
-        public static int mouseX, mouseY, mouseWheel;
+        public static int mouseX, mouseY, mouseWheel, lastMouseX, lastMouseY;
         public static float normalizedMouseX, normalizedMouseY, mouseWheelF;
         public static bool mouseInside, mouseGrabbed, mouseStateChanged;
 
@@ -140,6 +140,37 @@ namespace GUILib.Util
         private static List<MouseButton> mkeysPressed = new List<MouseButton>(), mkeysBlocked = new List<MouseButton>();
         private static List<MouseButton> mkeysReleased = new List<MouseButton>();
 
+
+        public static List<MouseButton> GetMKeysPressed()
+        {
+            List<MouseButton> keysPressed = new List<MouseButton>();
+
+            var allKeys = Enum.GetValues(typeof(MouseButton));
+
+            foreach (MouseButton key in allKeys)
+            {
+                if (IsMouseButtonPressed(key))
+                    keysPressed.Add(key);
+            }
+            return keysPressed;
+        }
+
+        public static List<MouseButton> GetMKeysDown()
+        {
+            List<MouseButton> returnKeys = new List<MouseButton>();
+
+            var allKeys = Enum.GetValues(typeof(MouseButton));
+
+            foreach (MouseButton k in allKeys)
+            {
+                if (mkeys[k])
+                {
+                    returnKeys.Add(k);
+                }
+            }
+
+            return returnKeys;
+        }
         public static bool IsMouseButtonDown(MouseButton key)
         {
             lock (mkeys)

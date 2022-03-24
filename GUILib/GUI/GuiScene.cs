@@ -23,7 +23,7 @@ namespace GUILib.GUI
         public void AddParent(GuiElement element)
         {
             parents.Add(element);
-            parents = Utility.GetZIndexSorted(parents);
+            parents = MathsUtil.GetZIndexSorted(parents);
         }
 
         public GuiScene()

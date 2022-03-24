@@ -146,7 +146,7 @@ namespace GUILib.GUI.GuiElements
             if (recalculateListOnUpdate)
             {
                 recalculateListOnUpdate = false;
-                childElements = Utility.GetZIndexSorted(childElements);
+                childElements = MathsUtil.GetZIndexSorted(childElements);
             }
 
             if (hovered && usesHoverText)
@@ -675,7 +675,7 @@ namespace GUILib.GUI.GuiElements
             childElements.Add(child);
             child.SetParent(this);
 
-            childElements = Utility.GetZIndexSorted(childElements);
+            childElements = MathsUtil.GetZIndexSorted(childElements);
         }
         public void ClearChilds()
         {

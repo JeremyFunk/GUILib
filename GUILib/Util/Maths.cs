@@ -8,7 +8,7 @@ using GUILib.GUI.GuiElements;
 
 namespace GUILib.Util
 {
-    static public class Utility
+    static public class MathsUtil
     {
         public static List<GuiElement> GetZIndexSorted(List<GuiElement> elements)
         {
